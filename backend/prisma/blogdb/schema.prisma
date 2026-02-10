@@ -1,0 +1,16 @@
+datasource db {
+  provider = "mysql"   // or postgres
+  url      = env("BLOGDB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/blogdb"
+}
+
+model VenuePrice {
+  id          Int     @id @default(autoincrement())
+  listing_id  Int
+  vegPrice    Int?
+  nonVegPrice Int?
+}

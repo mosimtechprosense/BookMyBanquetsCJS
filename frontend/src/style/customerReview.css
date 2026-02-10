@@ -1,0 +1,33 @@
+/* hide scrollbar for customer review on home page */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+/*animation for customer review cards start */
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 5s linear infinite;
+  display: flex;
+}
+
+/*animation for customer review cards end */
+
+
+/* shadow for customer review cards*/
+.shadow-even {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}

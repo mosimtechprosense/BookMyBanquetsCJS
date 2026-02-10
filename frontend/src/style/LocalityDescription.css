@@ -1,0 +1,38 @@
+.price-table-section {
+  margin: 40px 0;
+}
+
+.price-table-heading {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.price-table th,
+.price-table td {
+  border: 1px solid #333;
+  padding: 12px 16px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.price-table th {
+  font-weight: 700;
+  text-align: center;
+}
+
+.price-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
