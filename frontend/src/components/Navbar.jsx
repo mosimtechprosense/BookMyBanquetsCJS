@@ -40,11 +40,9 @@ const Navbar = () => {
           {/* Phone */}
           <div className="flex items-center gap-2 ">
             <IoCall className="text-lg text-[#dc2626]" />
-            <a href="#" aria-label="Call">
               <span className="font-medium hover:text-[#dc2626] transition duration-200">
                 +91 8920597474
               </span>
-            </a>
           </div>
         </div>
 

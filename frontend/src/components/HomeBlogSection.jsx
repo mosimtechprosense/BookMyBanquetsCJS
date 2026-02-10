@@ -47,7 +47,11 @@ const HomeBlogSection = () => {
             <div className="p-5 flex-1 flex flex-col">
               <h3 className="font-bold text-base leading-snug line-clamp-2 mb-3">
                 <Link to={`/blogs/${blog.slug}`} className="hover:text-red-600">
-                  {blog.title.rendered}
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: blog.title.rendered
+                    }}
+                  />
                 </Link>
               </h3>
 
