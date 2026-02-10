@@ -3,7 +3,7 @@ const slugify = require("slugify")
 const { mapFoodPrices } = require("../../utils/foodPriceMapper.js")
 
 // venue images url builder function
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000"
+const BASE_URL = process.env.BASE_URL || "https://node.bookmybanquets.in/"
 
 const normalize = (value) => {
   if (!value) return undefined

@@ -6,10 +6,12 @@ export default function LocationFilter({ setFilters, value }) {
   const [locations, setLocations] = useState([]);
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [showList, setShowList] = useState(false);
-   const dropdownRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  const API_BASE = import.meta.env.VITE_API_BASE;
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/locations")
+    fetch(`${API_BASE}/api/locations`)
       .then((res) => res.json())
       .then((data) => {
         const locs = data.data || [];
