@@ -4,7 +4,7 @@ import sidebarImg from "../../assets/sidebarimage.avif"
 import {  IoCall } from "react-icons/io5";
 
 
-export default function ListingDetailsSidebar({ listing, setPopupOpen }) {
+export default function ListingDetailsSidebar({ listing }) {
   return (
     <aside className="mt-4 lg:mt-0 lg:sticky lg:top-0 self-start">
  <div

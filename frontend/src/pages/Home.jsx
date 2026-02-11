@@ -84,7 +84,7 @@ const API_BASE = import.meta.env.VITE_API_BASE;
         setLocations([])
         setFilteredLocations([])
       })
-  }, [])
+  }, [API_BASE])
 
   // venues & services handlers
   const handleSearchChange = (e) => {
