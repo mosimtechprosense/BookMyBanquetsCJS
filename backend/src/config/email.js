@@ -1,18 +1,15 @@
-const nodemailer = require("nodemailer")
-const dotenv = require("dotenv")
-
-dotenv.config()
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  port: 587,         // TLS
+  secure: false,     // true only for port 465 (SSL)
   auth: {
-    user: process.env.EMAIL_USER, // your Gmail address
-    pass: process.env.EMAIL_PASS, // Gmail App Password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
-})
+});
 
-module.exports = {
-  transporter
-}
+module.exports = { transporter };

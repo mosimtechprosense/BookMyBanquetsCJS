@@ -18,7 +18,8 @@ const HeroSection = () => {
     { id: "about", label: "About", path: "/about" },
     { id: "why-us", label: "Why Us?", path: "/why-us" },
     { id: "blog", label: "Blog", path: "/blogs" },
-    { id: "contact", label: "Contact Us", path: "/contact" }
+    { id: "contact", label: "Contact Us", path: "/contact" },
+    { id: "admin", label: "Admin", path: "/admin/login" },
   ]
 
   //  Lock scroll when menu is open  (Temprory paused)

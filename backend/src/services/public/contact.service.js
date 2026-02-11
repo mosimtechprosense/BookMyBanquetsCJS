@@ -10,11 +10,11 @@ const createContactMessage = async ({ name, email, phone, message }) => {
   const formType = isContactForm ? "contact form" : "discount form";
 
   // Dummy email for DB only (for discount from process)
-  const prismaEmail = isContactForm ? email : "no-reply@bookmybanquets.in";
+  const prismaEmail = isContactForm ? email : phone;
 
   // Save message to database
   const savedMessage = await prisma.contactmessage.create({
-    data: { name, email: prismaEmail, phone, message }
+    data: { name, email: prismaEmail || null,  phone: phone || null, message }
   });
 
 

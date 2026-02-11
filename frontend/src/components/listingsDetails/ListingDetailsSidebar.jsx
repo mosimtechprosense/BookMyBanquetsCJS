@@ -43,8 +43,8 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen }) {
           {/* Contact */}
           <div className="flex items-center justify-between bg-white rounded-xl shadow-xl p-3 lg:p-4">
             <div>
-            <h3 className="text-base lg:text-lg font-semibold ">
-              Contact
+            <h3 className="text-base lg:text-sm font-semibold ">
+              {listing.title}
             </h3>
 
             <p className="text-xs lg:text-sm text-gray-700">
@@ -53,8 +53,10 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen }) {
             </div>
 
 <div>
-            <button
-              onClick={() => setPopupOpen(true)}
+            <a
+              href="tel:918920597474"
+              onClick={(e) => e.stopPropagation()}
+              aria-label="Call now"
               className=" flex items-center justify-center gap-1
                 mt-3 lg:mt-4 w-full
                 bg-green-500 text-white
@@ -67,9 +69,9 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen }) {
               "
             >
                           <IoCall className="text-sm" />
-                          Enquiry Now
+                          Call Now
 
-            </button>
+            </a>
             </div>
           </div>
         </div>
