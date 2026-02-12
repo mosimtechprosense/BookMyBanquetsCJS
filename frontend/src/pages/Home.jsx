@@ -69,6 +69,7 @@ const API_BASE = import.meta.env.VITE_API_BASE;
   const [locationQuery, setLocationQuery] = useState("")
   const [locations, setLocations] = useState([]) // full list from API
   const [filteredLocations, setFilteredLocations] = useState([])
+  const [selectedLocation, setSelectedLocation] = useState(null)
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false)
 
   // Fetch locations once on mount
@@ -119,10 +120,11 @@ const handleSelectService = (service) => {
     setFilteredLocations(filtered)
   }
 
-  const handleSelectLocation = (name) => {
-    setLocationQuery(name)
-    setShowLocationSuggestions(false)
-  }
+const handleSelectLocation = (loc) => {
+  setLocationQuery(loc.name)
+  setSelectedLocation(loc)   // NEW
+  setShowLocationSuggestions(false)
+}
 
   // close dropdowns on outside click
   useEffect(() => {
@@ -137,23 +139,28 @@ const handleSelectService = (service) => {
 
 // handleSearchClick
 const handleSearchClick = () => {
-  if (!selectedService || !locationQuery) return;
+  if (!selectedService || !selectedLocation) return;
 
-  const localitySlug = locationQuery
+  const localitySlug = selectedLocation.name
     .toLowerCase()
     .replace(/\s+/g, "-")
     .trim();
 
-  // extract service slug from path
-const serviceSlug = categoryToSlug[selectedService.categoryId] || "banquet-hall";
+  const citySlug = selectedLocation.city_name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .trim();
+
+  const serviceSlug =
+    categoryToSlug[selectedService.categoryId] || "banquet-hall";
+
   const params = new URLSearchParams();
-  params.set("search", selectedService.label);
-  params.set("locality", locationQuery);
   params.set("category", selectedService.categoryId);
 
-  navigate(`/${serviceSlug}-in/${localitySlug}?${params.toString()}`);
+  navigate(
+    `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
+  );
 };
-
 
 
   return (
@@ -247,7 +254,7 @@ const serviceSlug = categoryToSlug[selectedService.categoryId] || "banquet-hall"
                   {filteredLocations.map((loc, idx) => (
                     <div
                       key={idx}
-                      onClick={() => handleSelectLocation(loc.name)}
+                      onClick={() => handleSelectLocation(loc)}
                       className="flex items-center px-3 py-2.5 z-100 text-black text-sm outline-none border-b border-gray-100 hover:bg-gray-100 cursor-pointer"
                     >
                       <div className="mr-3 p-2 rounded-full bg-gray-100">

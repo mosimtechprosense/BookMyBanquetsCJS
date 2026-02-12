@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
+const redirectRoutes = require("./src/routes/redirect.routes.js");
 
 const apiRoutes = require("./src/routes/index.js");
 const errorHandler = require("./src/middlewares/errorHandler.js");
@@ -58,6 +59,7 @@ BigInt.prototype.toJSON = function () {
 
 
 // prefix all routes with /api
+app.use("/", redirectRoutes);
 app.use("/api", apiRoutes);
 
 

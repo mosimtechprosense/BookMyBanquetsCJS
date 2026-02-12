@@ -327,11 +327,19 @@ export default function ListingsPage() {
     }
 
     // Build base path with CITY
-    const placeForPath = merged.locality || cityFromPath || "delhi"
+const citySlug = (cityFromPath || "delhi")
+  .replace(/\s+/g, "-")
+  .toLowerCase()
 
-    const path = `/${resolvedServiceSlug}-in/${placeForPath
-      .replace(/\s+/g, "-")
-      .toLowerCase()}`
+let path = `/${resolvedServiceSlug}-in-${citySlug}`
+
+if (merged.locality && typeof merged.locality === "string") {
+  const localitySlug = merged.locality
+    .replace(/\s+/g, "-")
+    .toLowerCase()
+
+  path += `/${localitySlug}`
+}
 
     if (merged.locality && typeof merged.locality === "string") {
       qs.set("locality", merged.locality.replace(/\s+/g, "-").toLowerCase())
