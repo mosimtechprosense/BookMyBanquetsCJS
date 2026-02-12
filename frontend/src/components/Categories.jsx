@@ -6,7 +6,7 @@ const Categories = () => {
     {
       title: "Venues",
       des: "Banquet Halls, Marriage Gardens, Lawns...",
-       path: "/venues/banquet-halls",
+       path: "/banquet-halls",
        categoryId: 6,
       img: venues,
       colour: "bg-[#d7e1ff]",
@@ -49,13 +49,8 @@ const Categories = () => {
 const handleCategory = (cat) => {
   // VENUES → show ALL venue listings
   if (cat.title === "Venues") {
-    navigate("/venues/banquet-halls")
+    navigate("/banquet-halls")
     return
-  }
-
-  // other categories (future use)
-  if (cat.path && cat.categoryId) {
-    navigate(`${cat.path}?category=${cat.categoryId}`)
   }
 }
 

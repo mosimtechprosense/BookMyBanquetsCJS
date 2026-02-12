@@ -104,7 +104,7 @@ const HighlyDemandedListings = () => {
           Highly Demanded Halls
         </h2>
         <button
-          onClick={() => navigate("/venues/banquet-halls")}
+          onClick={() => navigate("/banquet-halls")}
           className="text-md font-semibold text-red-600 hover:text-red-700 cursor-pointer"
         >
           View All →

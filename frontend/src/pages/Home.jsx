@@ -16,23 +16,23 @@ import HomeBlogSection from "../components/HomeBlogSection"
 
 const Home = () => {
 const services = [
-  { label: "Banquet Halls", path: "/venues/banquet-halls", categoryId: 6 },
-  { label: "Banquet with Hotel Room", path: "/venues/banquet-with-room", categoryId: 9 },
-  { label: "Marriage Halls", path: "/venues/marriage-halls", categoryId: 8 },
-  { label: "Wedding Farmhouse", path: "/venues/wedding-farmhouse", categoryId: 13 },
-  { label: "Party Halls", path: "/venues/party-halls", categoryId: 7 },
-  { label: "5 Star Wedding Hotels", path: "/venues/5-star-wedding-hotels", categoryId: 11 },
-  { label: "Destination Weddings", path: "/venues/destination-weddings", categoryId: 12 },
-  { label: "Small Function Halls", path: "/venues/small-function-halls", categoryId: 14 },
-  { label: "Engagement Venue", path: "/venues/engagement-venue", categoryId: 16 },
-  { label: "Baby Shower", path: "/venues/baby-shower", categoryId: 18 },
-  { label: "Sikh Wedding", path: "/venues/sikh-wedding", categoryId: 20 },
-  { label: "Cocktail Venues", path: "/venues/cocktail-venues", categoryId: 5 },
-  { label: "Party Lawn", path: "/venues/party-lawn", categoryId: 10 },
-  { label: "Corporate Events", path: "/venues/corporate-events", categoryId: 15 },
-  { label: "Ring Ceremony", path: "/venues/ring-ceremony", categoryId: 17 },
-  { label: "Mehendi Ceremony", path: "/venues/mehendi-ceremony", categoryId: 21 },
-  { label: "Retirement Party", path: "/venues/retirement-party", categoryId: 19 }
+  { label: "Banquet Halls", path: "/banquet-halls", categoryId: 6 },
+  { label: "Banquet with Hotel Room", path: "/banquet-with-room", categoryId: 9 },
+  { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
+  { label: "Wedding Farmhouse", path: "/wedding-farmhouse", categoryId: 13 },
+  { label: "Party Halls", path: "/party-halls", categoryId: 7 },
+  { label: "5 Star Wedding Hotels", path: "/5-star-wedding-hotels", categoryId: 11 },
+  { label: "Destination Weddings", path: "/destination-weddings", categoryId: 12 },
+  { label: "Small Function Halls", path: "/small-function-halls", categoryId: 14 },
+  { label: "Engagement Venue", path: "/engagement-venue", categoryId: 16 },
+  { label: "Baby Shower", path: "/baby-shower", categoryId: 18 },
+  { label: "Sikh Wedding", path: "/sikh-wedding", categoryId: 20 },
+  { label: "Cocktail Venues", path: "/cocktail-venues", categoryId: 5 },
+  { label: "Party Lawn", path: "/party-lawn", categoryId: 10 },
+  { label: "Corporate Events", path: "/corporate-events", categoryId: 15 },
+  { label: "Ring Ceremony", path: "/ring-ceremony", categoryId: 17 },
+  { label: "Mehendi Ceremony", path: "/mehendi-ceremony", categoryId: 21 },
+  { label: "Retirement Party", path: "/retirement-party", categoryId: 19 }
 ];
 
 const categoryToSlug = {

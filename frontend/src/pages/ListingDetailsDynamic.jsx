@@ -99,8 +99,7 @@ if (!listing) {
     {
       label: venueMeta?.label || "Banquet Halls",
       type: "service",
-      path: `/venues/banquet-halls?category=${categoryId}&serviceLabel=${encodeURIComponent(
-        venueMeta?.label || "Banquet Halls"
+      path: `/banquet-halls?category=${categoryId} || "Banquet Halls"
       )}`
     }
   ]

@@ -45,7 +45,7 @@ The backend is designed with a modular structure, environment‑based configurat
 ```
 backend/
 ├── config/
-│   ├── db.js              # MongoDB connection logic
+│   ├── db.js              # MY SQL connection logic
 │   └── config.js          # App configuration values
 │
 ├── controllers/
@@ -87,7 +87,7 @@ Create a `.env` file inside the `backend` directory.
 DATABASE_URL="mysql://root:password@localhost:3306/bookmybanquets"
 BLOGDB_URL="mysql://root:password@localhost:3306/bookmybanquets_blogdb"
 PORT=3000
-BASE_URL=http://localhost:5000
+BASE_URL=https://node.bookmybanquets.in
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_email_app_password
 JWT_SECRET=your_jwt_secret
@@ -380,7 +380,7 @@ https://node.bookmybanquets.in/
 
 * Set `NODE_ENV=production`
 * Use process manager (PM2 recommended)
-* Ensure MongoDB network access is allowed
+* Ensure MY SQL network access is allowed
 * Configure environment variables on server
 
 ---

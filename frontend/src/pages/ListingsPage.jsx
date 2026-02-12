@@ -143,7 +143,7 @@ export default function ListingsPage() {
 
       maxGuests: searchParams.get("maxGuests")
         ? Number(searchParams.get("maxGuests"))
-        : 1200,
+        : undefined,
 
       vegetarian: searchParams.get("vegetarian") === "true",
       nonVegetarian: searchParams.get("nonVegetarian") === "true",
@@ -193,7 +193,7 @@ export default function ListingsPage() {
     }
 
     if (cleanedFilters.maxGuests === undefined) {
-      cleanedFilters.maxGuests = 1200
+      delete cleanedFilters.maxGuests
     }
 
     if (cleanedFilters.category && !cleanedFilters.search?.trim()) {

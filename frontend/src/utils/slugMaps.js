@@ -39,20 +39,20 @@ export const slugToServiceName = {
 }
 
 export const categoryToVenuePath = {
-  6: { path: "/venues/banquet-halls", label: "Banquet Halls" },
-  7: { path: "/venues/party-halls", label: "Party Halls" },
-  8: { path: "/venues/marriage-halls", label: "Marriage Halls" },
-  9: { path: "/venues/banquet-with-room", label: "Banquet with Hotel Room" },
-  10: { path: "/venues/party-lawn", label: "Party Lawn" },
-  11: { path: "/venues/5-star-wedding-hotels", label: "5 Star Wedding Hotels" },
-  12: { path: "/venues/destination-weddings", label: "Destination Weddings" },
-  13: { path: "/venues/wedding-farmhouse", label: "Wedding Farmhouse" },
-  14: { path: "/venues/small-function-halls", label: "Small Function Halls" },
-  15: { path: "/venues/corporate-events", label: "Corporate Events" },
-  16: { path: "/venues/engagement-venue", label: "Engagement Venue" },
-  17: { path: "/venues/ring-ceremony", label: "Ring Ceremony" },
-  18: { path: "/venues/baby-shower", label: "Baby Shower" },
-  19: { path: "/venues/retirement-party", label: "Retirement Party" },
-  20: { path: "/venues/sikh-wedding", label: "Sikh Wedding" },
-  21: { path: "/venues/mehendi-ceremony", label: "Mehendi Ceremony" }
+  6: { path: "/banquet-halls", label: "Banquet Halls" },
+  7: { path: "/party-halls", label: "Party Halls" },
+  8: { path: "/marriage-halls", label: "Marriage Halls" },
+  9: { path: "/banquet-with-room", label: "Banquet with Hotel Room" },
+  10: { path: "/party-lawn", label: "Party Lawn" },
+  11: { path: "/5-star-wedding-hotels", label: "5 Star Wedding Hotels" },
+  12: { path: "/destination-weddings", label: "Destination Weddings" },
+  13: { path: "/wedding-farmhouse", label: "Wedding Farmhouse" },
+  14: { path: "/small-function-halls", label: "Small Function Halls" },
+  15: { path: "/corporate-events", label: "Corporate Events" },
+  16: { path: "/engagement-venue", label: "Engagement Venue" },
+  17: { path: "/ring-ceremony", label: "Ring Ceremony" },
+  18: { path: "/baby-shower", label: "Baby Shower" },
+  19: { path: "/retirement-party", label: "Retirement Party" },
+  20: { path: "/sikh-wedding", label: "Sikh Wedding" },
+  21: { path: "/mehendi-ceremony", label: "Mehendi Ceremony" }
 }

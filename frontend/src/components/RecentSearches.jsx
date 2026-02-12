@@ -20,21 +20,24 @@ const RecentSearches = () => {
       })
     }, [])
 
-const handleClick = (location) => {
-  if (!location) return;
+const handleClick = (location, city) => {
+  if (!location || !city) return;
 
   const locationSlug = location
     .toLowerCase()
     .trim()
+    .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-");
 
-  const queryParams = new URLSearchParams({
-    search: "Banquet Halls",
-    locality: location,
-  }).toString();
+  const citySlug = city
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-");
 
-  navigate(`/banquet-hall-in/${locationSlug}?${queryParams}`);
+  navigate(`/banquet-hall-in-${citySlug}/${locationSlug}`);
 };
+
 
 
   return (
@@ -54,7 +57,7 @@ const handleClick = (location) => {
           {locations.map((loc, i) => (
             <button
               key={i}
-              onClick={() => handleClick(loc.name)}
+              onClick={() => handleClick(loc.name, loc.city_name)}
               className="relative group text-left text-white/90 font-medium hover:text-white transition-all duration-300 cursor-pointer"
             >
               <span className="relative inline-block">
