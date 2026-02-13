@@ -10,6 +10,8 @@ import {
   slugToServiceName,
   categoryToVenuePath
 } from "../utils/slugMaps"
+import { ListingCardSkeleton } from "../components/common/SkeletonLoader"
+
 
 export default function ListingsPage() {
   const { serviceSlug, placeSlug } = useParams()
@@ -480,9 +482,11 @@ if (merged.locality && typeof merged.locality === "string") {
           </div>
 
           {loading ? (
-            <div className="p-6 bg-white rounded shadow text-center">
-              Loading…
-            </div>
+  <div className="grid grid-cols-1 gap-4">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <ListingCardSkeleton key={i} />
+    ))}
+  </div>
           ) : listings.length === 0 ? (
             <div className="p-8 bg-white rounded shadow text-center">
               No venues match your criteria- Try different{" "}

@@ -73,8 +73,9 @@ const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
       {/* Image */}
       <div className="w-full md:w-1/3 p-4">
         {/* Main Image */}
-        <div className="w-full h-45 rounded-lg overflow-hidden">
+        <div className="w-full h-48 rounded-lg overflow-hidden">
           <img
+            loading="lazy"
             src={activeImage}
             alt={item.title}
             className="w-full h-full object-cover transition"

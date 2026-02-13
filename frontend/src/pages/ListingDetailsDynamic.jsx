@@ -13,6 +13,7 @@ import CheckDiscountPrice from "../components/listingsDetails/CheckDiscountPrice
 import ScheduleVisit from "../components/listingsDetails/ScheduleVisit"
 import ListingDetailsSidebar from "../components/listingsDetails/ListingDetailsSidebar"
 import { categoryToSlug, categoryToVenuePath } from "../utils/slugMaps"
+import { DetailsPageSkeleton } from "../components/common/SkeletonLoader"
 
 export default function ListingDetailsDynamic() {
   const { id, serviceSlug } = useParams()
@@ -64,7 +65,7 @@ export default function ListingDetailsDynamic() {
     }
   }, [id, location.pathname])
 
-if (loading) return <div className="py-20 text-center">Loading…</div>;
+if (loading) return <DetailsPageSkeleton />;
 
 if (
   location.pathname.startsWith("/admin") ||
