@@ -4,9 +4,9 @@ const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const redirectRoutes = require("./src/routes/redirect.routes.js");
-
 const apiRoutes = require("./src/routes/index.js");
 const errorHandler = require("./src/middlewares/errorHandler.js");
+const listingImageMiddleware = require("./src/middlewares/staticImages.js");
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 
 // serve venue images
-app.use("/listing_image", express.static("public/listing_image"));
+app.use("/listing_image", listingImageMiddleware);
 
 
 // basic security headers
