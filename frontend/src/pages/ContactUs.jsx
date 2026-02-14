@@ -26,7 +26,7 @@ const ContactUs = () => {
     {
       icon: <ImLocation2 className="text-xl text-white" />,
       title: "Address",
-      des: "Unit No. 1369, Second floor,ILD Trade Centre, Sector 47,Sohna Road, Gurgaon Haryana"
+      des: "40A/5, CHANDER NAGAR Sector 15 Part 2, Sector 15 Gurugram, Haryana 122001"
     }
   ]
 
