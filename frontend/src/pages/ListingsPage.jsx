@@ -113,7 +113,7 @@ export default function ListingsPage() {
       return categoryToSlug[filters.category]
     }
 
-    return "banquet-halls" // final safety net
+    return "banquet-hall" // final safety net
   }, [serviceSlug, filters?.category])
 
   useEffect(() => {

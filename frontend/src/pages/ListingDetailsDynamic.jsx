@@ -14,6 +14,7 @@ import ScheduleVisit from "../components/listingsDetails/ScheduleVisit"
 import ListingDetailsSidebar from "../components/listingsDetails/ListingDetailsSidebar"
 import { categoryToSlug, categoryToVenuePath } from "../utils/slugMaps"
 import { DetailsPageSkeleton } from "../components/common/SkeletonLoader"
+import ListingBottomActions from "../components/listingsDetails/ListingBottomActions"
 
 export default function ListingDetailsDynamic() {
   const { id, serviceSlug } = useParams()
@@ -30,7 +31,7 @@ export default function ListingDetailsDynamic() {
   // Image modal
   const [activeImageIndex, setActiveImageIndex] = useState(null)
   useEffect(() => {
-      // 🚨 STOP invalid cases BEFORE API calls
+      //  STOP invalid cases BEFORE API calls
   if (
     location.pathname.startsWith("/admin") ||
     !id ||
@@ -100,7 +101,7 @@ if (!listing) {
     {
       label: venueMeta?.label || "Banquet Halls",
       type: "service",
-      path: `/banquet-halls?category=${categoryId}&serviceLabel=${encodeURIComponent(
+      path: `/banquet-hall?category=${categoryId}&serviceLabel=${encodeURIComponent(
         venueMeta?.label || "Banquet Halls"
       )}`
     }
@@ -133,7 +134,7 @@ if (!listing) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 ">
+    <div className="container mx-auto px-4 py-8 pb-28">
       {/* Breadcrumb */}
       <nav
         aria-label="Breadcrumb"
@@ -361,6 +362,10 @@ if (!listing) {
 
       {/* SIMILAR LISTINGS */}
       <SimilarListingsSection listings={similarListings} />
+
+
+       {/* Listing Bottom Actions  */}
+      <ListingBottomActions setPopupOpen={setPopupOpen} />
     </div>
   )
 }

@@ -6,7 +6,7 @@ const Categories = () => {
     {
       title: "Venues",
       des: "Banquet Halls, Marriage Gardens, Lawns...",
-       path: "/banquet-halls",
+       path: "/banquet-hall",
        categoryId: 6,
       img: venues,
       colour: "bg-[#d7e1ff]",

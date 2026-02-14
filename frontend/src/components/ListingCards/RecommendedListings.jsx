@@ -104,7 +104,7 @@ const RecommendedListings = () => {
         </h2>
         <button
           className="text-md font-semibold text-red-600 hover:text-red-700 cursor-pointer"
-          onClick={() => navigate("/banquet-halls")}
+          onClick={() => navigate("/banquet-hall")}
         >
           View All →
         </button>

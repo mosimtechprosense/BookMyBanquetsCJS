@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 export default function VenueTypeFilter({ setFilters, value }) {
   const venueTypeOptions = [
-    { label: "Banquet Halls", path: "/banquet-halls", categoryId: 6 },
+    { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
     {
       label: "Banquet with Hotel Room",
       path: "/banquet-with-room",

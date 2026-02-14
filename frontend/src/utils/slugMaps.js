@@ -39,7 +39,7 @@ export const slugToServiceName = {
 }
 
 export const categoryToVenuePath = {
-  6: { path: "/banquet-halls", label: "Banquet Halls" },
+  6: { path: "/banquet-hall", label: "Banquet Halls" },
   7: { path: "/party-halls", label: "Party Halls" },
   8: { path: "/marriage-halls", label: "Marriage Halls" },
   9: { path: "/banquet-with-room", label: "Banquet with Hotel Room" },

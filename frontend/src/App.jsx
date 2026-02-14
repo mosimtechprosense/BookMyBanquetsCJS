@@ -24,6 +24,7 @@ import { AdminAuthProvider } from "./store/AdminAuthContext"
 function ConditionalAdminUI({ children }) {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
+  const isListingDetails = /^\/.+-in\/.+\/\d+$/.test(location.pathname);
 
   return (
     <>
@@ -32,7 +33,7 @@ function ConditionalAdminUI({ children }) {
 
       {children}
 
-      {!isAdmin && <FloatingWhatsApp />}
+        {!isAdmin && !isListingDetails && <FloatingWhatsApp />}
       {!isAdmin && <RecentSearches />}
       {!isAdmin && <Footer />}
     </>

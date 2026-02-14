@@ -16,7 +16,7 @@ import HomeBlogSection from "../components/HomeBlogSection"
 
 const Home = () => {
 const services = [
-  { label: "Banquet Halls", path: "/banquet-halls", categoryId: 6 },
+  { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
   { label: "Banquet with Hotel Room", path: "/banquet-with-room", categoryId: 9 },
   { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
   { label: "Wedding Farmhouse", path: "/wedding-farmhouse", categoryId: 13 },
