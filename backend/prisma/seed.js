@@ -37,12 +37,12 @@ const locations = [
   { location: "Naraina", city: "Delhi" },
   { location: "Patel Nagar", city: "Delhi" },
   { location: "Rajendra Nagar", city: "Delhi" },
-  { location: "Chattarpur", city: "Delhi" },
+  { location: "Chhatarpur", city: "Delhi" },
   { location: "Gt Karnal Road", city: "Delhi" },
-  { location: "Sector 14", city: "Delhi" },
-  { location: "Sohna Road", city: "Delhi" },
-  { location: "Sector 24", city: "Gurugram" },
-  { location: "Manesar", city: "Gurugram" },
+  { location: "Sector 14", city: "gurgaon" },
+  { location: "Sohna Road", city: "gurgaon" },
+  { location: "Sector 24", city: "gurgaon" },
+  { location: "Manesar", city: "gurgaon" },
   { location: "Najafgarh Road Industrial Area", city: "Delhi" },
 ]
 
