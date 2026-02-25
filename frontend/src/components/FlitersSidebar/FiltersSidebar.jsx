@@ -17,7 +17,7 @@ export default function FiltersSidebar({
     <aside className="bg-white p-4 rounded-lg shadow md:w-72 select-none
     md:sticky md:top-4
     md:max-h-[calc(100vh-1rem)]
-    overflow-y-auto scrollbar-thin no-scrollbar">
+    overflow-y-auto scrollbar-thin">
       {/* SearchFilter with pre-filled venue service */}
       <SearchFilter
         search={filters.search}

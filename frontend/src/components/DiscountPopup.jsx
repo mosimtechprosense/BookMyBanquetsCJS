@@ -134,6 +134,8 @@ const handleSubmit = async (e) => {
       borderRadius: "10px",
       margin: "0 auto",
       boxSizing: "border-box",
+      position: "fixed",
+      zIndex: 10000,
     },
     close: true
   }).showToast();
@@ -178,7 +180,7 @@ const handleSubmit = async (e) => {
   if (!popupOpen) return null
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-1000 animate-fadeInSmooth select-none">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-[9999] animate-fadeInSmooth select-none">
       <div
         ref={popupRef}
         className="popup-box bg-white w-[85%] sm:w-[400px] rounded-2xl shadow-2xl relative animate-fadeInSmooth p-6"
@@ -211,7 +213,7 @@ const handleSubmit = async (e) => {
           {/* Name Input */}
           <div className="relative">
             <label
-              className="absolute -top-0.5 left-3 bg-white px-1 text-sm text-gray-500 font-semibold"
+              className="absolute -top-0.5 left-3 bg-white px-1 text-sm text-gray-600 font-semibold"
               htmlFor="name"
             >
               Enter Your Name
@@ -219,7 +221,7 @@ const handleSubmit = async (e) => {
             <input
               id="name"
               type="text"
-              placeholder=""
+              placeholder="Ex: Sanjay Pathak"
               value={name}
               onChange={(e) => {
                 setName(
@@ -244,7 +246,7 @@ const handleSubmit = async (e) => {
           {/* Phone Input */}
           <div className="relative">
             <label
-              className="absolute -top-0.5 left-3 bg-white px-1 text-sm text-gray-500 font-semibold"
+              className="absolute -top-0.5 left-3 bg-white px-1 text-sm text-gray-600 font-semibold"
               htmlFor="phone"
             >
               Enter your Mobile Number
@@ -252,7 +254,7 @@ const handleSubmit = async (e) => {
             <input
               id="phone"
               type="tel"
-              placeholder=" "
+              placeholder="Ex: 8920597474"
               value={phone}
               onChange={(e) => {
                 setPhone(e.target.value)

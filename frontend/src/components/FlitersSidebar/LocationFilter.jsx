@@ -19,7 +19,7 @@ export default function LocationFilter({ setFilters, value }) {
         setFilteredLocations(locs);
       })
       .catch(() => {});
-  }, []);
+  }, [API_BASE]);
 
 useEffect(() => {
   if (!value) {

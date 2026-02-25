@@ -1,13 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "https://node.bookmybanquets.in/";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://api.bookmybanquets.com";
 
-let listingsController
 
-export const fetchListings = async (filters = {}) => {
-  if (listingsController) {
-    listingsController.abort()
-  }
 
-  listingsController = new AbortController()
+export const fetchListings = async (filters = {}, options = {}) => {
 
   const params = new URLSearchParams()
   Object.entries(filters).forEach(([key, value]) => {
@@ -29,7 +24,7 @@ export const fetchListings = async (filters = {}) => {
   const url = `${API_BASE}/api/listings?${params.toString()}`
 
   const res = await fetch(url, {
-    signal: listingsController.signal
+    signal: options.signal
   })
 
   if (!res.ok) throw new Error("Failed to fetch listings")
@@ -82,6 +77,5 @@ export const fetchLocalityDescription = async (slug) => {
 
   return res.json()
 }
-
 
 

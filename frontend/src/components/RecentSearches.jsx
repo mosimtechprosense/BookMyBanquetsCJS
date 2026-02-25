@@ -18,25 +18,37 @@ const RecentSearches = () => {
       console.error("Error fetching locations:", err);
       setLocations([]);
       })
-    }, [])
+    }, [API_BASE])
 
-const handleClick = (location, city) => {
-  if (!location || !city) return;
+const handleClick = (loc) => {
+  if (!loc?.name || !loc?.city_name) return;
 
-  const locationSlug = location
+  const locationSlug = loc.name
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-");
 
-  const citySlug = city
+  const citySlug = loc.city_name
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-");
 
-  navigate(`/banquet-hall-in-${citySlug}/${locationSlug}`);
+  const params = new URLSearchParams();
+  params.set("category", 6); // banquet hall default
+
+  //  Send coordinates
+  if (loc.lat && loc.lng) {
+    params.set("lat", loc.lat);
+    params.set("lng", loc.lng);
+  }
+
+  navigate(
+    `/banquet-hall-in-${citySlug}/${locationSlug}?${params.toString()}`
+  );
 };
+
 
 
 
@@ -57,7 +69,7 @@ const handleClick = (location, city) => {
           {locations.map((loc, i) => (
             <button
               key={i}
-              onClick={() => handleClick(loc.name, loc.city_name)}
+              onClick={() => handleClick(loc)}
               className="relative group text-left text-white/90 font-medium hover:text-white transition-all duration-300 cursor-pointer"
             >
               <span className="relative inline-block">

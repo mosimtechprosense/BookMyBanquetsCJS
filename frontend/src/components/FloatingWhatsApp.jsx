@@ -10,7 +10,7 @@ export default function FloatingWhatsApp() {
       className="
         fixed
         bottom-18 md:bottom-6 lg:bottom-6 right-6
-        z-[9999]
+        z-[8888]
         flex items-center justify-center
         w-14 h-14
         bg-green-500 hover:bg-green-600

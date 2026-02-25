@@ -121,17 +121,25 @@ if (!listing) {
     type: "current"
   })
 
-  const pushUrl = ({ category, citySlug }) => {
-    const qs = new URLSearchParams()
-    if (category) qs.set("category", category)
-    if (citySlug) qs.set("locality", citySlug)
+const pushUrl = ({ category, citySlug, lat, lng }) => {
+  const qs = new URLSearchParams()
+  if (category) qs.set("category", category)
+  if (citySlug) qs.set("locality", citySlug)
 
-    const slug = citySlug ? citySlug.replace(/\s+/g, "-").toLowerCase() : ""
-    const serviceSlug = categoryToSlug[Number(category)] || "banquet-hall"
-    const path = slug ? `/${serviceSlug}-in/${slug}` : `/${serviceSlug}-in`
-
-    navigate(`${path}?${qs.toString()}`)
+  //  Add coordinates to URL for full search results
+  if (lat && lng) {
+    qs.set("lat", lat)
+    qs.set("lng", lng)
+    
   }
+
+  const slug = citySlug ? citySlug.replace(/\s+/g, "-").toLowerCase() : ""
+  const serviceSlug = categoryToSlug[Number(category)] || "banquet-hall"
+  const path = slug ? `/${serviceSlug}-in/${slug}` : `/${serviceSlug}-in`
+
+  navigate(`${path}?${qs.toString()}`)
+}
+
 
   return (
     <div className="container mx-auto px-4 py-8 pb-28">
@@ -170,10 +178,12 @@ if (!listing) {
                           url.searchParams.entries()
                         )
 
-                        pushUrl({
-                          category: params.category,
-                          citySlug: params.locality
-                        })
+pushUrl({
+  category: params.category,
+  citySlug: params.locality,
+  lat: listing.lat,   
+  lng: listing.long   
+})
                       }}
                     >
                       {item.label}

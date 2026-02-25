@@ -157,10 +157,17 @@ const handleSearchClick = () => {
   const params = new URLSearchParams();
   params.set("category", selectedService.categoryId);
 
+  //  IMPORTANT: Send coordinates
+  if (selectedLocation.lat && selectedLocation.lng) {
+    params.set("lat", selectedLocation.lat);
+    params.set("lng", selectedLocation.lng);
+  }
+
   navigate(
     `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
   );
 };
+
 
 
   return (

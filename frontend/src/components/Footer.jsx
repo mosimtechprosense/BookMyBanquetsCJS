@@ -100,7 +100,7 @@ const Footer = () => {
 
       {/* Bottom Section */}
       <div className=" bg-border-t border-gray-300 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto text-base">
-        <h1>© 2026 Book My Banquets</h1>
+        <h2>© 2026 Book My Banquets</h2>
         <div className="flex items-center gap-4 mt-3 md:mt-0">
           <a href="https://www.facebook.com/bookmybanquets06/" aria-label="Facebook"><IoLogoFacebook className="text-red-600 text-2xl hover:text-black transition duration-200" /></a>
           <a href="https://www.linkedin.com/in/bookmy-banquet-210784336/" aria-label="LinkedIn"><FaLinkedin className="text-red-600 text-2xl hover:text-black transition duration-200" /></a>
