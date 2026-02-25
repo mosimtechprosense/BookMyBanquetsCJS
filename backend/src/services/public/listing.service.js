@@ -3,14 +3,14 @@ const slugify = require("slugify")
 const { mapFoodPrices } = require("../../utils/foodPriceMapper.js")
 
 // venue images url builder function
-const BASE_URL = process.env.BASE_URL || "https://node.bookmybanquets.in/"
+const BASE_URL = process.env.BASE_URL || "https://node.bookmybanquets.in"
 
 const normalize = (value) => {
   if (!value) return undefined
   return value.replace(/-/g, " ").toLowerCase()
 }
 
-const buildImageURL = (image) => `${BASE_URL}/${image}`
+const buildImageURL = (image) =>   `${BASE_URL}/listing_image/${image}`;
 
 const formatImages = (venue_images = []) => {
   return venue_images.map((img) => ({
@@ -81,7 +81,7 @@ const getCityVariants = (city) => {
 }
 
 // READ — Get all listings (with filters)
-const getAllListingDB = async (filters = {}, skip = 0, take = 999) => {
+const getAllListingDB = async (filters = {}) => {
   const {
     mealType,
     city,
@@ -96,8 +96,15 @@ const getAllListingDB = async (filters = {}, skip = 0, take = 999) => {
     highDemand,
     search,
     sortBy = "created_at",
-    order = "desc"
+    order = "desc",
+    lat,
+    lng,
+    radius
   } = filters
+
+
+const skip = Number(filters.skip) || 0;
+const take = Number(filters.take) || 10;
 
   const recommendedBool = recommended === "true" || recommended === true
   const highDemandBool = highDemand === "true" || highDemand === true
@@ -105,89 +112,117 @@ const getAllListingDB = async (filters = {}, skip = 0, take = 999) => {
   const normalizedLocality = normalize(locality)
   const cityVariants = getCityVariants(city)
 
-  const where = {
-    status: true,
+
+  
+const where = {
+  AND: [
+    { status: true },
 
     ...(search
-      ? {
-          OR: [
-            { title: { contains: search } },
-            { city: { contains: search } },
-            { locality: { contains: search } },
-            { description: { contains: search } }
-          ]
-        }
-      : {}),
+      ? [
+          {
+            OR: [
+              { title: { contains: search } },
+              { city: { contains: search } },
+              { locality: { contains: search } },
+              { description: { contains: search } }
+            ]
+          }
+        ]
+      : []),
 
     ...(category
-      ? {
-          listing_categories: {
-            some: { listing_category_id: Number(category) }
+      ? [
+          {
+            listing_categories: {
+              some: { listing_category_id: Number(category) }
+            }
           }
+        ]
+      : []),
+
+...(normalizedLocality && !(lat && lng)
+  ? [
+      {
+        locality: {
+          contains: normalizedLocality
         }
-      : {}),
+      }
+    ]
+  : []),
+
 
     ...(cityVariants.length
-      ? {
-          OR: cityVariants.map((c) => ({
-            city: { contains: c }
-          }))
-        }
-      : {}),
+      ? [
+          {
+            OR: cityVariants.map((c) => ({
+              city: { contains: c }
+            }))
+          }
+        ]
+      : []),
 
-    ...(locality
-      ? {
-          locality: { contains: String(normalizedLocality) }
-        }
-      : {}),
 
-    ...(minGuests || maxGuests
-      ? {
-          AND: [
-            minGuests ? { min_guest: { gte: Number(minGuests) } } : {},
-            maxGuests ? { max_guest: { lte: Number(maxGuests) } } : {}
-          ].filter(Boolean)
-        }
-      : {}),
+...(minGuests !== undefined || maxGuests !== undefined
+  ? [
+      {
+        AND: [
+          minGuests ? { min_guest: { gte: Number(minGuests) } } : undefined,
+          maxGuests ? { max_guest: { lte: Number(maxGuests) } } : undefined
+        ].filter(Boolean)
+      }
+    ]
+  : []),
+
 
     ...(minBudget || maxBudget
-      ? {
-          AND: [
-            minBudget ? { min_budget: { gte: Number(minBudget) } } : {},
-            maxBudget ? { max_budget: { lte: Number(maxBudget) } } : {}
-          ].filter(Boolean)
-        }
-      : {}),
+      ? [
+          {
+            AND: [
+              minBudget ? { min_budget: { gte: Number(minBudget) } } : undefined,
+              maxBudget ? { max_budget: { lte: Number(maxBudget) } } : undefined
+            ].filter(Boolean)
+          }
+        ]
+      : []),
 
     ...(venueType
-      ? {
-          OR: [
-            { keywords: { contains: venueType, mode: "insensitive" } },
-            { description: { contains: venueType, mode: "insensitive" } },
-            { title: { contains: venueType, mode: "insensitive" } }
-          ]
-        }
-      : {}),
+      ? [
+          {
+            OR: [
+              { keywords: { contains: venueType } },
+              { description: { contains: venueType } },
+              { title: { contains: venueType } }
+            ]
+          }
+        ]
+      : []),
 
     ...(mealType === "veg"
-      ? {
-          listing_food_categories: {
-            none: { food_category_id: 2 }
+      ? [
+          {
+            listing_food_categories: {
+              none: { food_category_id: 2 }
+            }
           }
-        }
-      : {}),
+        ]
+      : []),
 
     ...(mealType === "nonVeg"
-      ? {
-          listing_food_categories: {
-            some: { food_category_id: 2 }
+      ? [
+          {
+            listing_food_categories: {
+              some: { food_category_id: 2 }
+            }
           }
-        }
-      : {}),
+        ]
+      : []),
 
-    ...(recommendedBool ? { recommended: true } : {}),
-    ...(highDemandBool ? { high_demand: true } : {})
-  }
+    ...(recommendedBool ? [{ recommended: true }] : []),
+
+    ...(highDemandBool ? [{ high_demand: true }] : [])
+  ]
+}
 
   const orderBy =
     sortBy === "min_budget" ||
@@ -196,18 +231,121 @@ const getAllListingDB = async (filters = {}, skip = 0, take = 999) => {
       ? { [sortBy]: order === "asc" ? "asc" : "desc" }
       : { created_at: "desc" }
 
-  const listings = await prisma.listings.findMany({
+ 
+
+let listings = [];
+let totalCount = 0;
+
+console.log("GEO MODE:", { lat, lng, locality });
+
+// 🌍 If geo search
+if (lat && lng) {
+  const maxRadius = radius || 50; // max 50 km
+  const step = 2; // radius steps: 0-2 km, 2-4 km, ...
+
+  const allGeoResults = [];
+  const seenIds = new Set();
+
+  // 1️⃣ Fetch exact selected location first
+  const exactLocationWhere = {
+    AND: [
+      { status: true },
+      ...(normalizedLocality ? [{ locality: { contains: normalizedLocality } }] : []),
+      ...(cityVariants.length ? [{ OR: cityVariants.map(c => ({ city: { contains: c } })) }] : [])
+    ]
+  };
+
+  const exactResults = await prisma.listings.findMany({
+    where: exactLocationWhere,
+    include: { venue_images: true, listing_food_categories: true }
+  });
+
+  exactResults.forEach(r => {
+    allGeoResults.push({ id: r.id, distance: 0 }); // exact location = distance 0
+    seenIds.add(r.id.toString());
+  });
+
+  // 2️⃣ Fetch nearby listings in progressive radius
+  for (let start = 0; start < maxRadius; start += step) {
+    const end = start + step;
+
+    const geoResults = await prisma.$queryRaw`
+      SELECT id,
+        (6371 * acos(
+          cos(radians(${Number(lat)})) *
+          cos(radians(lat)) *
+          cos(radians(\`long\`) - radians(${Number(lng)})) +
+          sin(radians(${Number(lat)})) *
+          sin(radians(lat))
+        )) AS distance
+      FROM listings
+      WHERE status = true
+      HAVING distance > ${start} AND distance <= ${end}
+      ORDER BY distance ASC
+    `;
+
+    // filter duplicates
+    geoResults.forEach(r => {
+      if (!seenIds.has(r.id.toString())) {
+        allGeoResults.push(r);
+        seenIds.add(r.id.toString());
+      }
+    });
+  }
+
+  const geoIds = allGeoResults.map(r => BigInt(r.id));
+
+  if (!geoIds.length) return { data: [], total: 0 };
+
+const finalWhere = {
+  AND: [
+    ...where.AND,   // <-- apply all filters here
+    { id: { in: geoIds } }
+  ]
+};
+
+
+  // 3️⃣ Fetch full listing details
+  listings = await prisma.listings.findMany({
+    where: finalWhere,
+    include: { venue_images: true, listing_food_categories: true }
+  });
+
+  // 4️⃣ Map distance
+  const distanceMap = new Map();
+  allGeoResults.forEach(r => distanceMap.set(BigInt(r.id), Number(r.distance)));
+  listings = listings.map(l => ({ ...l, distance: distanceMap.get(l.id) }));
+
+  // 5️⃣ Sort by distance
+  listings.sort((a, b) => (a.distance ?? 9999) - (b.distance ?? 9999));
+
+  totalCount = allGeoResults.length; // total before slicing
+
+  // 6️⃣ Apply pagination AFTER sorting
+  listings = listings.slice(Number(skip), Number(skip) + Number(take));
+
+  console.log("========== GEO DEBUG ==========");
+console.log("Total GEO results BEFORE filters:", allGeoResults.length);
+console.log("Total listings AFTER filters:", listings.length);
+console.log("TotalCount being returned:", totalCount);
+console.log("Skip:", skip);
+console.log("Take:", take);
+console.log("Geo IDs count:", geoIds.length);
+console.log("================================");
+
+  console.log("Pagination:", { skip, take });
+
+} else {
+  // normal non-geo search fallback
+  listings = await prisma.listings.findMany({
     where,
     skip: Number(skip),
     take: Number(take),
     orderBy,
-    include: {
-      venue_images: true,
-      listing_food_categories: true
-    }
-  })
-
-  const totalCount = await prisma.listings.count({ where })
+    include: { venue_images: true, listing_food_categories: true },
+  });
+  totalCount = await prisma.listings.count({ where });
+}
 
   const updatedListings = listings.map((listing) => {
     const { vegPrice, nonVegPrice } = mapFoodPrices(
@@ -222,8 +360,18 @@ const getAllListingDB = async (filters = {}, skip = 0, take = 999) => {
     }
   })
 
-  return { listings: updatedListings, totalCount }
+  return { data: updatedListings, total: totalCount }
 }
+
+
+
+
+
+
+
+
+
+
 
 // READ — Get single listing by ID
 const getListingByIdDB = async (id) => {
@@ -255,26 +403,27 @@ const getListingByIdDB = async (id) => {
 }
 
 // READ — Get similar listing
-const getSimilarListingsDB = async (id) => {
-  let listingId
+const getSimilarListingsDB = async (id, skip = 0, take = 8) => {
+  let listingId;
   try {
-    listingId = BigInt(id)
+    listingId = BigInt(id);
   } catch {
-    console.error("Invalid listing ID:", id)
-    return []
+    console.error("Invalid listing ID:", id);
+    return [];
   }
 
-  const currentListing = await getListingByIdDB(id)
-  if (!currentListing) return []
+  const currentListing = await getListingByIdDB(id);
+  if (!currentListing) return [];
 
-  const { listings } = await getAllListingDB(
-    { city: currentListing.city },
-    0,
-    8
-  )
+  // pass skip/take inside filters
+  const { data: listings } = await getAllListingDB({
+    city: currentListing.city,
+    skip,
+    take
+  });
 
-  return listings.filter((listing) => listing.id !== listingId)
-}
+  return listings.filter((listing) => listing.id !== listingId);
+};
 
 // UPDATE — Modify listing
 const updateListingDB = async (id, data) => {
@@ -314,28 +463,28 @@ const deleteListingDB = async (id) => {
 }
 
 // RECOMMENDED LISTINGS
-const getRecommendedListingsDB = async (limit, city, locality) => {
-  const filters = {
+const getRecommendedListingsDB = async (limit = 10, city, locality, skip = 0) => {
+  const { data } = await getAllListingDB({
     recommended: true,
-    ...(city ? { city } : {}),
-    ...(locality ? { locality } : {})
-  }
-
-  const { listings } = await getAllListingDB(filters, 0, limit)
-  return listings
-}
+    city,
+    locality,
+    skip,
+    take: limit
+  });
+  return data;
+};
 
 // HIGH DEMAND LISTINGS
-const getHighDemandListingsDB = async (limit = 10, city, locality) => {
-  const filters = {
+const getHighDemandListingsDB = async (limit = 10, city, locality, skip = 0) => {
+  const { data } = await getAllListingDB({
     highDemand: true,
-    ...(city ? { city } : {}),
-    ...(locality ? { locality } : {})
-  }
-
-  const { listings } = await getAllListingDB(filters, 0, limit)
-  return listings
-}
+    city,
+    locality,
+    skip,
+    take: limit
+  });
+  return data;
+};
 
 module.exports = {
   createListingDB,

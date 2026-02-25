@@ -233,7 +233,7 @@ model hall_capacities {
 model ListingFaq {
   id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   question  String
-  answer    String
+  answer    String   @db.Text
   order     Int      @default(0)
   isActive  Boolean  @map("is_active")
 
@@ -424,12 +424,16 @@ model location {
   id        Int      @id @default(autoincrement())
   name      String
   cityId    Int
+  lat       Float?
+  lng       Float?
   createdAt DateTime @default(now())
+
   city      city     @relation(fields: [cityId], references: [id], map: "Location_cityId_fkey")
 
   @@unique([name, cityId], map: "Location_name_cityId_key")
   @@index([cityId], map: "Location_cityId_fkey")
 }
+
 
 model locations {
   id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt

@@ -11,6 +11,7 @@ const listingImageMiddleware = require("./src/middlewares/staticImages.js");
 dotenv.config();
 
 const app = express();
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 3000;
 
 
@@ -18,16 +19,24 @@ const PORT = process.env.PORT || 3000;
 // serve venue images
 app.use("/listing_image", listingImageMiddleware);
 
-
-// basic security headers
-app.use(helmet());
-
 // CORS (Allowed Origins)
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://node.bookmybanquets.in"],
+origin: [
+  "http://localhost:5173",
+  "https://www.bookmybanquets.com",
+  "https://bookmybanquets.com",
+],
     methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+  })
+);
+
+// basic security headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
   })
 );
 
@@ -54,7 +63,7 @@ app.use("/uploads", express.static("uploads"));
 
 // Fix BigInt JSON problem on API
 BigInt.prototype.toJSON = function () {
-  return Number(this);
+  return this.toString();
 };
 
 

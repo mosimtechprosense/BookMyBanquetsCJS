@@ -8,6 +8,7 @@ const {
   getHighDemandListingsDB,
   getSimilarListingsDB,
 } = require("../../services/public/listing.service");
+const { log } = require("../../utils/logger"); 
 
 
 // todo: CREATE LISTING
@@ -30,30 +31,39 @@ const createListing = async (req, res) => {
 };
 
 
-//* GET ALL LISTINGS (WITH FILTERS + PAGINATION)
+//* GET ALL LISTINGS (WITH FILTERS + PAGINATION) - WITH LOGGING
 const getAllListing = async (req, res) => {
   try {
-    const filters = req.query;
+    const { skip = 0, take = 10, ...filters } = req.query;
 
-    // FRONTEND PAGINATION SUPPORT
-    const skip = Number(filters.skip) || 0;
-    const take = Number(filters.take) || 10;
+    const numericSkip = Math.max(0, Number(skip) || 0);
+    const numericTake = Math.min(100, Math.max(1, Number(take) || 10));
 
-    // Remove pagination params from filters
-    delete filters.skip;
-    delete filters.take;
+    // Log incoming request for debugging
+    log("=== GET ALL LISTINGS ===");
+    log("Incoming query params:", req.query);
+    log("Parsed skip/take:", { numericSkip, numericTake });
+    log("Filters applied:", filters);
 
-    const { listings, totalCount } = await getAllListingDB(filters, skip, take);
+    const { data: listings, total: totalCount } = await getAllListingDB({
+      ...filters,
+      skip: numericSkip,
+      take: numericTake,
+    });
+
+    // Log result IDs for debugging infinite scroll
+    log("Returned listings IDs:", listings.map(l => l.id));
+    log("Total count from DB:", totalCount);
 
     res.status(200).json({
       success: true,
       total: totalCount,
-      skip,
-      take,
+      skip: numericSkip,
+      take: numericTake,
       data: listings,
     });
   } catch (error) {
-    console.error("Get All Listings Error:", error);
+    log("Get All Listings Error:", error.message || error);
     res.status(500).json({
       success: false,
       message: "Server Error",
@@ -107,7 +117,7 @@ const getHighDemandListings = async (req, res) => {
   try {
     const { limit = 10, city, locality } = req.query;
 
-    const listings = await getHighDemandListingsDB(Number(limit), city);
+    const listings = await getHighDemandListingsDB(Number(limit), city, locality );
 
     const result = listings.map(l => ({
       id: l.id,
