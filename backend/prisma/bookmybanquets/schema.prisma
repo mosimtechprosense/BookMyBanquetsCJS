@@ -665,5 +665,43 @@ model contactmessage {
   email     String    @db.VarChar(255)
   phone     String?   @db.VarChar(255)
   message   String    @db.Text
+  pageUrl   String?   @db.VarChar(500)
   createdAt DateTime? @default(now()) @db.DateTime(0)
+}
+
+model Business {
+  id                 Int      @id @default(autoincrement())
+
+  businessName       String
+  ownerName          String
+  email              String   @unique
+
+  businessType       String   
+  phone              String
+  alternatePhone     String?  
+
+  password           String
+
+  address            String
+  city               String
+  state              String
+  pincode            String
+
+  description        String?
+
+  gstNumber          String?  
+  panNumber          String?  
+
+  businessDocument   String?  
+
+  verificationStatus VerificationStatus @default(PENDING)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

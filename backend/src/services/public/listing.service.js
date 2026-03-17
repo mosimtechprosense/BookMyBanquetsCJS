@@ -3,14 +3,15 @@ const slugify = require("slugify")
 const { mapFoodPrices } = require("../../utils/foodPriceMapper.js")
 
 // venue images url builder function
-const BASE_URL = process.env.BASE_URL || "https://node.bookmybanquets.in"
+const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || "https://www.bookmybanquets.in";
 
 const normalize = (value) => {
   if (!value) return undefined
   return value.replace(/-/g, " ").toLowerCase()
 }
 
-const buildImageURL = (image) =>   `${BASE_URL}/listing_image/${image}`;
+const buildImageURL = (image) =>
+  `${FRONTEND_BASE_URL}/listing_image/${image}`;
 
 const formatImages = (venue_images = []) => {
   return venue_images.map((img) => ({
@@ -103,6 +104,7 @@ const getAllListingDB = async (filters = {}) => {
   } = filters
 
 
+
 const skip = Number(filters.skip) || 0;
 const take = Number(filters.take) || 10;
 
@@ -111,6 +113,7 @@ const take = Number(filters.take) || 10;
 
   const normalizedLocality = normalize(locality)
   const cityVariants = getCityVariants(city)
+
 
 
   
@@ -224,6 +227,7 @@ const where = {
   ]
 }
 
+
   const orderBy =
     sortBy === "min_budget" ||
     sortBy === "max_budget" ||
@@ -236,7 +240,6 @@ const where = {
 let listings = [];
 let totalCount = 0;
 
-console.log("GEO MODE:", { lat, lng, locality });
 
 // 🌍 If geo search
 if (lat && lng) {
@@ -254,6 +257,9 @@ if (lat && lng) {
       ...(cityVariants.length ? [{ OR: cityVariants.map(c => ({ city: { contains: c } })) }] : [])
     ]
   };
+
+
+
 
   const exactResults = await prisma.listings.findMany({
     where: exactLocationWhere,
@@ -305,6 +311,7 @@ const finalWhere = {
 };
 
 
+
   // 3️⃣ Fetch full listing details
   listings = await prisma.listings.findMany({
     where: finalWhere,
@@ -324,18 +331,10 @@ const finalWhere = {
   // 6️⃣ Apply pagination AFTER sorting
   listings = listings.slice(Number(skip), Number(skip) + Number(take));
 
-  console.log("========== GEO DEBUG ==========");
-console.log("Total GEO results BEFORE filters:", allGeoResults.length);
-console.log("Total listings AFTER filters:", listings.length);
-console.log("TotalCount being returned:", totalCount);
-console.log("Skip:", skip);
-console.log("Take:", take);
-console.log("Geo IDs count:", geoIds.length);
-console.log("================================");
-
-  console.log("Pagination:", { skip, take });
 
 } else {
+
+
   // normal non-geo search fallback
   listings = await prisma.listings.findMany({
     where,
@@ -345,6 +344,7 @@ console.log("================================");
     include: { venue_images: true, listing_food_categories: true },
   });
   totalCount = await prisma.listings.count({ where });
+
 }
 
   const updatedListings = listings.map((listing) => {

@@ -15,7 +15,7 @@ const CityFilter = () => {
 
   useEffect(() => {
   // if user is NOT on listing page, clear dropdown
-  if (!location.pathname.includes("-in/")) {
+  if (!location.pathname.includes("-in-")) {
     setSelectedCity("")
     setOpen(false)
   }
@@ -39,7 +39,7 @@ const CityFilter = () => {
     setOpen(false)
 
     const citySlug = city.toLowerCase().replace(/\s+/g, "-")
-    navigate(`/banquet-hall-in/${citySlug}`)
+    navigate(`/banquet-hall-in-${citySlug}`)
   }
 
   return (

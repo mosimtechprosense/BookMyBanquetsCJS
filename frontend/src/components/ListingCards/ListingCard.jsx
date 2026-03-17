@@ -74,12 +74,20 @@ const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
       <div className="w-full md:w-1/3 p-4">
         {/* Main Image */}
         <div className="w-full h-48 rounded-lg overflow-hidden">
-          <img
-            loading="lazy"
-            src={activeImage}
-            alt={item.title}
-            className="w-full h-full object-cover transition"
-          />
+<img
+  loading="lazy"
+  decoding="async"
+src={activeImage.replace(".avif", "_300.avif")}
+srcSet={`
+  ${activeImage.replace(".avif", "_300.avif")} 300w,
+  ${activeImage.replace(".avif", "_600.avif")} 600w
+`}
+  sizes="(max-width:768px) 100vw, 300px"
+  width="300"
+  height="220"
+  alt={item.title}
+  className="w-full h-full object-cover"
+/>
         </div>
 
         {/* Thumbnails */}
@@ -95,11 +103,20 @@ const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
                 }`}
                 onMouseEnter={() => setActiveImage(img.image_url)}
               >
-                <img
-                  src={img.image_url}
-                  alt={`thumb-${idx}`}
-                  className="w-full h-full object-cover"
-                />
+<img
+  loading="lazy"
+  decoding="async"
+  src={img.image_url.replace(".avif", "_120.avif")}
+srcSet={`
+  ${img.image_url.replace(".avif", "_120.avif")} 120w,
+  ${img.image_url.replace(".avif", "_300.avif")} 300w
+`}
+  sizes="100px"
+  width="100"
+  height="74"
+  alt={`thumb-${idx}`}
+  className="w-full h-full object-cover"
+/>
               </div>
             ))}
           </div>
@@ -206,16 +223,32 @@ const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
             Get a Quote
           </button>
 
-          {/* Call */}
-          <a
-            href="tel:918920597474"
-            onClick={(e) => e.stopPropagation()}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px]"
-            aria-label="Call now"
-          >
-            <FaPhoneAlt className="text-xs" />
-            Call Us
-          </a>
+
+{/* Mobile: Call Us */}
+<div>
+  <a
+    href="tel:918920597474"
+    onClick={(e) => e.stopPropagation()}
+    className="flex sm:hidden items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px]"
+    aria-label="Call now"
+  >
+    <FaPhoneAlt className="text-xs" />
+    Call Us
+  </a>
+
+  {/* Desktop: View Contact */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation()
+      setPopupOpen(true) 
+    }}
+    className="hidden sm:flex items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px] cursor-pointer"
+  >
+    <FaPhoneAlt className="text-xs" />
+    View Contact
+  </button>
+</div>
+
         </div>
       </div>
     </article>

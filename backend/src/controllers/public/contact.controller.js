@@ -2,7 +2,7 @@ const contactService = require("../../services/public/contact.service");
 
 //* Create a new contact message
 const createMessage = async (req, res) => {
-  const { name, email, phone, message } = req.body;
+  const { name, email, phone, message, pageUrl  } = req.body;
 
   if (!name || !message || (!email && !phone)) {
     return res.status(400).json({
@@ -17,6 +17,7 @@ const createMessage = async (req, res) => {
       email,
       phone: phone || null,
       message,
+      pageUrl
     });
 
     res.status(201).json({

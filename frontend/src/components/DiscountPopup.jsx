@@ -121,7 +121,7 @@ const handleSubmit = async (e) => {
 
   Toastify({
     text: "✅ Success! Our team will contact you shortly!",
-    duration: 4000,
+    duration: 5000,
     gravity: "top",
     position: window.innerWidth <= 768 ? "center" : "right",
     className: "custom-toast text-white text-sm rounded-xl py-0 shadow-lg",
@@ -148,7 +148,8 @@ const handleSubmit = async (e) => {
         name,
         phone,
         email: "",
-        message: "Discount request form"
+        message: "Discount request form",
+        pageUrl: window.location.href
       })
     });
 
@@ -162,7 +163,7 @@ const handleSubmit = async (e) => {
     console.error(error);
     Toastify({
       text: "❌ Failed to send request. Please try again.",
-      duration: 3000,
+      duration: 5000,
       gravity: "top",
       position: window.innerWidth <= 768 ? "center" : "right",
       style: { background: "#dc2626", borderRadius: "10px", textAlign: "center" }

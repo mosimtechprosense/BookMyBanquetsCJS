@@ -1,18 +1,43 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
-const BASE_URL = "https://www.bookmybanquets.in/blog/wp-json/wp/v2"
+const BASE_URL = "https://blog.bookmybanquets.in/wp-json/wp/v2"
+
+const PINNED_ID = 1269
+
 
 const HomeBlogSection = () => {
   const [blogs, setBlogs] = useState([])
   const navigate = useNavigate()
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/posts?_embed&per_page=4`)
-      .then((res) => res.json())
-      .then(setBlogs)
-      .catch(() => setBlogs([]))
-  }, [])
+
+  // Fetch Blog List
+useEffect(() => {
+  // First fetch the pinned post directly
+  fetch(`${BASE_URL}/posts/${PINNED_ID}?_embed`)
+    .then((r) => r.json())
+    .then((pinnedPost) => {
+
+      // Then fetch latest 4 posts
+      fetch(`${BASE_URL}/posts?_embed&per_page=4`)
+        .then((res) => res.json())
+        .then((data) => {
+          // Remove duplicate if pinned already exists
+          const filtered = data.filter((p) => p.id !== PINNED_ID)
+
+          // Put pinned at first position
+          setBlogs([pinnedPost, ...filtered].slice(0, 4))
+        })
+        .catch(() => setBlogs([]))
+    })
+    .catch(() => {
+      // fallback if pinned fails
+      fetch(`${BASE_URL}/posts?_embed&per_page=4`)
+        .then((res) => res.json())
+        .then(setBlogs)
+        .catch(() => setBlogs([]))
+    })
+}, [])
 
   if (!blogs.length) return null
 
@@ -37,11 +62,16 @@ const HomeBlogSection = () => {
             className="bg-white rounded-3xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
           >
             <Link to={`/blogs/${blog.slug}`}>
-              <img
-                src={blog._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                alt={blog.title.rendered}
-                className="h-56 w-full object-cover" // ↑ taller image
-              />
+<img
+  loading="lazy"
+  src={
+    blog._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.medium_large
+      ?.source_url ||
+    blog._embedded?.["wp:featuredmedia"]?.[0]?.source_url
+  }
+  alt={blog.title.rendered}
+  className="h-56 w-full object-cover"
+/>
             </Link>
 
             <div className="p-5 flex-1 flex flex-col">

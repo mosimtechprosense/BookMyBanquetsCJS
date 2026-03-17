@@ -1,9 +1,22 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
+import BlogSEO from "../components/SEO/BlogSEO"
+import BlogListSEO from "../components/SEO/BlogListSEO"
+import "../style/Blog.css"
 
-const BASE_URL = "https://www.bookmybanquets.in/blog/wp-json/wp/v2"
+const BASE_URL = "https://blog.bookmybanquets.in/wp-json/wp/v2"
+const PINNED_ID = 1269
 const PER_PAGE = 10
 const PAGINATION_LIMIT = 10
+
+
+const cleanBlogHTML = (html) => {
+  return html
+    .replace(/font-family:[^;"]+;?/gi, "")
+    .replace(/data-start="[^"]*"/g, "")
+    .replace(/data-end="[^"]*"/g, "")
+}
+
 
 const Blog = () => {
   const { slug, categorySlug } = useParams()
@@ -113,29 +126,36 @@ const Blog = () => {
       })
   }, [categorySlug])
 
-  // Blog List
-  useEffect(() => {
-    if (slug) return
+// Fetch Blog List
+useEffect(() => {
+  if (slug) return
 
-    setLoadingList(true)
-    let url = `${BASE_URL}/posts?_embed&per_page=${PER_PAGE}&page=${page}`
-    if (categoryId) url += `&categories=${categoryId}`
+  setLoadingList(true)
 
-    fetch(url)
-      .then((res) => {
-        setTotalPages(Number(res.headers.get("X-WP-TotalPages")) || 1)
-        setTotalPosts(Number(res.headers.get("X-WP-Total")) || 0)
-        return res.json()
+  let url = `${BASE_URL}/posts?_embed&per_page=${PER_PAGE}&page=${page}`
+  if (categoryId) url += `&categories=${categoryId}`
+
+  fetch(url)
+    .then((res) => {
+      setTotalPages(Number(res.headers.get("X-WP-TotalPages")) || 1)
+      setTotalPosts(Number(res.headers.get("X-WP-Total")) || 0)
+      return res.json()
+    })
+    .then((data) => {
+      const sorted = [...data].sort((a, b) => {
+        if (a.id === PINNED_ID) return -1
+        if (b.id === PINNED_ID) return 1
+        return 0
       })
-      .then((data) => {
-        setPosts(data)
-        setLoadingList(false)
-      })
-      .catch(() => {
-        setPosts([])
-        setLoadingList(false)
-      })
-  }, [slug, categoryId, page])
+
+      setPosts(sorted)
+      setLoadingList(false)
+    })
+    .catch(() => {
+      setPosts([])
+      setLoadingList(false)
+    })
+}, [slug, categoryId, page])
 
   // Pagination Helpers
   const half = Math.floor(PAGINATION_LIMIT / 2)
@@ -155,8 +175,9 @@ const Blog = () => {
   }, [slug, categoryId, page])
 
   return (
-    <section className="bg-gray-50 select-none">
+    <section className="bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {!slug && <BlogListSEO page={page} />}
         {/* Breadcrumb */}
         <nav className="text-gray-400 mb-6 flex flex-wrap gap-2 items-center">
           {/* Home */}
@@ -211,6 +232,8 @@ const Blog = () => {
             {/* BLOG DETAILS */}
             {slug && post && (
               <>
+               <BlogSEO post={post} />
+
                 {/* BLOG HEADER — ABOVE IMAGE */}
                 <div className="my-6">
                   {/* CATEGORY */}
@@ -251,11 +274,13 @@ const Blog = () => {
                 </div>
 
                 {/* CONTENT CARD BELOW IMAGE */}
-                <article className="bg-white rounded-3xl shadow-sm p-6 md:p-10">
-                  <div
-                    className="prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: post.content.rendered }}
-                  />
+                <article className="bg-white rounded-3xl shadow-sm p-6 md:p-8">
+<div
+ className="prose prose-lg max-w-none blog-content"
+ dangerouslySetInnerHTML={{
+  __html: cleanBlogHTML(post.content.rendered)
+}}
+/>
                 </article>
               </>
             )}
@@ -381,7 +406,6 @@ const Blog = () => {
               <h3 className="font-bold text-xl mb-1">Recent Posts</h3>
               <ul className="space-y-1.5">
                 {recentPosts.map((rp) => (
-                  <li key={rp.id}>
                     <li key={rp.id}>
                       <Link
                         to={`/blogs/${rp.slug}`}
@@ -389,7 +413,6 @@ const Blog = () => {
                       >
                         {decodeHTML(rp.title.rendered)}
                       </Link>
-                    </li>
                   </li>
                 ))}
               </ul>
@@ -398,7 +421,7 @@ const Blog = () => {
             <div className="bg-white rounded-3xl shadow-sm p-6">
               <h3 className="font-bold text-xl mb-1">Categories</h3>
               <ul className="space-y-1">
-                {categories.map((cat) => (
+                {categories.map((cat) => ( 
                   <li key={cat.id}>
                     <button
                       onClick={() => navigate(`/blogs/category/${cat.slug}`)}

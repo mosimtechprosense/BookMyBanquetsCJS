@@ -5,6 +5,8 @@ import { HiUserGroup } from "react-icons/hi2"
 import { useNavigate } from "react-router-dom"
 import FoodPrice from "../listingsDetails/FoodPrice"
 
+
+
 const HighlyDemandedListings = () => {
   const navigate = useNavigate()
   const scrollRef = useRef(null)

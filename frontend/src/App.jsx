@@ -1,45 +1,74 @@
 import "./App.css"
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { lazy, Suspense, useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate } from "react-router-dom"
+import { AdminAuthProvider } from "./store/AdminAuthContext"
+import NotFound from "./components/common/NotFound"
 import ScrollToTop from "./ScrollToTop"
 import Navbar from "./components/Navbar"
-import Services from "./pages/Services"
-import About from "./pages/About"
-import WhyUs from "./pages/WhyUs"
-import Blog from "./pages/Blog"
-import ContactUs from "./pages/ContactUs"
-import Home from "./pages/Home"
 import Footer from "./components/Footer"
-import Terms from "./pages/Terms"
-import Privacy from "./pages/Privacy"
-import DiscountPopup from "./components/DiscountPopup"
-import RecentSearches from "./components/RecentSearches"
 import UIProvider from "./store/UIContext"
-import ListingsPage from "./pages/ListingsPage"
-import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import Home from "./pages/Home"
+import BusinessRegister from "./pages/BusinessRegister"
+import BusinessLogin from "./pages/BusinessLogin"
+import BusinessDashboard from "./pages/BusinessDashboard"
+import ServiceRouteGuard from "./routes/ServiceRouteGuard"
 import ListingDetailsDynamic from "./pages/ListingDetailsDynamic"
-import AdminRoutes from "./routes/AdminRoutes"
-import { AdminAuthProvider } from "./store/AdminAuthContext"
+const DiscountPopup = lazy(() => import("./components/DiscountPopup"))
+const RecentSearches = lazy(() => import("./components/RecentSearches"))
+const FloatingWhatsApp = lazy(() => import("./components/FloatingWhatsApp"))
+const AdminRoutes = lazy(() => import("./routes/AdminRoutes"))
+const Services = lazy(() => import("./pages/Services"))
+const About = lazy(() => import("./pages/About"))
+const WhyUs = lazy(() => import("./pages/WhyUs"))
+const Blog = lazy(() => import("./pages/Blog"))
+const ContactUs = lazy(() => import("./pages/ContactUs"))
+const Terms = lazy(() => import("./pages/Terms"))
+const Privacy = lazy(() => import("./pages/Privacy"))
+
+
+
+
+
 
 
 function ConditionalAdminUI({ children }) {
   const location = useLocation();
+  const [showWidgets, setShowWidgets] = useState(false)
   const isAdmin = location.pathname.startsWith("/admin");
   const isListingDetails = /^\/.+-in\/.+\/\d+$/.test(location.pathname);
 
+  const hideMainLayout = isAdmin;
+
+  useEffect(() => {
+  const timer = setTimeout(() => setShowWidgets(true), 5000)
+  return () => clearTimeout(timer)
+}, [])
+
   return (
     <>
-      {!isAdmin && <Navbar />}
-      {!isAdmin && <DiscountPopup />}
+      {!hideMainLayout && <Navbar />}
+      {!hideMainLayout &&  showWidgets && <Suspense fallback={null}> <DiscountPopup /> </Suspense>}
 
       {children}
 
-        {!isAdmin && !isListingDetails && <FloatingWhatsApp />}
-      {!isAdmin && <RecentSearches />}
-      {!isAdmin && <Footer />}
+        {!hideMainLayout && !isListingDetails &&  <Suspense fallback={null}> <FloatingWhatsApp /> </Suspense>}
+      {!hideMainLayout &&  <Suspense fallback={null}> <RecentSearches /> </Suspense>}
+      {!hideMainLayout && <Footer />}
     </>
   );
 }
 
+
+
+
+function BlogRedirect() {
+  const { slug } = useParams()
+  return <Navigate to={`/blogs/${slug}`} replace />
+}
+
+function BlogRootRedirect() {
+  return <Navigate to="/blogs" replace />
+}
 
 function App() {
   return (
@@ -48,7 +77,9 @@ function App() {
           <AdminAuthProvider>
         <UIProvider>
           <ScrollToTop />
+
           <ConditionalAdminUI>
+            <Suspense  fallback={<div className="py-20 text-center text-gray-500">Loading...</div>}>
           <Routes>
             <Route path="/admin/*" element={<AdminRoutes />} />
 
@@ -56,17 +87,29 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/why-us" element={<WhyUs />} />
+
+            <Route path="/blog" element={<BlogRootRedirect />} />
+            <Route path="/blog/:slug" element={<BlogRedirect />} />
+
             <Route path="/blogs/category/:categorySlug" element={<Blog />} />
             <Route path="/blogs/:slug" element={<Blog />} />
             <Route path="/blogs" element={<Blog />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />            
-<Route path="/:categorySlug" element={<ListingsPage />} />
-<Route path="/:serviceSlug-in-:placeSlug" element={<ListingsPage />} />
-<Route path="/:serviceSlug-in/:placeSlug" element={<ListingsPage />} />
+            <Route path="/privacy" element={<Privacy />} />           
+
 <Route path="/:serviceSlug-in/:localitySlug/:id" element={<ListingDetailsDynamic />} />
+<Route path="/:serviceCity/:localitySlug?" element={<ServiceRouteGuard />} />
+
+
+<Route path="/business/register" element={<BusinessRegister />} />
+<Route path="/business/login" element={<BusinessLogin />} />
+<Route path="/business/dashboard" element={<BusinessDashboard />} />
+
+<Route path="/404/*" element={<NotFound />} />
           </Routes>
+          
+          </Suspense>
           </ConditionalAdminUI>
         </UIProvider>
         </AdminAuthProvider>

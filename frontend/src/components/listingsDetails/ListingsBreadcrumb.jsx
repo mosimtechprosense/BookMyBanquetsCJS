@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { categoryToVenuePath } from "../../utils/slugMaps"
+import { toTitleCase } from "../../utils/formatText"
 
 export default function ListingsBreadcrumb({ filters }) {
   const navigate = useNavigate()
@@ -9,7 +10,7 @@ export default function ListingsBreadcrumb({ filters }) {
     : null
 
   const localityLabel = filters.locality
-    ? filters.locality.replace(/-/g, " ")
+    ? toTitleCase(filters.locality)
     : null
 
   const breadcrumbItems = [{ label: "Home", type: "home" }]

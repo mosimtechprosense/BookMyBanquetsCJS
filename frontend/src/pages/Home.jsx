@@ -1,64 +1,100 @@
-import { useState, useEffect } from "react"
+import { useInView } from "react-intersection-observer"
+import { useState, useEffect, lazy, Suspense, useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 import { FaSearch } from "react-icons/fa"
 import { CiLocationOn } from "react-icons/ci"
 import { IoIosSearch } from "react-icons/io"
-import { useNavigate } from "react-router-dom"
 import homeWalpaper from "../assets/homeWalpaper.avif"
-import CustomerReview from "../components/CustomerReview"
-import HowItWorks from "../components/HowItWorks"
-import Categories from "../components/Categories"
-import OfferBanner from "../components/OfferBanner"
-import RecommendedListings from "../components/ListingCards/RecommendedListings"
-import HighlyDemandedListings from "../components/ListingCards/HighlyDemandedListings"
-import HomeBlogSection from "../components/HomeBlogSection"
+import HomeSEO from "../components/SEO/HomeSEO"
+const CustomerReview = lazy(() => import("../components/CustomerReview"))
+const HowItWorks = lazy(() => import("../components/HowItWorks"))
+const Categories = lazy(() => import("../components/Categories"))
+const OfferBanner = lazy(() => import("../components/OfferBanner"))
+const RecommendedListings = lazy(
+  () => import("../components/ListingCards/RecommendedListings")
+)
+const HighlyDemandedListings = lazy(
+  () => import("../components/ListingCards/HighlyDemandedListings")
+)
+const HomeBlogSection = lazy(() => import("../components/HomeBlogSection"))
 
+const LazySection = ({ children }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    rootMargin: "200px"
+  })
 
+  return <div ref={ref}>{inView ? children : null}</div>
+}
 
 const Home = () => {
-const services = [
-  { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
-  { label: "Banquet with Hotel Room", path: "/banquet-with-room", categoryId: 9 },
-  { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
-  { label: "Wedding Farmhouse", path: "/wedding-farmhouse", categoryId: 13 },
-  { label: "Party Halls", path: "/party-halls", categoryId: 7 },
-  { label: "5 Star Wedding Hotels", path: "/5-star-wedding-hotels", categoryId: 11 },
-  { label: "Destination Weddings", path: "/destination-weddings", categoryId: 12 },
-  { label: "Small Function Halls", path: "/small-function-halls", categoryId: 14 },
-  { label: "Engagement Venue", path: "/engagement-venue", categoryId: 16 },
-  { label: "Baby Shower", path: "/baby-shower", categoryId: 18 },
-  { label: "Sikh Wedding", path: "/sikh-wedding", categoryId: 20 },
-  { label: "Cocktail Venues", path: "/cocktail-venues", categoryId: 5 },
-  { label: "Party Lawn", path: "/party-lawn", categoryId: 10 },
-  { label: "Corporate Events", path: "/corporate-events", categoryId: 15 },
-  { label: "Ring Ceremony", path: "/ring-ceremony", categoryId: 17 },
-  { label: "Mehendi Ceremony", path: "/mehendi-ceremony", categoryId: 21 },
-  { label: "Retirement Party", path: "/retirement-party", categoryId: 19 }
-];
+  const services = useMemo(
+    () => [
+      { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
+      {
+        label: "Banquet with Hotel Room",
+        path: "/banquet-with-room",
+        categoryId: 9
+      },
+      { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
+      {
+        label: "Wedding Farmhouse",
+        path: "/wedding-farmhouse",
+        categoryId: 13
+      },
+      { label: "Party Halls", path: "/party-halls", categoryId: 7 },
+      {
+        label: "5 Star Wedding Hotels",
+        path: "/5-star-wedding-hotels",
+        categoryId: 11
+      },
+      {
+        label: "Destination Weddings",
+        path: "/destination-weddings",
+        categoryId: 12
+      },
+      {
+        label: "Small Function Halls",
+        path: "/small-function-halls",
+        categoryId: 14
+      },
+      { label: "Engagement Venue", path: "/engagement-venue", categoryId: 16 },
+      { label: "Baby Shower", path: "/baby-shower", categoryId: 18 },
+      { label: "Sikh Wedding", path: "/sikh-wedding", categoryId: 20 },
+      { label: "Cocktail Venues", path: "/cocktail-venues", categoryId: 5 },
+      { label: "Party Lawn", path: "/party-lawn", categoryId: 10 },
+      { label: "Corporate Events", path: "/corporate-events", categoryId: 15 },
+      { label: "Ring Ceremony", path: "/ring-ceremony", categoryId: 17 },
+      { label: "Mehendi Ceremony", path: "/mehendi-ceremony", categoryId: 21 },
+      { label: "Retirement Party", path: "/retirement-party", categoryId: 19 }
+    ],
+    []
+  )
 
-const categoryToSlug = {
-  6: "banquet-hall",
-  7: "party-hall",
-  8: "marriage-hall",
-  9: "banquet-with-room",
-  10: "party-lawn",
-  11: "5-star-wedding-hotel",
-  12: "destination-wedding",
-  13: "wedding-farmhouse",
-  14: "small-function-hall",
-  15: "corporate-event",
-  16: "engagement-venue",
-  17: "ring-ceremony",
-  18: "baby-shower",
-  19: "retirement-party",
-  20: "sikh-wedding",
-  21: "mehendi-ceremony",
-  5: "cocktail-venue"
-};
+  const categoryToSlug = {
+    6: "banquet-hall",
+    7: "party-hall",
+    8: "marriage-hall",
+    9: "banquet-with-room",
+    10: "party-lawn",
+    11: "5-star-wedding-hotel",
+    12: "destination-wedding",
+    13: "wedding-farmhouse",
+    14: "small-function-hall",
+    15: "corporate-event",
+    16: "engagement-venue",
+    17: "ring-ceremony",
+    18: "baby-shower",
+    19: "retirement-party",
+    20: "sikh-wedding",
+    21: "mehendi-ceremony",
+    5: "cocktail-venue"
+  }
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+  const API_BASE = import.meta.env.VITE_API_BASE
 
-  const navigate = useNavigate();
-  
+  const navigate = useNavigate()
+
   // search services state
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredServices, setFilteredServices] = useState(services)
@@ -98,11 +134,11 @@ const API_BASE = import.meta.env.VITE_API_BASE;
     setFilteredServices(filtered)
   }
 
-const handleSelectService = (service) => {
-  setSearchQuery(service.label)
-  setSelectedService(service)
-  setShowSuggestions(false)
-}
+  const handleSelectService = (service) => {
+    setSearchQuery(service.label)
+    setSelectedService(service)
+    setShowSuggestions(false)
+  }
 
   // location handlers
   const handleLocationChange = (e) => {
@@ -120,11 +156,11 @@ const handleSelectService = (service) => {
     setFilteredLocations(filtered)
   }
 
-const handleSelectLocation = (loc) => {
-  setLocationQuery(loc.name)
-  setSelectedLocation(loc)   // NEW
-  setShowLocationSuggestions(false)
-}
+  const handleSelectLocation = (loc) => {
+    setLocationQuery(loc.name)
+    setSelectedLocation(loc) // NEW
+    setShowLocationSuggestions(false)
+  }
 
   // close dropdowns on outside click
   useEffect(() => {
@@ -132,53 +168,56 @@ const handleSelectLocation = (loc) => {
       setShowSuggestions(false)
       setShowLocationSuggestions(false)
     }
-    window.addEventListener("click", handleClickOutside)
-    return () => window.removeEventListener("click", handleClickOutside)
+    document.addEventListener("click", handleClickOutside)
+    return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
+  // handleSearchClick
+  const handleSearchClick = () => {
+    if (!selectedService || !selectedLocation) return
 
-// handleSearchClick
-const handleSearchClick = () => {
-  if (!selectedService || !selectedLocation) return;
+    const localitySlug = selectedLocation.name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .trim()
 
-  const localitySlug = selectedLocation.name
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .trim();
+    const citySlug = selectedLocation.city_name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .trim()
 
-  const citySlug = selectedLocation.city_name
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .trim();
+    const serviceSlug =
+      categoryToSlug[selectedService.categoryId] || "banquet-hall"
 
-  const serviceSlug =
-    categoryToSlug[selectedService.categoryId] || "banquet-hall";
+    const params = new URLSearchParams()
+    params.set("category", selectedService.categoryId)
 
-  const params = new URLSearchParams();
-  params.set("category", selectedService.categoryId);
+    //  IMPORTANT: Send coordinates
+    if (selectedLocation.lat && selectedLocation.lng) {
+      params.set("lat", selectedLocation.lat)
+      params.set("lng", selectedLocation.lng)
+    }
 
-  //  IMPORTANT: Send coordinates
-  if (selectedLocation.lat && selectedLocation.lng) {
-    params.set("lat", selectedLocation.lat);
-    params.set("lng", selectedLocation.lng);
+    navigate(
+      `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
+    )
   }
-
-  navigate(
-    `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
-  );
-};
-
-
 
   return (
     <div className="w-full select-none">
 
-      
+       {/* SEO section */}
+       <HomeSEO />
+
       {/*  Hero Section */}
-      <div
-        className="h-[70vh] sm:h-[80vh] lg:h-[90vh] bg-cover bg-center flex flex-col items-center justify-center relative"
-        style={{ backgroundImage: `url(${homeWalpaper})` }}
-      >
+      <div className="relative h-[70vh] sm:h-[80vh] lg:h-[90vh] flex flex-col items-center justify-center overflow-hidden">
+        <img
+          src={homeWalpaper}
+          alt="Wedding venue background"
+          fetchpriority="high"
+          loading="eager"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         {/*  Hero Text */}
         <div className="text-center px-4 sm:px-6 mb-6">
           <h1
@@ -282,9 +321,11 @@ const handleSearchClick = () => {
               )}
             </div>
 
-
             {/*  Search Button */}
-            <button onClick={handleSearchClick} className="bg-[#dc2626] text-white px-7 py-4 z-0 rounded-r-md flex items-center justify-center cursor-pointer hover:bg-[#b91c1c] transition-all w-full sm:w-auto text-base font-semibold">
+            <button
+              onClick={handleSearchClick}
+              className="bg-[#dc2626] text-white px-7 py-4 z-0 rounded-r-md flex items-center justify-center cursor-pointer hover:bg-[#b91c1c] transition-all w-full sm:w-auto text-base font-semibold"
+            >
               {/* Show icon on larger screens, text on small screens */}
               <span className="block sm:hidden">Search</span>
               <FaSearch className="hidden sm:block w-6 h-6" />
@@ -293,32 +334,54 @@ const handleSearchClick = () => {
         </div>
       </div>
 
-
-       {/* why us section removed as per instructions ( delete this on final production) */}
-      {/*  Why Us Section */}
-      {/* <WhyUsSection />  */}
-
       {/*  Offer Banner */}
-      <OfferBanner/>
+      <LazySection>
+        <Suspense fallback={null}>
+          <OfferBanner />
+        </Suspense>
+      </LazySection>
 
       {/*  Category section */}
-      <Categories />
+      <LazySection>
+        <Suspense fallback={null}>
+          <Categories />
+        </Suspense>
+      </LazySection>
 
       {/*Recommended listing Section*/}
-      <RecommendedListings/>
+      <LazySection>
+        <Suspense fallback={null}>
+          <RecommendedListings />
+        </Suspense>
+      </LazySection>
 
       {/*Highly Demanded listing Section*/}
-      <HighlyDemandedListings/>
+      <LazySection>
+        <Suspense fallback={null}>
+          <HighlyDemandedListings />
+        </Suspense>
+      </LazySection>
 
       {/* Customer Review Section */}
-      <CustomerReview />
+      <LazySection>
+        <Suspense fallback={null}>
+          <CustomerReview />
+        </Suspense>
+      </LazySection>
 
       {/*How It Works Section*/}
-      <HowItWorks />
+      <LazySection>
+        <Suspense fallback={null}>
+          <HowItWorks />
+        </Suspense>
+      </LazySection>
 
-      <HomeBlogSection />
-
-
+      {/*Home Blogs Section*/}
+      <LazySection>
+        <Suspense fallback={null}>
+          <HomeBlogSection />
+        </Suspense>
+      </LazySection>
     </div>
   )
 }

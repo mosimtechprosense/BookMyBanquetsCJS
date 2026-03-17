@@ -1,0 +1,76 @@
+/* BLOG CONTENT FIX */
+.prose ul {
+  list-style-type: disc;
+  padding-left: 22px;
+  margin: 16px 0;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 22px;
+  margin: 16px 0;
+}
+
+.prose li {
+  display: list-item;
+  margin-bottom: 6px;
+}
+
+/* Headings */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+/* Paragraph spacing */
+.prose p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+/* Tables */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.prose th {
+  font-weight: 600;
+  background: #fafafa;
+}
+
+/* Images */
+.prose img {
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+/* WordPress block spacing */
+.prose figure {
+  margin: 20px 0;
+}
+
+.prose blockquote {
+  border-left: 4px solid #ef4444;
+  padding-left: 16px;
+  color: #555;
+  margin: 20px 0;
+}
+
+.blog-content {
+  max-width: 720px;
+  margin: auto;
+}

@@ -1,10 +1,9 @@
 import { HiUserGroup } from "react-icons/hi"
 import FoodPrice from "../../components/listingsDetails/FoodPrice"
 import sidebarImg from "../../assets/sidebarimage.avif"
-import {  IoCall } from "react-icons/io5";
 
 
-export default function ListingDetailsSidebar({ listing }) {
+export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
   return (
     <aside className="mt-4 lg:mt-0 lg:sticky lg:top-0 self-start">
  <div
@@ -51,27 +50,26 @@ export default function ListingDetailsSidebar({ listing }) {
               Phone: <span className="font-medium">{listing.phone}</span>
             </p>
             </div>
-
 <div>
-            <a
-              href="tel:918920597474"
-              onClick={(e) => e.stopPropagation()}
-              aria-label="Call now"
-              className=" flex items-center justify-center gap-1
-                mt-3 lg:mt-4 w-full
-                bg-green-500 text-white
-                py-1.5 lg:py-1.5 px-4
-                text-sm lg:text-base
-                rounded-xl
-                font-semibold
-                hover:bg-green-600 transition cursor-pointer
-                active:scale-[0.98]
-              "
-            >
-                          <IoCall className="text-sm" />
-                          Call Now
-
-            </a>
+      <button
+  onClick={(e) => {
+    e.stopPropagation()
+    setPopupOpen(true)
+  }}
+  className="
+    flex items-center justify-center gap-1
+    mt-3 lg:mt-4 w-full
+    bg-red-600 text-white
+    py-1.5 lg:py-1.5 px-4
+    text-sm lg:text-base
+    rounded-xl
+    font-semibold
+    hover:bg-red-700 transition cursor-pointer
+    active:scale-[0.98]
+  "
+>
+  Enquiry Now
+</button>
             </div>
           </div>
         </div>

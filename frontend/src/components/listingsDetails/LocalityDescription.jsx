@@ -5,178 +5,118 @@ import "../../style/LocalityDescription.css"
 
 const FALLBACK_CONTENT = {
 delhi: {
-  heading: "Explore Premium & Budget-Friendly Banquet Halls In Delhi With BookMyBanquets",
+  heading: "Discover Premium and Affordable Banquet Halls in Delhi through BookMyBanquets",
   description: `
-    <section>
-      <p>
-        When you are planning a memorable event, choosing the best banquet hall in Delhi can make all the difference.
-        Whether you want a venue for a wedding, reception, birthday, anniversary, a corporate event, or a social gathering,
-        Delhi offers a wide variety of venues. These banquet halls range from luxury banquet halls with modern decor
-        to budget-friendly banquet halls that suit every celebration.
-      </p>
+The planner of an event to be remembered should start with the selection of the venue. The ideal banquet hall will put your celebration in focus, be it a wedding, reception, birthday party, anniversary, or corporate or social affair. Delhi has a large diversity in the variety of banquet halls available, including luxurious and modern halls as well as halls of a considerably lower price.<br><br>
 
-      <p>
-        BookMyBanquets helps you search a large number of banquet halls and wedding venues in Delhi in one place,
-        without visiting multiple locations. You can explore luxury venues as well as budget-friendly,
-        low-rated banquet halls in Delhi, all curated to make your event joyful, stress-free, and memorable.
-      </p>
-    </section>
+<a href="https://www.bookmybanquets.in/" target="_blank" style="color: #1a73e8; text-decoration: underline;">BookMyBanquets</a> offers the opportunity to view a wide variety of banquet halls and wedding venues in Delhi from the same place. One does not need to travel to various places physically. Whether it is high-end luxury halls or affordable and simple halls, it is all planned to make your event carefree, happy, and memorable.<br><br>
 
-    <section>
-      <h2>Which Type Of Wedding Venues In Delhi Are The Best?</h2>
-      <p>
-        Choosing the best banquet hall in Delhi is now easier than ever.
-        With modern technology and professional assistance, you can explore luxury to budget-friendly venues
-        with just one click by filtering banquet type, price range, and menu options.
-      </p>
+<strong>Why Banquet Hall In Delhi The Best Place To Have A Banquet Party</strong><br><br>
 
-      <p>
-        The right wedding venue depends on budget, guest capacity, wedding style, and event date.
-      </p>
+The city of Delhi is also the favorite city for hosting weddings and other big events due to its variety and connectivity. The city has modern banquet halls, which have beautiful interiors, lighting, DJ systems, and professional planners. West Delhi, South Delhi, and Central Delhi are some of the areas that are favored to hold a wedding because of the ease in transportation and the metro.<br><br>
 
-      <ul>
-        <li>Budget-friendly banquet halls for stress-free celebrations</li>
-        <li>Luxury and elegant halls for dream weddings</li>
-        <li>Farmhouses for grand traditional weddings</li>
-        <li>Resorts for destination weddings</li>
-        <li>Boutique venues for small and stylish weddings</li>
-      </ul>
-    </section>
+The other huge benefit of hiring banquet halls in Delhi is price flexibility. Whatever be the scale of the event you are about to organize or whatever be the budget you are keeping to organize a banquet hall in Delhi, you will get the venues that suit your budget without interfering with your comfort. Most of the venues have packages that are customizable, including catering services, decor, and entertainment services which make it easier to plan the events.<br><br>
 
-    <section>
-      <h2>Why Is Delhi a Perfect Location for Celebrations?</h2>
-      <ul>
-        <li><strong>Prime Areas:</strong> Uttam Nagar, Kirti Nagar, and South Delhi with easy accessibility</li>
-        <li><strong>Wide Variety:</strong> Luxurious to elegant halls across different price ranges</li>
-        <li><strong>Professional Services:</strong> In-house catering, decor, and event managers</li>
-        <li><strong>Flexible Budgets:</strong> Options available for every type of celebration</li>
-      </ul>
-    </section>
+<strong>Knowing Budget Banquet Halls in Delhi</strong><br><br>
 
-    <section>
-      <h2>Features of the Best Banquet Halls in Delhi</h2>
-      <ol>
-        <li>Convenient locations for easy guest access</li>
-        <li>Stylish spaces for small to grand celebrations</li>
-        <li>Flexible menu options with multiple cuisines</li>
-        <li>Facilities like lighting, DJ setup, parking, and trained staff</li>
-        <li>Excellent value for money across all budgets</li>
-      </ol>
-    </section>
+Not all events need the five-star environment. A lot of families are willing to go to a budget banquet hall in Delhi to host community events, engagement, birthday parties, and small wedding ceremonies. These facilities offer the much-needed amenities like seating, catering services, setting up stages, as well as basic decor at favorable per-plate costs.<br><br>
 
-    <section>
-      <h2>How to Find Banquet Halls in Delhi for Every Budget?</h2>
-      <p><strong>Luxury Doesn’t Always Mean Expensive:</strong> Premium venues often offer discounts during weekdays or off-peak seasons.</p>
-      <p><strong>Transparent Pricing:</strong> Clear per-plate rates, capacity, and amenities help compare venues easily.</p>
-      <p><strong>Suitable for Every Celebration:</strong> Family functions or corporate gatherings without compromising comfort.</p>
-    </section>
+There is no need to lose the quality by opting for low-cost banquet halls. Most cheap places in fact, are clean, well-lit, and staffed by qualified personnel to make the experience simple. To the people looking on the internet to find a banquet hall near me, a search on budget arrangements may save them a lot of money on the overall cost of the event yet achieve a great party.<br><br>
 
-    <section>
-      <h2>Why Choose Budget-Friendly, Low-Rated Banquet Halls in Delhi?</h2>
-      <ul>
-        <li>Ideal for community gatherings and family events</li>
-        <li>Simple yet classy setup with essential services</li>
-        <li>Perfect starter venues for first-time celebrations</li>
-      </ul>
-    </section>
+<strong>Banquet Hall Below 500 on a Per-plate Basis</strong><br><br>
 
-    <section>
-      <h2>How to Choose a Banquet Hall Under Rs. 500 Per Plate in Delhi?</h2>
-      <ul>
-        <li>Affordable pricing with quality food options</li>
-        <li>Large guest capacity without extra cost</li>
-        <li>Customizable decor, menu, and music packages</li>
-      </ul>
-    </section>
+The second question that many people consider when seeking banquet halls in Delhi is that of the availability of affordable alternatives that cost less than 500 per plate. The yes will be yes, particularly in the off-season months or weekday bookings. A lot of locations offer reduced rates on reservations or low-season weddings.<br><br>
 
-    <section>
-      <h2>Best Banquet Halls in Delhi for Every Event</h2>
+One of the major issues to consider when settling on a budget banquet hall in Delhi is to ascertain what the package entails. There are also those that have simple decor, catering, and music systems included in the cost, and others might be individually charged. Comparison of various banquet halls and visiting the same would help to get an idea of the real value being represented.<br><br>
 
-      <h3>1. Royal Castle, Tilak Nagar</h3>
-      <ul>
-        <li>Flexible menu options</li>
-        <li>Experienced staff</li>
-        <li>Good lighting and decor</li>
-        <li>Ample parking</li>
-        <li>Easy accessibility</li>
-      </ul>
+<strong>Types of Banquet Halls</strong><br><br>
 
-      <h3>2. Orabella Banquets, Peeragarhi</h3>
-      <ul>
-        <li>Guest capacity up to 600</li>
-        <li>Basic sound and stage setup included</li>
-        <li>Per plate pricing: Rs.1200 – Rs.1500</li>
-        <li>Professional and attentive staff</li>
-      </ul>
+Depending on the needs of the events, <a href="https://www.bookmybanquets.in/banquet-hall" target="_blank" style="color: #1a73e8; text-decoration: underline;">Banquet Halls</a> &gt;&gt; can be generally divided into various types:<br><br>
 
-      <h3>3. Invitee Banquet, Kirti Nagar</h3>
-      <ul>
-        <li>Per plate pricing: Rs.1300 – Rs.1500</li>
-        <li>Multiple indoor halls</li>
-        <li>Convenient metro connectivity</li>
-        <li>Spacious parking area</li>
-      </ul>
-    </section>
+<strong>Wedding Banquet Halls</strong><br>
+These are spacious spaces that are specifically aimed at wedding rituals, wedding receptions, and other functions that accompany the main ritual, such as mehendi and sangeet. They also have large eating sections, bridal suites, ornamental stages and attached lawns in case of outdoor marriages.<br><br>
 
-    <section>
-      <h2>Wedding Venues and Banquet Halls in Delhi</h2>
-      <ul>
-        <li>Outdoor lawns for open-air celebrations</li>
-        <li>Indoor banquet halls for elegant weddings</li>
-        <li>Professional coordination for smooth experiences</li>
-      </ul>
-    </section>
+<strong>Corporate Banquet Halls</strong><br>
+Banquet halls of companies are utilized in conferences, seminars, product launches, award ceremonies, and business meetings. These halls generally offer projector screens, sound, presentation setups, and formal seating.<br><br>
 
-    <section>
-      <h2>What to Consider When Booking a Delhi Venue?</h2>
-      <ul>
-        <li>Seating capacity and arrangements</li>
-        <li>Catering options and per-plate pricing</li>
-        <li>Availability during peak seasons</li>
-        <li>Facilities like parking, DJ, lighting, and decor</li>
-        <li>Booking and cancellation policies</li>
-      </ul>
-    </section>
+<strong>Budget Banquet Halls</strong><br>
+Budget banquet halls are concerned with cost and are able to offer the necessary services. They are perfect for birthday events, anniversaries, engagement ceremonies and community events. Most of them have customizable food packages and simple decorations at affordable per-plate prices.<br><br>
 
-    <section>
-      <h2>Tips to Book the Best Banquet Hall</h2>
-      <ul>
-        <li>Plan 2–3 months in advance</li>
-        <li>Visit the venue personally</li>
-        <li>Read reviews and check real photos</li>
-        <li>Compare multiple banquet halls</li>
-        <li>Clarify all costs in advance</li>
-      </ul>
-    </section>
+<strong>Luxury Banquet Halls</strong><br>
+Luxury banquet halls are meant to be used in grand parties. They have luxurious interiors, high-end lighting, professional event planning, designer decor themes, and high-end catering services. These locations are frequented by weddings of high-profile individuals and high society.<br><br>
 
-    <section>
-      <h2>Conclusion</h2>
-      <p>
-        Delhi offers banquet halls for every style and budget.
-        With BookMyBanquets, booking the perfect venue is simple, reliable, and stress-free.
-        Start exploring today and make your celebration unforgettable.
-      </p>
-    </section>
+<strong>Banquet and Outdoor Areas</strong><br>
+Other banquet halls offer indoor facilities that have an air-conditioning effect so that they can hold an event during the summer or winter seasons. Others are the outdoor lawns or terrace area where the outdoor functions can be conducted, the evening receptions, or the traditional functions. Most of the contemporary facilities have the two-in-one property to provide additional flexibility.<br><br>
 
-    <section>
-      <h2>Frequently Asked Questions</h2>
+<strong>Important Banquet Hall Characteristics</strong><br><br>
 
-      <p><strong>Q1.</strong> What should I check before booking a banquet hall?<br/>
-      Location, seating, catering, parking, and reviews.</p>
+A complete banquet hall usually has:<br>
+- Large seats depending on the number of guests.<br>
+- Catering services that are customizable in terms of menus.<br>
+- Themes, decoration and setting up.<br>
+- DJ and sound systems<br>
+- Parking facilities<br>
+- Power backup<br>
+- Bridal or VIP rooms<br>
+- Event coordination support<br><br>
 
-      <p><strong>Q2.</strong> Are banquet halls under Rs.500 per plate available in Delhi?<br/>
-      Yes, several venues offer affordable packages.</p>
+These are the features that make banquet halls a more convenient and time-saving choice than having an event on open ground or in a residential area.<br><br>
 
-      <p><strong>Q3.</strong> Should I book in advance?<br/>
-      Yes, early booking ensures better pricing and availability.</p>
+<strong>The Reasons Why Banquet Halls are Significant in Events</strong><br><br>
 
-      <p><strong>Q4.</strong> Are low-rated banquet halls suitable for events?<br/>
-      Yes, they are perfect for small and budget-friendly gatherings.</p>
+Banquet halls make the process of organizing an event easy as they are a one-stop shop. As opposed to hiring catering and seating services, the decor and sound system, hosts could have a package that covers most of the services. This minimizes stress and it allows professional management of the function.<br><br>
 
-      <p><strong>Q5.</strong> Is online booking available?<br/>
-      Yes, BookMyBanquets offers easy online booking with filters.</p>
-    </section>
+They also offer a regulated space, and given the weather conditions in the urban areas, this is of great significance because weather can dictate outdoor events. It is achieved through air-conditioning, good ventilation, lighting systems, and seating arrangements that make the guests have a relaxing stay.<br><br>
+
+Besides, banquet halls abide by safety standards, crowd regulation laws, and working standards, which are fundamental in large events.<br><br>
+
+<strong>When to Select the Right Banquet Hall</strong><br><br>
+
+The choice of the banquet hall is based on a number of factors:<br>
+- Number of guests: Make sure that the setting will be spacious enough to accommodate the number of guests you will expect.<br>
+- Budget: Compare price per plate and package inclusions.<br>
+- Location: Select a place that can be well-reached by the guests.<br>
+- Services were checked: Is the package catering, decoration, and music?<br>
+- Availability: The majority of halls are usually booked in advance, as it is the season of weddings.<br><br>
+
+All these aspects will help hosts by allowing them to pick a banquet hall that fits their style of celebrating and their budget.<br><br>
+
+<strong>Best Banquet Halls in Delhi</strong><br><br>
+
+Delhi has several famous places that serve various budgets and types of events. Indicatively, the Royal Castle in Tilak Nagar is praised due to its menu, exquisite decor, and convenient location. Orabella Banquets, located in Peeragarhi, is reputed to be the venue that hosts huge crowds and provides professional assistance in arrangements. Other popular invitations include the Invitee Banquet Kirti Nagar where there are also large indoor halls that are accessible using the metro.<br><br>
+
+These examples denote the variety of the banquet halls in Delhi, which can range between middle-priced prices and luxurious packages. You can be planning a wedding party, or you can be planning a corporate event, multiple venues will guarantee you the best fit.<br><br>
+
+<strong>Banquet Outdoors And Indoor</strong><br><br>
+
+The other asset of hosting events in Delhi is the presence of indoor and outdoor venues. Most banquet halls have beautifully furnished indoor settings that are air-conditioned and hence can be used during a summer wedding. Simultaneously, the outside lawns also offer outside locations where the traditional ceremonies and evening parties can be held.<br><br>
+
+When individuals are seeking a banquet hall near me, they usually think of which one they would like to use and whether to have an open lawn or an enclosed banquet area. Both of them are highly distributed all over the city, and hosts have flexibility when planning their dream event.<br><br>
+
+<strong>Significant Things to Note Before Booking</strong><br><br>
+
+Seating capacity, catering services, parking, and decoration services are some of the aspects that should be considered before finalizing any of the banquet halls in Delhi. Availability should also be checked during the peak wedding seasons since popular venues would be booked long before. Last-minute problems can be avoided through reading reviews, paying a visit to the venue, and having knowledge of booking and cancellation policies.<br><br>
+
+The selection of the appropriate budget banquet hall in Delhi or a luxury venue involves making comparisons and booking it early. Most event professionals suggest a booking period of at least two to three months in advance in order to have a better price and dates.<br><br>
+
+<strong>Frequently Asked Questions</strong><br><br>
+
+<strong>Q1. What is to be checked before booking a banquet hall?</strong><br>
+The things that you should look at include location, seating, catering, parking, facilities, and customer reviews.<br><br>
+
+<strong>Q2. Banquet halls of less than 500 per plate in Delhi?</strong><br>
+Yes, some of the locations have low-price packages, particularly in the off-season or for weekday reservations.<br><br>
+
+<strong>Q3. Is it possible to reserve a banquet hall?</strong><br>
+Yes, early booking is better in terms of better prices and availability, particularly in high seasons of weddings.<br><br>
+
+<strong>Q4. Can the low-rated banquet halls be appropriate to hold events?</strong><br>
+Yes, they can be used in small, simple, and low-cost events.<br><br>
+
+<strong>Q5. Is online booking available?</strong><br>
+Sure, BookMyBanquets offers convenient online reservations with powerful filters to assist you in the search of the optimal venue.<br><br>
   `
+
 },
   gurgaon: {
   heading: "Best Banquet Halls in Gurgaon for Weddings & Events",
@@ -359,51 +299,60 @@ delhi: {
 };
 
 
-const truncateHTML = (html, maxLength) => {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-
-  let text = div.textContent || div.innerText || "";
-  if (text.length <= maxLength) return html;
-
-  text = text.slice(0, maxLength);
-  return text + "...";
-};
-
 
 const LocalityDescription = () => {
   const location = useLocation();
   const [localityContent, setLocalityContent] = useState(null); 
   const [expanded, setExpanded] = useState(false);
 
-  const localitySlug = location.pathname.split("/")[2];
+const pathParts = location.pathname.split("/");
+
+const citySlug = pathParts[1]?.replace("banquet-hall-in-", "");
+const localitySlug = pathParts[2] || null;
+
+
 
 useEffect(() => {
-  if (!localitySlug) return;
 
+  // CITY PAGE
+  if (!localitySlug) {
+    if (FALLBACK_CONTENT[citySlug]) {
+      setLocalityContent(FALLBACK_CONTENT[citySlug]);
+    } else {
+      setLocalityContent(null);
+    }
+    return;
+  }
+
+  // LOCALITY PAGE
   fetchLocalityDescription(localitySlug)
     .then(res => {
       setLocalityContent(res.data);
     })
     .catch(() => {
-      // API failed → fallback based on slug
-      if (FALLBACK_CONTENT[localitySlug]) {
-        setLocalityContent(FALLBACK_CONTENT[localitySlug]);
-      } else {
-        setLocalityContent(null);
-      }
+      setLocalityContent(null);
     });
-}, [localitySlug]);
+
+}, [citySlug, localitySlug]);
 
 if (!localityContent || !localityContent.description) {
   return null;
 }
 
 
+const cleanHTML = (html) => {
+  return html
+    .replace(/data-start="[^"]*"/g, "")
+    .replace(/data-end="[^"]*"/g, "")
+    .replace(/font-family:[^;"]+;?/gi, "") // remove only font-family
+    .replace(/<p>\s*<\/p>/g, ""); // remove empty paragraphs
 
-const fullHTML = localityContent.description;
-const previewText = truncateHTML(fullHTML, 600);
-const isLong = fullHTML.length > 600;
+};
+
+
+const fullHTML = cleanHTML(localityContent.description);
+
+
 
 
   return (
@@ -412,16 +361,15 @@ const isLong = fullHTML.length > 600;
         {localityContent.heading || `Wedding Venues in ${localityContent.name}`}
       </h2>
 
-<div className="prose prose-sm md:prose-base max-w-full text-gray-700">
-  {expanded ? (
-    <div dangerouslySetInnerHTML={{ __html: fullHTML }} />
-  ) : (
-    <div dangerouslySetInnerHTML={{ __html: previewText }} />
-  )}
-</div>
+<div
+  className={`prose prose-lg max-w-none text-gray-700 ${
+    !expanded ? "description-preview" : ""
+  }`}
+  dangerouslySetInnerHTML={{ __html: fullHTML }}
+/>
 
 
-      {isLong && (
+      {fullHTML.length > 600 && (
         <button
           onClick={() => setExpanded(!expanded)}
           className="mt-3 md:mt-4 text-red-600 font-semibold hover:underline cursor-pointer"

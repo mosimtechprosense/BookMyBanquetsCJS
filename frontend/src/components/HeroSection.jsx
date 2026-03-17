@@ -1,5 +1,4 @@
 import { useContext, useState } from "react"
-import bookmybanquetsLogo from "../assets/bookmybanquet.png"
 import { IoMdArrowDropdown } from "react-icons/io"
 import { useNavigate, useLocation } from "react-router-dom"
 import VenuesDropdown from "./VenuesDropdown"
@@ -41,9 +40,9 @@ const HeroSection = () => {
   return (
     <div className="w-full bg-[#dc2626] shadow-md overflow-visible px-4 sm:py-0 md:py-0 lg:py-0 sm:px-6 md:px-6 lg:px-14 xl:px-20 flex items-center justify-between gap-6 relative z-100 py-2 select-none">
       {/* Logo */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-4 sm:gap-4 md:gap-4">
         <img
-          src={bookmybanquetsLogo}
+          src="/bookmybanquet.png"
           alt="bookmybanquetsLogo"
           className="h-9 sm:h-10 md:h-11 lg:h-12 w-auto cursor-pointer"
           onClick={handleLogo}

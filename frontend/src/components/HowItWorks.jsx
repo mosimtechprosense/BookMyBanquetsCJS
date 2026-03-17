@@ -1,5 +1,8 @@
 import { FaSearch, FaHeart, FaLock } from "react-icons/fa";
-import howItWorksVideo from "../assets/videos/howitworks.webm";
+import { useEffect, useRef, useState } from "react";
+import howItWorksVideo from "../assets/videos/howitworks.mp4";
+
+
 
 const steps = [
   {
@@ -19,7 +22,30 @@ const steps = [
   },
 ];
 
+
 const HowItWorks = () => {
+
+  const videoRef = useRef(null);
+const [loadVideo, setLoadVideo] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setLoadVideo(true);
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (videoRef.current) {
+    observer.observe(videoRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+
   return (
     <section className="flex flex-col md:flex-row items-center justify-between gap-12 px-6 md:px-16 lg:px-24 py-16 bg-[#ffffff]">
       {/* Left side - Text steps */}
@@ -50,17 +76,30 @@ const HowItWorks = () => {
         </div>
       </div>
 
-      {/* Right side - video frame with black */}
+{/* Right side - video frame */}
+      {/* Right side video */}
       <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-3xl rounded-xl overflow-hidden border-4 border-black shadow-[0_0_30px_5px_rgba(0,0,0,0.5)]">
-          <video
-            className="w-full h-auto object-cover"
-            src={howItWorksVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
+        <div className="w-full max-w-3xl">
+
+          <div ref={videoRef} className="relative w-full aspect-video rounded-xl overflow-hidden border-4 border-black shadow-[0_0_30px_5px_rgba(0,0,0,0.5)]">
+
+{loadVideo && (
+  <video
+    className="absolute inset-0 w-full h-full object-cover"
+    autoPlay
+    loop
+    muted
+    playsInline
+    preload="none"
+    poster="../assets/howitworks-preview.avif"
+    disablePictureInPicture
+  >
+    <source src={howItWorksVideo} type="video/mp4" />
+  </video>
+)}
+
+          </div>
+
         </div>
       </div>
     </section>

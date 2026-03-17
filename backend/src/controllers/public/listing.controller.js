@@ -35,25 +35,35 @@ const createListing = async (req, res) => {
 const getAllListing = async (req, res) => {
   try {
     const { skip = 0, take = 10, ...filters } = req.query;
+const { serviceSlug } = req.params;
 
-    const numericSkip = Math.max(0, Number(skip) || 0);
-    const numericTake = Math.min(100, Math.max(1, Number(take) || 10));
+// Extract city from route like: banquet-hall-in-delhi
+let cityFromRoute;
 
-    // Log incoming request for debugging
-    log("=== GET ALL LISTINGS ===");
-    log("Incoming query params:", req.query);
-    log("Parsed skip/take:", { numericSkip, numericTake });
-    log("Filters applied:", filters);
+if (serviceSlug?.includes("-in-")) {
+  const parts = serviceSlug.split("-in-");
+  cityFromRoute = parts[1]?.replace(/-/g, " ");
+}
 
-    const { data: listings, total: totalCount } = await getAllListingDB({
-      ...filters,
-      skip: numericSkip,
-      take: numericTake,
-    });
+
+  const numericSkip = Math.max(0, Number(skip) || 0);
+  const numericTake = Math.min(100, Math.max(1, Number(take) || 10));
+
+const finalCity = cityFromRoute ?? filters.city;
+
+const { data: listings, total: totalCount } = await getAllListingDB({
+  ...filters,
+  city: finalCity,
+  skip: numericSkip,
+  take: numericTake,
+});
 
     // Log result IDs for debugging infinite scroll
     log("Returned listings IDs:", listings.map(l => l.id));
     log("Total count from DB:", totalCount);
+
+    console.log("City from route:", cityFromRoute)
+console.log("Query filters:", filters)
 
     res.status(200).json({
       success: true,
@@ -179,15 +189,9 @@ const getListingById = async (req, res) => {
 //* GET SIMILAR LISTINGS
 const getSimilarListings = async (req, res) => {
   try {
+    
     const { id } = req.params;
-    console.log("Received listing ID for similar:", id);
-
     const similarListings = await getSimilarListingsDB(id);
-
-    console.log(
-      "Number of similar listings fetched:",
-      similarListings.length
-    );
 
     res.status(200).json({
       success: true,

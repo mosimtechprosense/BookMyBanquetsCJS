@@ -1,32 +1,43 @@
-const prisma = require("../../config/db.js");
-const { transporter } = require("../../config/email.js");
-
+const prisma = require("../../config/db.js")
+const { transporter } = require("../../config/email.js")
 
 //* Create contact message + send email
-const createContactMessage = async ({ name, email, phone, message }) => {
-
+const createContactMessage = async ({
+  name,
+  email,
+  phone,
+  message,
+  pageUrl
+}) => {
   // Decide form type
-  const isContactForm = Boolean(email && email.trim());
-  const formType = isContactForm ? "contact form" : "discount form";
+  const isContactForm = Boolean(email && email.trim())
+  const formType = isContactForm ? "contact form" : "discount form"
 
   // Dummy email for DB only (for discount from process)
-  const prismaEmail = isContactForm ? email : phone;
+  const prismaEmail = isContactForm ? email : phone
 
   // Save message to database
   const savedMessage = await prisma.contactmessage.create({
-    data: { name, email: prismaEmail || null,  phone: phone || null, message }
-  });
-
+    data: {
+      name,
+      email: prismaEmail || null,
+      phone: phone || null,
+      message,
+      pageUrl: pageUrl || null
+    }
+  })
 
   // Labels for the email
-  const emailLabelKey = isContactForm ? "Email" : "Phone";
-  const emailLabelValue = isContactForm ? email : phone;
-
+  const emailLabelKey = isContactForm ? "Email" : "Phone"
+  const emailLabelValue = isContactForm ? email : phone
 
   // Send email to admin
   await transporter.sendMail({
     from: `"BookMyBanquets" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER,
+    to: process.env.EMAIL_TO,
+    cc: [process.env.EMAIL_CC, "aryan0594@gmail.com", "akshaybmb6@gmail.com"]
+      .filter(Boolean)
+      .join(","),
     replyTo: isContactForm ? email : process.env.EMAIL_USER,
     subject: `New ${formType} submission`,
     html: `
@@ -59,6 +70,13 @@ const createContactMessage = async ({ name, email, phone, message }) => {
           <strong>${emailLabelKey}:</strong> ${emailLabelValue}
         </p>
 
+${pageUrl ? `
+<p style="font-size:14px;margin:6px 0;">
+<strong>Page URL:</strong>
+<a href="${pageUrl}" target="_blank" style="color:#dc2626;">${pageUrl}</a>
+</p>
+` : ""}
+
         <p style="font-size: 14px; margin: 16px 0 8px;">
           <strong>Message:</strong>
         </p>
@@ -87,45 +105,40 @@ const createContactMessage = async ({ name, email, phone, message }) => {
       Please do not reply directly to this email.
     </div>
   </div>
-`}
-  );
+`
+  })
 
-  return savedMessage;
-};
-
+  return savedMessage
+}
 
 //* Get all messages
 const getAllContactMessages = async () => {
   return prisma.contactmessage.findMany({
     orderBy: { createdAt: "desc" }
-  });
-};
-
+  })
+}
 
 //* Get message by ID
 const getContactMessageById = async (id) => {
   return prisma.contactmessage.findUnique({
     where: { id: parseInt(id) }
-  });
-};
-
+  })
+}
 
 //? Update message
 const updateContactMessage = async (id, data) => {
   return prisma.contactmessage.update({
     where: { id: parseInt(id) },
     data
-  });
-};
-
+  })
+}
 
 //! Delete message
 const deleteContactMessage = async (id) => {
   return prisma.contactmessage.delete({
     where: { id: parseInt(id) }
-  });
-};
-
+  })
+}
 
 module.exports = {
   createContactMessage,
@@ -133,4 +146,4 @@ module.exports = {
   getContactMessageById,
   updateContactMessage,
   deleteContactMessage
-};
+}

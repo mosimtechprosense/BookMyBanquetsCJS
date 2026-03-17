@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom"
+import { useNavigate, useParams, useLocation, Navigate } from "react-router-dom"
 import { useEffect, useState, useContext } from "react"
 import { fetchListingById, fetchSimilarListings } from "../api/listingsApi"
 import { LuArrowLeft, LuArrowRight, LuX } from "react-icons/lu"
@@ -18,8 +18,8 @@ import ListingBottomActions from "../components/listingsDetails/ListingBottomAct
 
 export default function ListingDetailsDynamic() {
   const { id, serviceSlug } = useParams()
-    const navigate = useNavigate()
-  const location = useLocation();
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const [listing, setListing] = useState(null)
   const [similarListings, setSimilarListings] = useState([])
@@ -27,19 +27,17 @@ export default function ListingDetailsDynamic() {
   const [showAllKeywords, setShowAllKeywords] = useState(false)
   const { setPopupOpen } = useContext(UIContext)
 
-
   // Image modal
   const [activeImageIndex, setActiveImageIndex] = useState(null)
+  const [fullImage, setFullImage] = useState(null)
+  const images = listing?.venue_images ?? []
+
   useEffect(() => {
-      //  STOP invalid cases BEFORE API calls
-  if (
-    location.pathname.startsWith("/admin") ||
-    !id ||
-    isNaN(Number(id))
-  ) {
-    setLoading(false);
-    return;
-  }
+    //  STOP invalid cases BEFORE API calls
+    if (location.pathname.startsWith("/admin") || !id || isNaN(Number(id))) {
+      setLoading(false)
+      return
+    }
 
     let isMounted = true
     setLoading(true)
@@ -66,22 +64,30 @@ export default function ListingDetailsDynamic() {
     }
   }, [id, location.pathname])
 
-if (loading) return <DetailsPageSkeleton />;
+  // load image only when click on view gallery
+useEffect(() => {
+  if (activeImageIndex !== null && listing?.venue_images?.[activeImageIndex]) {
+    setFullImage(null)
 
-if (
-  location.pathname.startsWith("/admin") ||
-  !id ||
-  isNaN(Number(id))
-) {
-  return null;
-}
+    const img = new Image()
+    img.src = listing.venue_images[activeImageIndex].image_url
 
-if (!listing) {
-  return <div className="py-20 text-center">Listing not found</div>;
-}
+    img.onload = () => {
+      setFullImage(img.src)
+    }
+  }
+}, [activeImageIndex, listing])
 
+  if (loading) return <DetailsPageSkeleton />
 
-  const images = listing.venue_images ?? []
+  if (location.pathname.startsWith("/admin") || !id || isNaN(Number(id))) {
+    return null
+  }
+
+  if (!listing) {
+    return <div className="py-20 text-center"><Navigate to="/404" replace /></div>
+  }
+
   const keywordsArray = listing.keywords?.split(",") ?? []
   const desc = listing.description ?? ""
   const faqs = Array.isArray(listing?.faqs) ? listing.faqs : []
@@ -121,25 +127,23 @@ if (!listing) {
     type: "current"
   })
 
-const pushUrl = ({ category, citySlug, lat, lng }) => {
-  const qs = new URLSearchParams()
-  if (category) qs.set("category", category)
-  if (citySlug) qs.set("locality", citySlug)
+  const pushUrl = ({ category, citySlug, lat, lng }) => {
+    const qs = new URLSearchParams()
+    if (category) qs.set("category", category)
+    if (citySlug) qs.set("locality", citySlug)
 
-  //  Add coordinates to URL for full search results
-  if (lat && lng) {
-    qs.set("lat", lat)
-    qs.set("lng", lng)
-    
+    //  Add coordinates to URL for full search results
+    if (lat && lng) {
+      qs.set("lat", lat)
+      qs.set("lng", lng)
+    }
+
+    const slug = citySlug ? citySlug.replace(/\s+/g, "-").toLowerCase() : ""
+    const serviceSlug = categoryToSlug[Number(category)] || "banquet-hall"
+    const path = slug ? `/${serviceSlug}-in/${slug}` : `/${serviceSlug}-in`
+
+    navigate(`${path}?${qs.toString()}`)
   }
-
-  const slug = citySlug ? citySlug.replace(/\s+/g, "-").toLowerCase() : ""
-  const serviceSlug = categoryToSlug[Number(category)] || "banquet-hall"
-  const path = slug ? `/${serviceSlug}-in/${slug}` : `/${serviceSlug}-in`
-
-  navigate(`${path}?${qs.toString()}`)
-}
-
 
   return (
     <div className="container mx-auto px-4 py-8 pb-28">
@@ -178,12 +182,12 @@ const pushUrl = ({ category, citySlug, lat, lng }) => {
                           url.searchParams.entries()
                         )
 
-pushUrl({
-  category: params.category,
-  citySlug: params.locality,
-  lat: listing.lat,   
-  lng: listing.long   
-})
+                        pushUrl({
+                          category: params.category,
+                          citySlug: params.locality,
+                          lat: listing.lat,
+                          lng: listing.lng
+                        })
                       }}
                     >
                       {item.label}
@@ -202,7 +206,7 @@ pushUrl({
 
       {/* ================= IMAGE GALLERY (RECOMMENDED STYLE) ================= */}
       <div key={id} className="relative mb-12">
-        {Array.isArray(images) && images.length > 3 && (
+        {Array.isArray(images) && images.length > 1 && (
           <button
             onClick={() =>
               document
@@ -223,18 +227,26 @@ pushUrl({
             <div
               key={img.id}
               onClick={() => setActiveImageIndex(i)}
-              className="min-w-[600px] h-[300px] rounded-md overflow-hidden shadow cursor-pointer"
+              className="relative min-w-[600px] h-[300px] rounded-md overflow-hidden shadow cursor-pointer group"
             >
               <img
-                src={img.image_url}
+                src={img.image_url.replace(".avif", "_600.avif")}
                 alt={listing.title}
+                loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover hover:scale-110 transition duration-500"
               />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/20 flex items-center justify-center transition-all duration-300 opacity-100">
+                <span className="text-black text-sm font-semibold tracking-wide bg-white/70 px-4 py-2 rounded-full">
+                  View Gallery
+                </span>
+              </div>
             </div>
           ))}
         </div>
 
-        {images.length > 3 && (
+        {images.length > 1 && (
           <button
             onClick={() =>
               document
@@ -252,8 +264,11 @@ pushUrl({
       {activeImageIndex !== null && (
         <div className="fixed inset-0 bg-black/80 z-1100 flex items-center justify-center">
           <button
-            className="absolute top-6 right-6 text-white text-3xl"
-            onClick={() => setActiveImageIndex(null)}
+            className="absolute top-6 right-6 text-white text-3xl cursor-pointer"
+            onClick={() => {
+              setActiveImageIndex(null)
+              setFullImage(null)
+            }}
           >
             <LuX />
           </button>
@@ -272,7 +287,10 @@ pushUrl({
           </button>
 
           <img
-            src={images[activeImageIndex].image_url}
+            src={
+              fullImage ||
+              images[activeImageIndex].image_url.replace(".avif", "_600.avif")
+            }
             className="max-h-[90vh] max-w-[90vw] rounded-lg"
           />
 
@@ -373,8 +391,7 @@ pushUrl({
       {/* SIMILAR LISTINGS */}
       <SimilarListingsSection listings={similarListings} />
 
-
-       {/* Listing Bottom Actions  */}
+      {/* Listing Bottom Actions  */}
       <ListingBottomActions setPopupOpen={setPopupOpen} />
     </div>
   )

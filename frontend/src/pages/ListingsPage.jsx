@@ -31,10 +31,11 @@ export default function ListingsPage() {
 
   const [mobilePanel, setMobilePanel] = useState(null)
 
+  
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
 
-            {/* Dynamic SEO */}
+{/* Dynamic SEO */}
 <ListingSEO
   filters={filters}
   serviceFromRoute={serviceFromRoute}

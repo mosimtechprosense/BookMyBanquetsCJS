@@ -62,9 +62,20 @@ useEffect(() => {
   const handleSelectLocation = (loc) => {
     setLocationQuery(`${loc.name} ${loc.city?.name || ""}`);
     setShowList(false);
-    setFilters({
-  locality: loc.slug || loc.name,
+
+
+setFilters({
+  locality: loc.name.toLowerCase().replace(/\s+/g, "-"),
+  city: loc.city_name?.toLowerCase(),
+  lat: loc.lat,
+  lng: loc.lng,
+  radius: 10, 
   skip: 0
+});
+console.log("Location payload:", {
+  city: loc.city_name,
+  lat: loc.lat,
+  lng: loc.lng
 });
   };
 

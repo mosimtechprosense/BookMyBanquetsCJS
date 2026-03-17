@@ -5,18 +5,9 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom"
 import { categoryToSlug } from "../utils/slugMaps"
 import { fetchLocalities } from "../api/listingsApi"
 
-const CITY_LIST = [
-  "delhi",
-  "new-delhi",
-  "gurgaon",
-  "gurugram",
-  "noida",
-  "faridabad",
-  "ghaziabad"
-]
 
 export default function useListingsFilters() {
-  const { serviceSlug, placeSlug } = useParams()
+const { serviceCity, localitySlug } = useParams()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [localities, setLocalities] = useState([])
@@ -28,20 +19,22 @@ export default function useListingsFilters() {
       .catch(() => setLocalities([]))
   }, [])
 
-  const normalizedPlace = placeSlug
-    ? decodeURIComponent(placeSlug).toLowerCase()
-    : undefined
+// Extract city from serviceSlug (banquet-hall-in-delhi)
+// Split "banquet-hall-in-delhi"
+let baseServiceSlug = ""
+let cityFromRoute = undefined
 
-  const isCity = CITY_LIST.includes(normalizedPlace)
+if (serviceCity?.includes("-in-")) {
+  const parts = serviceCity.split("-in-")
+  baseServiceSlug = parts[0]
+  cityFromRoute = parts[1]?.replace(/-/g, " ")
+}
 
-  const cityFromRoute = isCity
-    ? normalizedPlace.replace(/-/g, " ")
-    : undefined
+const localityFromRoute = localitySlug
+  ? localitySlug.replace(/-/g, " ")
+  : undefined
 
-  const localityFromRoute =
-    !isCity && normalizedPlace
-      ? normalizedPlace.replace(/-/g, " ")
-      : undefined
+
 
   const filters = useMemo(() => {
     return {
@@ -85,24 +78,29 @@ radius: searchParams.get("radius")
     }
   }, [searchParams, cityFromRoute, localityFromRoute])
 
-  const serviceFromRoute =
-    serviceSlug ||
-    (filters.category && categoryToSlug[filters.category]) ||
-    "banquet-hall"
+const serviceFromRoute =
+  baseServiceSlug ||
+  (filters.category && categoryToSlug[filters.category]) ||
+  "banquet-hall"
 
   // EXACT old pushUrl behavior
   const pushUrl = (obj) => {
     const merged = {
       ...filters,
       ...obj,
-      city: cityFromRoute || filters.city
     }
 
-    if (obj.locality) {
+if (obj.locality && !obj.lat && !obj.lng) {
   merged.lat = undefined
   merged.lng = undefined
   merged.radius = undefined
 }
+
+
+const finalCity = merged.city || cityFromRoute
+const safeCity = finalCity && finalCity.trim() !== "" ? finalCity : null
+
+delete merged.city
 
     const qs = new URLSearchParams()
     Object.entries(merged).forEach(([key, value]) => {
@@ -111,9 +109,13 @@ radius: searchParams.get("radius")
       }
     })
 
-    const finalCity = merged.city || cityFromRoute
 
-let path = `/${serviceFromRoute}-in-${finalCity?.replace(/\s+/g, "-")}`
+let path = `/${serviceFromRoute}`
+
+// ✅ Only add "-in-city" if city exists
+if (safeCity) {
+  path += `-in-${safeCity.replace(/\s+/g, "-")}`
+}
 
     if (merged.locality)
       path += `/${merged.locality.replace(/\s+/g, "-")}`
