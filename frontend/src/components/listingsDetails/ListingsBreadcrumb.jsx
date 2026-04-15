@@ -19,9 +19,7 @@ export default function ListingsBreadcrumb({ filters }) {
     breadcrumbItems.push({
       label: venueMeta.label,
       type: "service",
-      path: `${venueMeta.path}?category=${filters.category}&serviceLabel=${encodeURIComponent(
-        venueMeta.label
-      )}`
+path: `${venueMeta.path}?category=${filters.category}`
     })
   }
 

@@ -1,9 +1,16 @@
 export const seoMetaData = [
+  {
+    url: "/banquet-hall",
+    title: "Book Banquet Halls for Weddings & Events Easily- Bookmybanquets",
+    description:
+      "Easily book banquet halls for weddings & events with BookMyBanquets. Explore budget to luxury venues with great deals and get 50% off.",
+    ogImage: "https://www.bookmybanquets.in/listing_image/1BAfRvCkUNdnlRC8wUDAqdb4LJgO9v1gnLxzrsfN_600.avif"
+  },
 {
   url: "/banquet-hall-in-delhi",
-  title: "Banquet Halls in Delhi for Every Budget - BookMyBanquets",
+  title: "All Types of Banquet Halls in Delhi for Every Budget- BookMyBanquets",
   description:
-    "Find best banquet halls in Delhi for every budget. Compare venues, prices, and services easily with Book My Banquets for weddings & events easily.",
+    "Find all types of banquet halls in Delhi for every budget. From affordable venues to luxury spaces, book the perfect hall for weddings and events easily.",
   ogImage: "https://www.bookmybanquets.in/listing_image/1BAfRvCkUNdnlRC8wUDAqdb4LJgO9v1gnLxzrsfN_600.avif"
 },
 {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { CiLocationOn } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 export default function LocationFilter({ setFilters, value }) {
   const [locationQuery, setLocationQuery] = useState("");
@@ -7,6 +8,7 @@ export default function LocationFilter({ setFilters, value }) {
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [showList, setShowList] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -59,25 +61,98 @@ useEffect(() => {
     setFilteredLocations(filtered);
   };
 
+
+  
+
+
+
+
+
+
   const handleSelectLocation = (loc) => {
-    setLocationQuery(`${loc.name} ${loc.city?.name || ""}`);
-    setShowList(false);
+  const localitySlug = loc.name.toLowerCase().replace(/\s+/g, "-");
 
+  const citySlug =
+    loc.city_name?.toLowerCase() ||
+    loc.city?.name?.toLowerCase();
 
-setFilters({
-  locality: loc.name.toLowerCase().replace(/\s+/g, "-"),
-  city: loc.city_name?.toLowerCase(),
-  lat: loc.lat,
-  lng: loc.lng,
-  radius: 10, 
-  skip: 0
-});
-console.log("Location payload:", {
-  city: loc.city_name,
-  lat: loc.lat,
-  lng: loc.lng
-});
+  const cleanCities = ["delhi", "gurgaon"];
+
+  const isExactCity =
+    loc.name.toLowerCase() === citySlug;
+
+  // ✅ Set input value correctly
+  if (isExactCity) {
+    setLocationQuery(loc.city?.name || loc.name);
+  } else {
+    setLocationQuery(`${loc.name}, ${loc.city?.name || ""}`);
+  }
+
+  setShowList(false);
+
+  const path = window.location.pathname.split("/")[1] || "";
+
+  const serviceSlug = path.includes("-in-")
+    ? path.split("-in-")[0]
+    : path;
+
+  const params = new URLSearchParams(window.location.search);
+
+  // ✅ ALWAYS preserve category from route
+  const pathParts = window.location.pathname.split("/")[1];
+  const serviceSlugFromPath = pathParts?.split("-in-")[0];
+
+  const slugToCategory = {
+    "banquet-hall": 6,
+    "party-hall": 7,
+    "marriage-hall": 8,
+    "5-star-wedding-hotel": 11,
+    "destination-wedding": 12,
+    "wedding-farmhouse": 13,
+    "bmb-assured": 26,
+    "bmb-verified": 27
   };
+
+  if (serviceSlugFromPath && slugToCategory[serviceSlugFromPath]) {
+    params.set("category", slugToCategory[serviceSlugFromPath]);
+  }
+
+  // ✅ CITY SELECT
+  if (cleanCities.includes(citySlug) && isExactCity) {
+    setFilters({
+      city: citySlug,
+      locality: "",
+      lat: null,
+      lng: null,
+      radius: null,
+      skip: 0
+    });
+
+    navigate(
+      `/${serviceSlug}-in-${citySlug}${
+        params.toString() ? `?${params.toString()}` : ""
+      }`
+    );
+  }
+
+  // ✅ LOCALITY SELECT
+  else {
+    setFilters({
+      city: citySlug,
+      locality: localitySlug,
+      lat: loc.lat,
+      lng: loc.lng,
+      radius: 10,
+      skip: 0
+    });
+
+    navigate(
+      `/${serviceSlug}-in-${citySlug}/${localitySlug}${
+        params.toString() ? `?${params.toString()}` : ""
+      }`
+    );
+  }
+};
 
 
 

@@ -5,8 +5,9 @@ const locationRoutes = require("./public/location.routes");
 const localityContentRoutes = require("./public/localityContent.routes");
 const contactRoutes = require("./public/contact.routes");
 const businessRoutes = require("./public/business.routes");
+const reviewRoutes = require("./public/review.routes");
 
-
+const adminListingRoutes = require("./admin/listing.routes");
 const adminAuthRoutes = require("./admin/auth.routes");
 const adminUserRoutes = require("./admin/user.routes");
 const dashboardRoutes = require("./admin/dashboard.routes");
@@ -22,8 +23,10 @@ router.use("/locations", locationRoutes);
 router.use("/localities", localityContentRoutes);
 router.use("/contact", contactRoutes);
 router.use("/business", businessRoutes)
+router.use("/reviews", reviewRoutes);
 
 // admin routes
+router.use("/admin/listings", adminListingRoutes);
 router.use("/admin/auth", adminAuthRoutes);
 router.use("/admin/users", adminUserRoutes);
 router.use("/admin/dashboard", dashboardRoutes);

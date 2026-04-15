@@ -9,104 +9,95 @@ const createContactMessage = async ({
   message,
   pageUrl
 }) => {
-  // Decide form type
-  const isContactForm = Boolean(email && email.trim())
+  //* Clean email
+  const cleanEmail = email?.trim() || null
+
+  //* Detect form type
+  const isDiscountForm = !cleanEmail
+  const isContactForm = !!cleanEmail
   const formType = isContactForm ? "contact form" : "discount form"
 
-  // Dummy email for DB only (for discount from process)
-  const prismaEmail = isContactForm ? email : phone
-
-  // Save message to database
+  //* Save message to database
   const savedMessage = await prisma.contactmessage.create({
     data: {
       name,
-      email: prismaEmail || null,
-      phone: phone || null,
+      email: cleanEmail,
+      phone: phone ? phone.toString() : null,
       message,
-      pageUrl: pageUrl || null
+      pageUrl: pageUrl || null,
     }
   })
 
-  // Labels for the email
-  const emailLabelKey = isContactForm ? "Email" : "Phone"
-  const emailLabelValue = isContactForm ? email : phone
 
-  // Send email to admin
-  await transporter.sendMail({
-    from: `"BookMyBanquets" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_TO,
-    cc: [process.env.EMAIL_CC, "aryan0594@gmail.com", "akshaybmb6@gmail.com"]
-      .filter(Boolean)
-      .join(","),
-    replyTo: isContactForm ? email : process.env.EMAIL_USER,
-    subject: `New ${formType} submission`,
-    html: `
-  <div style="
-    max-width: 600px;
-    margin: auto;
-    font-family: Inter, Arial, sans-serif;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    overflow: hidden;
-  ">
-    <div style="background: #dc2626; padding: 20px;">
-      <h2 style="color: #ffffff; margin: 0; font-size: 22px;">
-        BookMyBanquets
-      </h2>
-    </div>
+  //* Send email safely
+  try {
+    const info = await transporter.sendMail({
+      from: `"BookMyBanquets" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_TO,
 
-    <div style="padding: 24px;">
-      <p style="font-size: 16px; color: #374151; line-height: 1.6;">
-           You’ve received a new message via the <strong>${formType}</strong>.
-      </p>
+      //* FIXED CC (string format)
+      cc: [
+        process.env.EMAIL_CC,
+        "aryan0594@gmail.com",
+        "akshaybmb6@gmail.com",
+        "mosimraza.techprosense@gmail.com"
+      ]
+        .filter(Boolean)
+        .join(","),
 
-      <div style="margin-top: 24px;">
-        <p style="font-size: 14px; margin: 6px 0;">
-          <strong>Name:</strong> ${name}
-        </p>
+      replyTo: cleanEmail || process.env.EMAIL_USER,
+      subject: `New ${formType} submission`,
 
-        <p style="font-size: 14px; margin: 6px 0;">
-          <strong>${emailLabelKey}:</strong> ${emailLabelValue}
-        </p>
+      //* FINAL HTML (NO CONDITIONAL BUGS)
+      html: `
+<div style="max-width:600px;margin:auto;font-family:Arial;background:#fff;border-radius:12px;overflow:hidden;">
+  
+  <div style="background:#dc2626;padding:20px;color:#fff;">
+    <h2 style="margin:0;">BookMyBanquets</h2>
+  </div>
 
-${pageUrl ? `
-<p style="font-size:14px;margin:6px 0;">
-<strong>Page URL:</strong>
-<a href="${pageUrl}" target="_blank" style="color:#dc2626;">${pageUrl}</a>
-</p>
-` : ""}
+  <div style="padding:20px;">
+    <p>New <strong>${formType}</strong> received</p>
 
-        <p style="font-size: 14px; margin: 16px 0 8px;">
-          <strong>Message:</strong>
-        </p>
+    <p><strong>Name:</strong> ${name || "N/A"}</p>
 
-        <div style="
-          background: #f9fafb;
-          padding: 18px;
-          border-radius: 8px;
-          line-height: 1.7;
-          color: #111827;
-          font-size: 18px;
-        ">
-          ${message}
-        </div>
-      </div>
-    </div>
+    <p><strong>Phone:</strong> ${
+      phone ? phone.toString() : "N/A"
+    }</p>
 
-    <div style="
-      padding: 16px;
-      text-align: center;
-      font-size: 12px;
-      color: #6b7280;
-      background: #f3f4f6;
-    ">
-      This message was sent from the BookMyBanquets website.<br/>
-      Please do not reply directly to this email.
+${
+  isContactForm
+    ? `<p><strong>Email:</strong> ${cleanEmail}</p>`
+    : ""
+}
+
+    ${
+      pageUrl
+        ? `<p><strong>Page URL:</strong> 
+            <a href="${pageUrl}" target="_blank">${pageUrl}</a>
+           </p>`
+        : ""
+    }
+
+    <p style="margin-top:12px;"><strong>Message:</strong></p>
+
+    <div style="background:#f3f4f6;padding:12px;border-radius:6px;">
+      ${message || "N/A"}
     </div>
   </div>
+
+  <div style="padding:12px;text-align:center;font-size:12px;color:#6b7280;background:#f9fafb;">
+    This message was sent from the BookMyBanquets website.
+  </div>
+
+</div>
 `
-  })
+    })
+
+    console.log("✅ EMAIL SENT:", info.response)
+  } catch (err) {
+    console.error("❌ EMAIL FAILED:", err)
+  }
 
   return savedMessage
 }

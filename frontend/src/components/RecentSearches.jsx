@@ -1,8 +1,7 @@
+import React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const RecentSearches = () => {
-  const navigate = useNavigate();
   const [locations, setLocations] = useState([]); // full list from API
 
   const API_BASE = import.meta.env.VITE_API_BASE;
@@ -20,33 +19,57 @@ const RecentSearches = () => {
       })
     }, [API_BASE])
 
-const handleClick = (loc) => {
-  if (!loc?.name || !loc?.city_name) return;
 
-  const locationSlug = loc.name
+    const handleClick = (loc) => {
+  if (!loc?.name) return;
+
+  const localitySlug = loc.name
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-");
 
-  const citySlug = loc.city_name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-");
+  const citySlug =
+    loc.city_name?.toLowerCase() ||
+    loc.city?.name?.toLowerCase();
 
-  const params = new URLSearchParams();
-  params.set("category", 6); // banquet hall default
+  const path = window.location.pathname.split("/")[1] || "";
 
-  //  Send coordinates
-  if (loc.lat && loc.lng) {
-    params.set("lat", loc.lat);
-    params.set("lng", loc.lng);
+  const serviceSlug = path.includes("-in-")
+    ? path.split("-in-")[0]
+    : path || "banquet-hall";
+
+  const params = new URLSearchParams(window.location.search);
+
+  //  SAME LOGIC YOU PROVIDED
+  const cleanCities = ["delhi", "gurgaon", "gurugram"];
+
+  const isMainCity = cleanCities.includes(citySlug);
+
+  const isExactCitySelection =
+    localitySlug === citySlug ||
+    loc.name.toLowerCase() === loc.city?.name?.toLowerCase();
+
+  //  CITY CLICK
+  if (isMainCity && isExactCitySelection) {
+    const url = `/${serviceSlug}-in-${citySlug}`;
+    window.location.href = url;
   }
 
-  navigate(
-    `/banquet-hall-in-${citySlug}/${locationSlug}?${params.toString()}`
-  );
+  //  LOCALITY CLICK
+  else {
+    // optional: attach lat/lng like before
+    if (loc.lat && loc.lng) {
+      params.set("lat", loc.lat);
+      params.set("lng", loc.lng);
+    }
+
+    const url = `/${serviceSlug}-in-${citySlug}/${localitySlug}${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    window.location.href = url;
+  }
 };
 
 
@@ -55,7 +78,7 @@ const handleClick = (loc) => {
   return (
     <section className="bg-[#dc2626] text-white py-6 px-6 text-center relative overflow-hidden select-none">
       {/* Subtle background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-[#b91c1c] to-[#ef4444] opacity-90"></div>
+      <div className="absolute inset-0 bg-linear-to-tr from-[#b91c1c] to-[#ef4444] opacity-90"></div>
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 tracking-tight">
@@ -74,7 +97,7 @@ const handleClick = (loc) => {
             >
               <span className="relative inline-block">
                 Banquet Hall in {loc.name}
-                <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
               </span>
             </button>
           ))}

@@ -7,7 +7,7 @@ export default function DataTable({ columns, data, actions }) {
             {columns.map(col => (
               <th
                 key={col.key}
-                className="text-left px-4 py-3 font-semibold whitespace-nowrap"
+                className="text-left px-4 py-3 font-semibold align-top"
               >
                 {col.label}
               </th>
@@ -31,10 +31,12 @@ export default function DataTable({ columns, data, actions }) {
           )}
 
           {data?.map((row, idx) => (
-            <tr
-              key={row.id}
-              className={idx % 2 === 0 ? "bg-white" : "bg-gray-100"}
-            >
+<tr
+  key={row.id}
+  className={`${
+    idx % 2 === 0 ? "bg-white" : "bg-gray-100"
+  } hover:bg-blue-100 transition cursor-pointer`}
+>
               {columns.map(col => (
                 <td
                   key={col.key}

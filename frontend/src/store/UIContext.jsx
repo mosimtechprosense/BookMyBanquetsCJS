@@ -9,7 +9,7 @@ const UIProvider = ({ children }) => {
       
       
       const [menuOpen, setMenuOpen] = useState(false);
-       const [popupOpen, setPopupOpen] = useState(true);
+      const [popupOpen, setPopupOpen] = useState(false);
 
       return(
         <UIContext.Provider value={{ menuOpen, setMenuOpen, popupOpen, setPopupOpen}}>

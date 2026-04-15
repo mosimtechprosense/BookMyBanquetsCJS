@@ -4,22 +4,13 @@ import NotFound from "../components/common/NotFound"
 
 const allowedServices = [
   "banquet-hall",
-  "banquet-with-room",
-  "marriage-halls",
+  "marriage-hall",
   "wedding-farmhouse",
-  "party-halls",
-  "5-star-wedding-hotels",
-  "destination-weddings",
-  "small-function-halls",
-  "engagement-venue",
-  "baby-shower",
-  "sikh-wedding",
-  "cocktail-venues",
-  "party-lawn",
-  "corporate-events",
-  "ring-ceremony",
-  "mehendi-ceremony",
-  "retirement-party"
+  "party-hall",
+  "5-star-wedding-hotel",
+  "destination-wedding",
+  "bmb-assured",
+  "bmb-verified",
 ]
 
 const allowedCities = [
@@ -69,7 +60,10 @@ const allowedLocalities = [
   "sector-24",
   "manesar",
   "najafgarh-road-industrial-area",
-  "west-delhi"
+  "west-delhi",
+  "east-delhi",
+  "north-delhi",
+  "south-delhi"
 ]
 
 export default function ServiceRouteGuard() {

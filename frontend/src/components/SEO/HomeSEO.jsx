@@ -5,46 +5,25 @@ export default function HomeSEO() {
   return (
     <Helmet>
 
-{/* for google analytics  */}
-<script
-  async
-  src="https://www.googletagmanager.com/gtag/js?id=G-4GHYTNKR8P"
-></script>
 
-<script>
-{`
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-4GHYTNKR8P');
-`}
-</script>
-
- {/* Google tag (gtag.js) */}
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G2RSB1WL8W"></script>
-<script>
-  {
-  `window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-G2RSB1WL8W');
-  `}
-</script>
 
 
        {/* Robots */}
       <meta name="robots" content="index, follow" />
+      <link rel="canonical" href="https://www.bookmybanquets.in" />
+      <meta name="google-site-verification" content="AabghH2zKh8BpIWk1klWNDc0PN05fF4Hv4iZrm2BNzo" />
+      
+      
 
        {/* Title */}
       <title>
-        Banquet Halls | Luxury and Budget Wedding Venues - Book My Banquets
+        Banquet Halls Near Me, Top Wedding Venues by Book My Banquets
       </title>
 
        {/* Description */}
       <meta
         name="description"
-        content="Find top banquet halls and budget wedding venues with Book My Banquets. Explore venues online for weddings, parties, and events at great prices."
+        content="Find top banquet halls near me and budget wedding venues with BookMyBanquets. Explore venues online for weddings, parties, and events at great prices."
       />
       
 

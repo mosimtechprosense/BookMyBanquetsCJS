@@ -6,17 +6,18 @@ import { CiLocationOn } from "react-icons/ci"
 import { IoIosSearch } from "react-icons/io"
 import homeWalpaper from "../assets/homeWalpaper.avif"
 import HomeSEO from "../components/SEO/HomeSEO"
-const CustomerReview = lazy(() => import("../components/CustomerReview"))
-const HowItWorks = lazy(() => import("../components/HowItWorks"))
-const Categories = lazy(() => import("../components/Categories"))
-const OfferBanner = lazy(() => import("../components/OfferBanner"))
+const HowItWorks = lazy(() => import("../components/Home/HowItWorks"))
+const Categories = lazy(() => import("../components/Home/Categories"))
+const OfferBanner = lazy(() => import("../components/Home/OfferBanner"))
 const RecommendedListings = lazy(
   () => import("../components/ListingCards/RecommendedListings")
 )
 const HighlyDemandedListings = lazy(
   () => import("../components/ListingCards/HighlyDemandedListings")
 )
-const HomeBlogSection = lazy(() => import("../components/HomeBlogSection"))
+const HomeBlogSection = lazy(() => import("../components/Home/HomeBlogSection"))
+const HomeContent = lazy(() => import("../components/Home/HomeContent"))
+
 
 const LazySection = ({ children }) => {
   const { ref, inView } = useInView({
@@ -31,42 +32,13 @@ const Home = () => {
   const services = useMemo(
     () => [
       { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
-      {
-        label: "Banquet with Hotel Room",
-        path: "/banquet-with-room",
-        categoryId: 9
-      },
       { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
-      {
-        label: "Wedding Farmhouse",
-        path: "/wedding-farmhouse",
-        categoryId: 13
-      },
+      { label: "Wedding Farmhouse", path: "/wedding-farmhouse", categoryId: 13},
       { label: "Party Halls", path: "/party-halls", categoryId: 7 },
-      {
-        label: "5 Star Wedding Hotels",
-        path: "/5-star-wedding-hotels",
-        categoryId: 11
-      },
-      {
-        label: "Destination Weddings",
-        path: "/destination-weddings",
-        categoryId: 12
-      },
-      {
-        label: "Small Function Halls",
-        path: "/small-function-halls",
-        categoryId: 14
-      },
-      { label: "Engagement Venue", path: "/engagement-venue", categoryId: 16 },
-      { label: "Baby Shower", path: "/baby-shower", categoryId: 18 },
-      { label: "Sikh Wedding", path: "/sikh-wedding", categoryId: 20 },
-      { label: "Cocktail Venues", path: "/cocktail-venues", categoryId: 5 },
-      { label: "Party Lawn", path: "/party-lawn", categoryId: 10 },
-      { label: "Corporate Events", path: "/corporate-events", categoryId: 15 },
-      { label: "Ring Ceremony", path: "/ring-ceremony", categoryId: 17 },
-      { label: "Mehendi Ceremony", path: "/mehendi-ceremony", categoryId: 21 },
-      { label: "Retirement Party", path: "/retirement-party", categoryId: 19 }
+      { label: "5 Star Wedding Hotels", path: "/5-star-wedding-hotels", categoryId: 11 },
+      { label: "Destination Weddings", path: "/destination-weddings", categoryId: 12},
+      { label: "BMB Assured", path: "/bmb-assured", categoryId: 26},
+      { label: "BMB Verified", path: "/bmb-verified", categoryId: 27},
     ],
     []
   )
@@ -75,20 +47,11 @@ const Home = () => {
     6: "banquet-hall",
     7: "party-hall",
     8: "marriage-hall",
-    9: "banquet-with-room",
-    10: "party-lawn",
     11: "5-star-wedding-hotel",
     12: "destination-wedding",
     13: "wedding-farmhouse",
-    14: "small-function-hall",
-    15: "corporate-event",
-    16: "engagement-venue",
-    17: "ring-ceremony",
-    18: "baby-shower",
-    19: "retirement-party",
-    20: "sikh-wedding",
-    21: "mehendi-ceremony",
-    5: "cocktail-venue"
+    26: "bmb-assured",
+    27: "bmb-verified"
   }
 
   const API_BASE = import.meta.env.VITE_API_BASE
@@ -198,9 +161,24 @@ const Home = () => {
       params.set("lng", selectedLocation.lng)
     }
 
-    navigate(
-      `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
-    )
+const cleanCities = ["delhi", "gurgaon", "gurugram"]
+
+const isMainCity = cleanCities.includes(citySlug)
+
+// detect if user selected EXACT city (not locality)
+const isExactCitySelection =
+  localitySlug === citySlug ||
+  selectedLocation.name.toLowerCase() === selectedLocation.city?.name?.toLowerCase()
+
+if (isMainCity && isExactCitySelection) {
+  //  Only when user selects "Delhi" itself
+  navigate(`/${serviceSlug}-in-${citySlug}`)
+} else {
+  //  All localities (including North Delhi, Moti Nagar, etc.)
+  navigate(
+    `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
+  )
+}
   }
 
   return (
@@ -232,7 +210,7 @@ const Home = () => {
 
         {/*  Search Bar */}
         <div className="flex items-center justify-center w-full px-6">
-          <div className="relative flex flex-col sm:flex-row  bg-white border border-[#b4b4be] rounded-md shadow-md w-[98%] sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[70%] max-w-[1100px]">
+          <div className="relative flex flex-col sm:flex-row  bg-white border border-[#b4b4be] rounded-md shadow-md w-[98%] sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[70%] max-w-275">
             {/*  Venues & Services Input */}
             <div className="relative flex items-center gap-2 w-full sm:w-[60%] py-4 px-5 text-[15px] border-b sm:border-b-0 sm:border-r border-gray-300">
               <IoIosSearch className="text-gray-700 text-xl cursor-default" />
@@ -251,7 +229,7 @@ const Home = () => {
 
               {showSuggestions && (
                 <div
-                  className="absolute top-full left-0 w-full bg-white border border-gray-300 max-h-[225px] sm:max-h-[165px] overflow-y-auto z-50 shadow-md rounded scrollbar-hide"
+                  className="absolute top-full left-0 w-full bg-white border border-gray-300 max-h-56.25 sm:max-h-41.25 overflow-y-auto z-50 shadow-md rounded scrollbar-hide"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {filteredServices.length > 0 ? (
@@ -294,7 +272,7 @@ const Home = () => {
 
               {showLocationSuggestions && filteredLocations.length > 0 && (
                 <div
-                  className="absolute top-[98%] left-0 w-full bg-white border border-gray-300 max-h-[225px] sm:max-h-[170px] overflow-y-auto z-200 shadow-lg rounded-b-sm scrollbar-hide"
+                  className="absolute top-[98%] left-0 w-full bg-white border border-gray-300 max-h-56.25 sm:max-h-42.5 overflow-y-auto z-200 shadow-lg rounded-b-sm scrollbar-hide"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {filteredLocations.map((loc, idx) => (
@@ -362,12 +340,14 @@ const Home = () => {
         </Suspense>
       </LazySection>
 
+
+     {/* hide temp */}
       {/* Customer Review Section */}
-      <LazySection>
+      {/* <LazySection>
         <Suspense fallback={null}>
           <CustomerReview />
         </Suspense>
-      </LazySection>
+      </LazySection> */}
 
       {/*How It Works Section*/}
       <LazySection>
@@ -382,6 +362,16 @@ const Home = () => {
           <HomeBlogSection />
         </Suspense>
       </LazySection>
+
+
+      {/*Home Content Section*/}
+      <LazySection>
+        <Suspense fallback={null}>
+          <HomeContent />
+        </Suspense>
+      </LazySection>
+
+
     </div>
   )
 }

@@ -1,7 +1,9 @@
+import React from "react";
 import { useState, useEffect, useRef, useContext } from "react"
 import Toastify from "toastify-js"
 import "toastify-js/src/toastify.css"
 import { UIContext } from "../store/UIContext"
+import { useLocation } from "react-router-dom";
 
 const DiscountPopup = () => {
   const [name, setName] = useState("");
@@ -11,41 +13,51 @@ const DiscountPopup = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const popupRef = useRef(null);
   const { menuOpen, popupOpen, setPopupOpen } = useContext(UIContext);
-
-
+  const [isSubmitted, setIsSubmitted] = useState(localStorage.getItem("discountPopupSubmitted") === "true");
+  const location = useLocation();
+  
   const API_BASE = import.meta.env.VITE_API_BASE;
+  const wasClosed = useRef(false);
+  
+  
 
-
-
-  //* Handle reopen logic
+  //* Handle route change logic
 useEffect(() => {
-  let timer;
+  if (isSubmitted) return;
 
-  const alreadySubmitted =
-    sessionStorage.getItem("discountPopupSubmitted") === "true";
-
-  if (alreadySubmitted) return; //  never reopen in this session
-
-  const startTimer = () => {
-    timer = setTimeout(() => setPopupOpen(true), 30000);
-  };
-
-  if (!popupOpen && name === "" && phone === "" && !menuOpen) {
-    const debounce = setTimeout(startTimer, 500);
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(debounce);
-    };
-  }
+  const timer = setTimeout(() => {
+    if (!menuOpen) {
+      setPopupOpen(true);
+    }
+  }, 3000);
 
   return () => clearTimeout(timer);
-}, [popupOpen, setPopupOpen, name, phone, menuOpen]);
+}, [location.pathname, menuOpen, isSubmitted]);
+
+  //* Handle reopen logic
+
+
+useEffect(() => {
+  if (isSubmitted) return;
+
+  if (!popupOpen && wasClosed.current) {
+    const REOPEN_DELAY = 30000;
+
+    const timer = setTimeout(() => {
+      if (!menuOpen) {
+        setPopupOpen(true);
+        wasClosed.current = false;
+      }
+    }, REOPEN_DELAY);
+
+    return () => clearTimeout(timer);
+  }
+}, [popupOpen]);
 
 
 
 
 //* Disable scroll but preserve scrollbar space (no layout shift)/(scroll lock + layout stability.)
-
 useEffect(() => {
   if (popupOpen) {
     // Calculate scrollbar width
@@ -72,9 +84,10 @@ useEffect(() => {
   //* Close popup on outside click
 useEffect(() => {
   const handleClickOutside = (event) => {
-    if (popupRef.current && !popupRef.current.contains(event.target)) {
-      setPopupOpen(false);
-    }
+if (popupRef.current && !popupRef.current.contains(event.target)) {
+  setPopupOpen(false);
+  wasClosed.current = true;
+}
   };
 
   if (popupOpen) {
@@ -117,7 +130,8 @@ const handleSubmit = async (e) => {
   if (isSubmitting) return;
   if (!validateForm()) return;
 
-  setIsSubmitting(true);
+  localStorage.setItem("discountPopupSubmitted", "true"); 
+  setIsSubmitted(true);
 
   Toastify({
     text: "✅ Success! Our team will contact you shortly!",
@@ -154,7 +168,7 @@ const handleSubmit = async (e) => {
     });
 
     // ✅ mark submitted for THIS session
-    sessionStorage.setItem("discountPopupSubmitted", "true");
+    setIsSubmitted(true);
 
     setPopupOpen(false);
     setName("");
@@ -176,15 +190,16 @@ const handleSubmit = async (e) => {
 
 
 
-
+// ✅ HARD BLOCK (this is what actually stops popup after refresh)
+if (isSubmitted) return null;
 
   if (!popupOpen) return null
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-[9999] animate-fadeInSmooth select-none">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-9999 animate-fadeInSmooth select-none">
       <div
         ref={popupRef}
-        className="popup-box bg-white w-[85%] sm:w-[400px] rounded-2xl shadow-2xl relative animate-fadeInSmooth p-6"
+        className="popup-box bg-white w-[85%] sm:w-100 rounded-2xl shadow-2xl relative animate-fadeInSmooth p-6"
       >
         <div className="relative">
           <img
@@ -199,7 +214,11 @@ const handleSubmit = async (e) => {
         </div>
         <button
           className={`absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl cursor-pointer`}
-          onClick={() => setPopupOpen(false)}
+          onClick={() => {
+  setPopupOpen(false);
+  wasClosed.current = true;
+  localStorage.setItem("discountPopupClosedAt", Date.now());
+}}
         >
           ✕
         </button>

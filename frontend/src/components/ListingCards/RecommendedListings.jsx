@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu"
+import { MdVerified, MdVerifiedUser } from "react-icons/md"
 import { HiUserGroup } from "react-icons/hi2"
 import { useNavigate } from "react-router-dom"
 import FoodPrice from "../listingsDetails/FoodPrice"
-
 
 const RecommendedListings = () => {
   const navigate = useNavigate()
@@ -145,46 +145,74 @@ const RecommendedListings = () => {
         }}
         className="flex gap-6 overflow-x-auto no-scrollbar select-none px-16 md:px-8 py-10 cursor-grab active:cursor-grabbing"
       >
-        {infiniteListings.map((item, index) => (
-          <div
-            key={`${item.id}-${index}`}
-            className="min-w-[105%] sm:min-w-[330px] max-w-full sm:max-w-[330px] p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden group cursor-pointer flex-shrink-0"
-            onClick={() =>
-              navigate(
-                `/banquet-hall-in/${slugifyLocality(item.locality)}/${item.id}`
+        {infiniteListings.map((item, index) => {
+          const categories = Array.isArray(item.listing_categories)
+            ? item.listing_categories.map((cat) =>
+                Number(cat.listing_category_id)
               )
-            }
-          >
-            <div className="h-42 w-full rounded-md overflow-hidden">
-              <img
-                src={item.images?.[0]}
-                alt={item.title}
-                className="h-full w-full object-cover group-hover:scale-110 transition-all duration-500"
-              />
-            </div>
-            <div className="pt-4">
-              <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
-                {item.title}
-              </h3>
-              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                {item.excerpt}
-              </p>
-              <div className="mt-3 flex items-center text-sm font-medium">
-                <HiUserGroup className="h-4 w-4 mr-1" />
-                {item.capacityFrom}-{item.capacityTo} Guests
-              </div>
-              <div className="mt-3">
-                <FoodPrice
-                  vegPrice={item.vegPrice}
-                  nonVegPrice={item.nonVegPrice}
+            : []
+
+const isAssured = categories.includes(26)
+const isVerified = categories.includes(27) && !isAssured
+
+          return (
+            <div
+              key={`${item.id}-${index}`}
+              className="min-w-[105%] sm:min-w-82.5 max-w-full sm:max-w-82.5 p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden group cursor-pointer flex-shrink-0"
+              onClick={() =>
+                navigate(
+                  `/banquet-hall-in/${slugifyLocality(item.locality)}/${item.id}`
+                )
+              }
+            >
+              <div className="h-42 w-full rounded-md overflow-hidden relative">
+                {/* BADGES */}
+                <div className="absolute top-2 left-2 z-20 flex flex-col gap-2">
+                  {isAssured && (
+                    <div className="flex items-center gap-1 bg-linear-to-r from-blue-600 to-cyan-500 text-white text-xs px-2 py-1 rounded-md shadow-md">
+                      <MdVerified className="text-xs" />
+                      <span className="font-medium">BMB Assured</span>
+                    </div>
+                  )}
+
+                  {isVerified && (
+                    <div className="flex items-center gap-1 bg-linear-to-r from-green-600 to-emerald-500 text-white text-xs px-2 py-1 rounded-md shadow-md">
+                      <MdVerifiedUser className="text-xs" />
+                      <span className="font-medium">BMB Verified</span>
+                    </div>
+                  )}
+                </div>
+
+                <img
+                  src={item.images?.[0]}
+                  alt={item.title}
+                  className="h-full w-full object-cover group-hover:scale-110 transition-all duration-500"
                 />
               </div>
-              <button className="mt-4 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 cursor-pointer">
-                View Detail
-              </button>
+              <div className="pt-4">
+                <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                  {item.excerpt}
+                </p>
+                <div className="mt-3 flex items-center text-sm font-medium">
+                  <HiUserGroup className="h-4 w-4 mr-1" />
+                  {item.capacityFrom}-{item.capacityTo} Guests
+                </div>
+                <div className="mt-3">
+                  <FoodPrice
+                    vegPrice={item.vegPrice}
+                    nonVegPrice={item.nonVegPrice}
+                  />
+                </div>
+                <button className="mt-4 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 cursor-pointer">
+                  View Detail
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* RIGHT ARROW */}

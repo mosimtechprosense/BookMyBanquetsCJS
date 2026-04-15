@@ -1,3 +1,4 @@
+import React from "react"
 import { useNavigate } from "react-router-dom"
 import { IoCall } from "react-icons/io5"
 import { TbMailFilled } from "react-icons/tb"
@@ -10,7 +11,7 @@ const ContactUs = () => {
   const navigate = useNavigate()
   const [isSending, setIsSending] = useState(false)
 
-  const API_BASE = import.meta.env.VITE_API_BASE;
+  const API_BASE = import.meta.env.VITE_API_BASE
 
   const contactDetails = [
     {
@@ -30,28 +31,29 @@ const ContactUs = () => {
     }
   ]
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (isSending) return
 
-const handleSubmit = async (e) => {
-  e.preventDefault()
-  if (isSending) return
+    const form = e.target
+    const data = {
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      message: form.message.value,
+      pageUrl: window.location.href
+    }
 
-  const form = e.target
-  const data = {
-    name: form.name.value,
-    email: form.email.value,
-    message: form.message.value
-  }
+    setIsSending(true)
 
-  setIsSending(true)
-
-  //  SHOW SUCCESS TOAST IMMEDIATELY (with moving bar)
-  const instantToast = Toastify({
-    text: "✅ Message sent successfully! We’ll contact you shortly.",
-    duration: 3000, // controls moving bar length
-    gravity: "top",
-    position: window.innerWidth <= 768 ? "center" : "right",
-     className: "custom-toast text-white text-xs rounded-xl py-0 shadow-lg",
-    style: {
+    //  SHOW SUCCESS TOAST IMMEDIATELY (with moving bar)
+    const instantToast = Toastify({
+      text: "✅ Message sent successfully! We’ll contact you shortly.",
+      duration: 3000, // controls moving bar length
+      gravity: "top",
+      position: window.innerWidth <= 768 ? "center" : "right",
+      className: "custom-toast text-white text-xs rounded-xl py-0 shadow-lg",
+      style: {
         background: "#141414",
         width: "clamp(260px, 90%, 380px)", // Responsive width with min & max limit
         whiteSpace: "pre-line", // Keeps wrapping natural without breaking mid-word
@@ -59,31 +61,30 @@ const handleSubmit = async (e) => {
         textAlign: "center",
         borderRadius: "10px",
         margin: "0 auto",
-        boxSizing: "border-box",
-    }
-  })
-
-  instantToast.showToast()
-
-  try {
-    // API call runs in background
-    await fetch(`${API_BASE}/api/contact`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+        boxSizing: "border-box"
+      }
     })
 
-    form.reset()
-  } catch (error) {
-    console.error(error)
-  } finally {
-    setIsSending(false)
-  }
-}
+    instantToast.showToast()
 
+    try {
+      // API call runs in background
+      await fetch(`${API_BASE}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+
+      form.reset()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSending(false)
+    }
+  }
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#ffffff] to-[#f9f9f9] py-8 px-6 md:px-16 lg:px-24">
+    <div className="w-full bg-linear-to-b` from-[#ffffff] to-[#f9f9f9] py-8 px-6 md:px-16 lg:px-24">
       {/* Breadcrumb */}
       <div className="flex items-center gap-x-2 mb-10 md:text-base">
         <h3
@@ -110,22 +111,45 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* Contact Details & Form Section */}
+
       <div className="flex flex-col md:flex-row items-start justify-between gap-12 md:gap-16">
         {/* Left - Contact Details */}
-        <div className="w-full md:w-1/3 space-y-8">
-          {contactDetails.map((data, index) => (
-            <div key={index} className="flex items-start gap-5">
-              <div className="bg-[#dc2626] p-3 rounded-full flex items-center justify-center">
-                {data.icon}
+
+        <div className="w-full md:w-1/2 space-y-6">
+          <div className="w-full space-y-4">
+            {contactDetails.map((data, index) => (
+              <div key={index} className="flex items-start gap-5">
+                <div className="bg-[#dc2626] p-3 rounded-full flex items-center justify-center">
+                  {data.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-[#dc2626]">
+                    {data.title}
+                  </h3>
+                  <p className="text-gray-700">{data.des}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-[#dc2626] mb-1">
-                  {data.title}
-                </h3>
-                <p className="text-gray-700">{data.des}</p>
-              </div>
+            ))}
+          </div>
+
+          {/* Google Map Section */}
+          <div className="w-full mt-4">
+            <h3 className="text-xl md:text-2xl font-semibold text-[#dc2626] mb-4 text-left">
+              Location
+            </h3>
+            <div className="w-full h-62 sm:h-75 md:h-50 rounded-xl overflow-hidden shadow-lg">
+              <iframe
+                title="Google Map Location"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=28.4667571,77.0473251&z=15&output=embed"
+              ></iframe>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Right - Contact Form */}
@@ -133,10 +157,7 @@ const handleSubmit = async (e) => {
           <h3 className="text-2xl font-semibold text-gray-800 mb-6">
             Send Message
           </h3>
-          <form
-            className="space-y-5"
-            onSubmit={handleSubmit}
-          >
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <input
                 name="name"
@@ -151,6 +172,15 @@ const handleSubmit = async (e) => {
                 name="email"
                 type="email"
                 placeholder="Email"
+                required
+                className="w-full border-b border-gray-400 py-2 focus:outline-none focus:border-[#dc2626] transition"
+              />
+            </div>
+            <div>
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Mobile Number"
                 required
                 className="w-full border-b border-gray-400 py-2 focus:outline-none focus:border-[#dc2626] transition"
               />

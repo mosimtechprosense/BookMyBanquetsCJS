@@ -1,3 +1,4 @@
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "../components/admin/layout/AdminLayout";
 
@@ -7,10 +8,12 @@ import ResetPassword from "../pages/admin/auth/ResetPassword";
 
 import Dashboard from "../pages/admin/Dashboard";
 import Users from "../pages/admin/Users";
-import Listings from "../pages/admin/Listings";
 import Leads from "../pages/admin/Leads";
 import Bookings from "../pages/admin/Bookings";
 import Locations from "../pages/admin/Locations";
+import ListingsAdminDetails from "../pages/admin/ListingsAdminDetails";
+import ListingDetails from "../pages/admin/ListingDetails";
+import AllReviews from "../pages/admin/reviews/AllReviews";
 
 
 
@@ -39,14 +42,16 @@ export default function AdminRoutes() {
         <Route index element={<Navigate to="dashboard" />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<Users />} />
-        <Route path="listings" element={<Listings />} />        
+        <Route path="listings" element={<ListingsAdminDetails />} />
+        <Route path="reviews" element={<AllReviews />} />        
 
 
         <Route path="bookings" element={<Bookings />} />
         <Route path="locations" element={<Locations />} />
+        <Route path="listings/:id" element={<ListingDetails />} />
         
-    {/* Leads */}
-    <Route path="leads" element={<Leads />} />
+        {/* Leads */}
+        <Route path="leads" element={<Leads />} />
 
       </Route>
     </Routes>

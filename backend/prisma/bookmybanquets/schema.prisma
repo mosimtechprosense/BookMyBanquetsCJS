@@ -12,7 +12,7 @@ model admins {
   name              String
   email             String    @unique(map: "admins_email_unique")
   password          String?   @db.VarChar(255)
-  role              AdminRole 
+  role              AdminRole
   full_access       Boolean   @default(false)
   is_active         Boolean   @default(true)
   email_verified_at DateTime? @db.Timestamp(0)
@@ -24,16 +24,15 @@ model admins {
   updated_at DateTime @updatedAt
 }
 
-
 model auth_verification_codes {
-  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  admin_id   BigInt
-  code_hash  String   @db.VarChar(255)
+  id         BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  admin_id   BigInt          @db.UnsignedBigInt
+  code_hash  String          @db.VarChar(255)
   purpose    AuthCodePurpose @default(ADMIN_LOGIN)
   expires_at DateTime
-  used       Boolean  @default(false)
+  used       Boolean         @default(false)
 
-  admin      admins   @relation(fields: [admin_id], references: [id], onDelete: Cascade)
+  admin admins @relation(fields: [admin_id], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
 
@@ -46,7 +45,6 @@ enum AuthCodePurpose {
   FIRST_TIME_SETUP
 }
 
-
 enum AdminRole {
   SUPER_ADMIN
   ADMIN
@@ -54,9 +52,6 @@ enum AdminRole {
   LEAD_USER
   DATA_ENTRY_USER
 }
-
-
-
 
 model banquet_inquiries {
   id                 BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
@@ -187,15 +182,14 @@ model failed_jobs {
 }
 
 model food_categories {
-  id       BigInt @id @default(autoincrement()) @db.UnsignedBigInt
-  name     String
-  icon     String?
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name       String
+  icon       String?
   created_at DateTime?
   updated_at DateTime?
 
   listing_food_categories listing_food_categories[]
 }
-
 
 model food_category_item {
   id               BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
@@ -231,11 +225,11 @@ model hall_capacities {
 }
 
 model ListingFaq {
-  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  question  String
-  answer    String   @db.Text
-  order     Int      @default(0)
-  isActive  Boolean  @map("is_active")
+  id       BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  question String
+  answer   String  @db.Text
+  order    Int     @default(0)
+  isActive Boolean @map("is_active")
 
   listingId BigInt   @map("listing_id") @db.UnsignedBigInt
   listing   listings @relation(fields: [listingId], references: [id], onDelete: Cascade)
@@ -243,10 +237,9 @@ model ListingFaq {
   createdAt DateTime? @map("created_at") @db.Timestamp(0)
   updatedAt DateTime? @map("updated_at") @db.Timestamp(0)
 
-  @@map("listing_faqs")
   @@index([listingId])
+  @@map("listing_faqs")
 }
-
 
 model inquiries {
   id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
@@ -327,7 +320,7 @@ model listing_food_categories {
   created_at       DateTime? @db.Timestamp(0)
   updated_at       DateTime? @db.Timestamp(0)
 
-  listing       listings       @relation(fields: [listing_id], references: [id], onDelete: Cascade)
+  listing       listings        @relation(fields: [listing_id], references: [id], onDelete: Cascade)
   food_category food_categories @relation(fields: [food_category_id], references: [id])
 
   @@index([listing_id])
@@ -347,47 +340,46 @@ model listing_listing_category {
   @@index([listing_category_id])
 }
 
-
 model listings {
-  id              BigInt            @id @default(autoincrement()) @db.UnsignedBigInt
-  title           String
-  slug            String
-  excerpt         String            @db.Text
-  description     String            @db.Text
-  keywords        String            @db.Text
-  budget          String?
-  min_budget      BigInt
-  max_budget      BigInt
-  min_guest       BigInt
-  max_guest       BigInt
-  guests          String?
-  features        String?           @db.Text
-  policies        String?           @db.Text
-  phone           String?
-  email           String?
-  address         String            @db.Text
-  google_map_url  String?           @db.Text
-  locality        String?
-  pincode         BigInt
-  city            String
-  state           String
-  country         String
-  lat             Float?
-  long            Float?
-  recommended     Boolean?          @map("recommended")
-  popular         Boolean?
-  trending        Boolean?
-  high_demand     Boolean?
-  status          Boolean?
-  created_at      DateTime?         @db.Timestamp(0)
-  updated_at      DateTime?         @db.Timestamp(0)
-  city_id         BigInt?           @db.UnsignedBigInt
-  hall_capacities hall_capacities[]
-  venue_images    venue_images[]
+  id                      BigInt                     @id @default(autoincrement()) @db.UnsignedBigInt
+  title                   String
+  slug                    String
+  excerpt                 String                     @db.Text
+  description             String                     @db.Text
+  keywords                String                     @db.Text
+  budget                  String?
+  min_budget              BigInt
+  max_budget              BigInt
+  min_guest               BigInt
+  max_guest               BigInt
+  guests                  String?
+  features                String?                    @db.Text
+  policies                String?                    @db.Text
+  phone                   String?
+  email                   String?
+  address                 String                     @db.Text
+  google_map_url          String?                    @db.Text
+  locality                String?
+  pincode                 BigInt
+  city                    String
+  state                   String
+  country                 String
+  lat                     Float?
+  long                    Float?
+  recommended             Boolean?                   @map("recommended")
+  popular                 Boolean?
+  trending                Boolean?
+  high_demand             Boolean?
+  status                  Boolean?
+  created_at              DateTime?                  @db.Timestamp(0)
+  updated_at              DateTime?                  @db.Timestamp(0)
+  city_id                 BigInt?                    @db.UnsignedBigInt
+  hall_capacities         hall_capacities[]
+  venue_images            venue_images[]
   listing_food_categories listing_food_categories[]
-  faqs ListingFaq[]
-  listing_categories listing_listing_category[]
-
+  faqs                    ListingFaq[]
+  listing_categories      listing_listing_category[]
+  reviews                 reviews[]
 
   @@index([title], map: "Title_index")
   @@index([min_budget, max_budget], map: "idx_budget_range")
@@ -401,15 +393,15 @@ model listings {
 }
 
 model localities {
-  id               BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  id               BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
   name             String
   title            String
   heading          String?
-  description      String   @db.LongText
-  meta_description String   @db.Text
-  keywords         String   @db.Text
-  location_id      BigInt?  @db.UnsignedBigInt
-  city_id          BigInt   @db.UnsignedBigInt
+  description      String    @db.LongText
+  meta_description String    @db.Text
+  keywords         String    @db.Text
+  location_id      BigInt?   @db.UnsignedBigInt
+  city_id          BigInt    @db.UnsignedBigInt
   created_at       DateTime? @db.Timestamp(0)
   updated_at       DateTime? @db.Timestamp(0)
 
@@ -417,8 +409,6 @@ model localities {
   @@index([city_id])
   @@index([name])
 }
-
-
 
 model location {
   id        Int      @id @default(autoincrement())
@@ -428,12 +418,11 @@ model location {
   lng       Float?
   createdAt DateTime @default(now())
 
-  city      city     @relation(fields: [cityId], references: [id], map: "Location_cityId_fkey")
+  city city @relation(fields: [cityId], references: [id], map: "Location_cityId_fkey")
 
   @@unique([name, cityId], map: "Location_name_cityId_key")
   @@index([cityId], map: "Location_cityId_fkey")
 }
-
 
 model locations {
   id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
@@ -609,13 +598,13 @@ model venue_features {
 }
 
 model venue_images {
-  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   image      String
   alt_text   String?
-  listing_id BigInt    @db.UnsignedBigInt
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
-  listing    listings  @relation(fields: [listing_id], references: [id])
+  listing_id BigInt   @db.UnsignedBigInt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  listing    listings @relation(fields: [listing_id], references: [id])
 
   @@index([listing_id], map: "venue_images_listing_id_fkey")
 }
@@ -662,7 +651,7 @@ model visits {
 model contactmessage {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(255)
-  email     String    @db.VarChar(255)
+  email     String?   @db.VarChar(255)
   phone     String?   @db.VarChar(255)
   message   String    @db.Text
   pageUrl   String?   @db.VarChar(500)
@@ -670,38 +659,52 @@ model contactmessage {
 }
 
 model Business {
-  id                 Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  businessName       String
-  ownerName          String
-  email              String   @unique
+  businessName String
+  ownerName    String
+  email        String @unique
 
-  businessType       String   
-  phone              String
-  alternatePhone     String?  
+  businessType   String
+  phone          String
+  alternatePhone String?
 
-  password           String
+  password String
 
-  address            String
-  city               String
-  state              String
-  pincode            String
+  address String
+  city    String
+  state   String
+  pincode String
 
-  description        String?
+  description String?
 
-  gstNumber          String?  
-  panNumber          String?  
+  gstNumber String?
+  panNumber String?
 
-  businessDocument   String?  
+  businessDocument String?
 
   verificationStatus VerificationStatus @default(PENDING)
 
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum VerificationStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model reviews {
+  id         Int      @id @default(autoincrement())
+  listing_id BigInt   @db.UnsignedBigInt
+  name       String
+  phone      String
+  rating     Int
+  message    String   @db.Text 
+  status     Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  listing listings @relation(fields: [listing_id], references: [id], onDelete: Cascade)
 }

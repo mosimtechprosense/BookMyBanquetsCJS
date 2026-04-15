@@ -14,6 +14,8 @@ const { log } = require("../../utils/logger");
 // todo: CREATE LISTING
 const createListing = async (req, res) => {
   try {
+    console.log("ðŸ“¥ REQUEST BODY:", req.body);
+
     const listing = await createListingDB(req.body);
 
     res.status(201).json({
@@ -21,11 +23,21 @@ const createListing = async (req, res) => {
       message: "Listing created successfully",
       data: listing,
     });
+
   } catch (error) {
-    console.error("Listing created successfully", error);
+    console.error(" DB ERROR:", error);
+    console.error(" MESSAGE:", error.message);
+    console.error(" STACK:", error.stack);
+
+    log("CREATE LISTING ERROR:", {
+      message: error.message,
+      stack: error.stack,
+      body: req.body,
+    });
+
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: error.message,
     });
   }
 };
@@ -76,7 +88,7 @@ console.log("Query filters:", filters)
     log("Get All Listings Error:", error.message || error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };
@@ -105,6 +117,7 @@ const getRecommendedListings = async (req, res) => {
       locality: l.locality,
       vegPrice: l.vegPrice,
       nonVegPrice: l.nonVegPrice,
+      listing_categories: l.listing_categories || []
     }));
 
     res.status(200).json({
@@ -116,7 +129,7 @@ const getRecommendedListings = async (req, res) => {
     console.error("Get Recommended Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };
@@ -141,6 +154,7 @@ const getHighDemandListings = async (req, res) => {
       capacityTo: l.max_guest,
       vegPrice: l.vegPrice,
       nonVegPrice: l.nonVegPrice,
+      listing_categories: l.listing_categories || []
     }));
 
     res.status(200).json({
@@ -152,7 +166,7 @@ const getHighDemandListings = async (req, res) => {
     console.error("Get High Demanded Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };
@@ -180,7 +194,7 @@ const getListingById = async (req, res) => {
     console.error("Get Listing By ID Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };
@@ -202,7 +216,7 @@ const getSimilarListings = async (req, res) => {
     console.error("Get Similar Listings Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };
@@ -240,7 +254,7 @@ const updateListing = async (req, res) => {
     console.error("Update Listing Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };
@@ -269,7 +283,7 @@ const deleteListing = async (req, res) => {
     console.error("Delete Listing Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: `Server Error : ${error}`,
     });
   }
 };

@@ -1,4 +1,9 @@
 /* BLOG CONTENT FIX */
+
+*{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .prose ul {
   list-style-type: disc;
   padding-left: 22px;
@@ -17,19 +22,34 @@
 }
 
 /* Headings */
+.prose h1
+ {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
 .prose h1,
 .prose h2,
 .prose h3,
 .prose h4 {
-  margin-top: 28px;
+  margin-top: 10px;
   margin-bottom: 12px;
   font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1;
 }
+
 
 /* Paragraph spacing */
 .prose p {
-  margin-bottom: 14px;
-  line-height: 1.7;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  font-size: 1rem;
+  word-spacing: 1px;
+  text-align: justify;
 }
 
 /* Tables */
@@ -73,4 +93,13 @@
 .blog-content {
   max-width: 720px;
   margin: auto;
+}
+
+.blog-content a {
+  color: #1a73e8 !important;
+  text-decoration: underline !important;
+}
+
+.blog-content a strong {
+  font-weight: normal !important;
 }

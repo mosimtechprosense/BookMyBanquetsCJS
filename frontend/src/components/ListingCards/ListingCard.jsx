@@ -1,12 +1,29 @@
 import { useContext, useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { HiLocationMarker, HiUserGroup } from "react-icons/hi"
+import { MdVerified, MdVerifiedUser } from "react-icons/md"
 import { UIContext } from "../../store/UIContext"
 import Badge from "../listingsDetails/Badge"
 import { FaPhoneAlt } from "react-icons/fa"
 import FoodPrice from "../listingsDetails/FoodPrice"
 import { categoryToSlug } from "../../utils/slugMaps"
+import { getReviewsByListing } from "../../api/listingReviewsApi"
+import { stripHTML } from "../../utils/stripHTML.js";
 
+// shows star & rating
+const renderStars = (rating = 0) => {
+  const fullStars = Math.floor(rating)
+  const halfStar = rating - fullStars >= 0.5 ? 1 : 0
+  const emptyStars = 5 - fullStars - halfStar
+
+  return (
+    <span className="text-yellow-500">
+      {"★".repeat(fullStars)}
+      {halfStar ? "★" : ""}
+      {"☆".repeat(emptyStars)}
+    </span>
+  )
+}
 
 export default function ListingCard({ item, serviceSlug }) {
   const { setPopupOpen } = useContext(UIContext)
@@ -18,17 +35,27 @@ export default function ListingCard({ item, serviceSlug }) {
   const [activeImage, setActiveImage] = useState(
     images?.[0]?.image_url || "/placeholder.jpg"
   )
+  const [ratingData, setRatingData] = useState({
+    rating: 0,
+    count: 0
+  })
 
+  const rating = ratingData.rating
+  const reviewsCount = ratingData.count
 
+const categories = Array.isArray(item.listing_categories)
+  ? item.listing_categories.map((cat) => Number(cat.listing_category_id))
+  : []
 
-  const rating = item.rating || 5
-  const reviewsCount = item.reviews_count || 1
+const isAssured = categories.includes(26)
+
+// 👇 IMPORTANT: Verified only if NOT Assured
+const isVerified = categories.includes(27) && !isAssured
 
   // split tags
   const tags = item.display_tags || item.keywords?.split(",") || []
   const visibleTags = tags.slice(0, 3)
   const hiddenTags = tags.slice(3)
-
 
   // click outside closed
   useEffect(() => {
@@ -58,12 +85,40 @@ export default function ListingCard({ item, serviceSlug }) {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [showTags])
 
-const resolvedServiceSlug = serviceSlug || categoryToSlug[item.category_id] || "banquet-hall"
-const localitySlug = item.locality_slug || item.locality?.replace(/\s+/g, "-").toLowerCase()
-const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
+  const resolvedServiceSlug =
+    serviceSlug || categoryToSlug[item.category_id] || "banquet-hall"
+  const localitySlug =
+    item.locality_slug || item.locality?.replace(/\s+/g, "-").toLowerCase()
+  const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
 
+  // Fetch rating on mount
+  useEffect(() => {
+    const fetchRating = async () => {
+      try {
+        const res = await getReviewsByListing(item.id)
 
+        const reviews = res.data || res || []
 
+        const activeReviews = reviews.filter((r) => r.status === true)
+
+        const count = activeReviews.length
+
+        const rating =
+          count > 0
+            ? activeReviews.reduce((sum, r) => sum + r.rating, 0) / count
+            : 0
+
+        setRatingData({
+          rating,
+          count
+        })
+      } catch (err) {
+        console.error("Rating fetch error:", err)
+      }
+    }
+
+    fetchRating()
+  }, [item.id])
 
   return (
     <article
@@ -71,23 +126,39 @@ const listingUrl = `/${resolvedServiceSlug}-in/${localitySlug}/${item.id}`
       className="bg-white rounded-xl shadow-md flex flex-col md:flex-row hover:shadow-lg transition cursor-pointer"
     >
       {/* Image */}
-      <div className="w-full md:w-1/3 p-4">
+      <div className="w-full md:w-1/3 p-4 relative">
+        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+          {isAssured && (
+            <div className="flex items-center gap-1 bg-linear-to-r from-blue-600 to-cyan-600 text-white text-xs mt-2 ml-2 px-2 py-1 rounded-lg">
+              <MdVerified className="text-xs" />
+              <span className="font-medium">BMB Assured</span>
+            </div>
+          )}
+
+          {isVerified && (
+            <div className="flex items-center gap-1 bg-linear-to-r from-green-600 to-green-500 text-white text-xs mt-2 ml-2 px-2 py-1 rounded-lg">
+              <MdVerifiedUser className="text-xs" />
+              <span className="font-medium">BMB Verified</span>
+            </div>
+          )}
+        </div>
+
         {/* Main Image */}
         <div className="w-full h-48 rounded-lg overflow-hidden">
-<img
-  loading="lazy"
-  decoding="async"
-src={activeImage.replace(".avif", "_300.avif")}
-srcSet={`
+          <img
+            loading="lazy"
+            decoding="async"
+            src={activeImage.replace(".avif", "_300.avif")}
+            srcSet={`
   ${activeImage.replace(".avif", "_300.avif")} 300w,
   ${activeImage.replace(".avif", "_600.avif")} 600w
 `}
-  sizes="(max-width:768px) 100vw, 300px"
-  width="300"
-  height="220"
-  alt={item.title}
-  className="w-full h-full object-cover"
-/>
+            sizes="(max-width:768px) 100vw, 300px"
+            width="300"
+            height="220"
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
         </div>
 
         {/* Thumbnails */}
@@ -103,20 +174,20 @@ srcSet={`
                 }`}
                 onMouseEnter={() => setActiveImage(img.image_url)}
               >
-<img
-  loading="lazy"
-  decoding="async"
-  src={img.image_url.replace(".avif", "_120.avif")}
-srcSet={`
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  src={img.image_url.replace(".avif", "_120.avif")}
+                  srcSet={`
   ${img.image_url.replace(".avif", "_120.avif")} 120w,
   ${img.image_url.replace(".avif", "_300.avif")} 300w
 `}
-  sizes="100px"
-  width="100"
-  height="74"
-  alt={`thumb-${idx}`}
-  className="w-full h-full object-cover"
-/>
+                  sizes="100px"
+                  width="100"
+                  height="74"
+                  alt={`thumb-${idx}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
             ))}
           </div>
@@ -131,17 +202,23 @@ srcSet={`
 
           {/* Rating top-right */}
           <div className="flex items-center gap-1 text-sm">
-            <span className="text-yellow-500">★</span>
-            <span className="font-semibold">{rating.toFixed(1)}</span>
-            <span className="text-gray-400">
-              | ({reviewsCount}) {reviewsCount <= 1 ? "review" : "reviews"}
-            </span>
+            {reviewsCount > 0 ? (
+              <>
+                {renderStars(rating)}
+                <span className="font-semibold">{rating.toFixed(1)}/ 5</span>
+                <span className="text-gray-400">
+                  | ({reviewsCount}) {reviewsCount <= 1 ? "review" : "reviews"}
+                </span>
+              </>
+            ) : (
+              <span className="text-gray-400">No reviews yet!</span>
+            )}
           </div>
         </div>
 
         {/* Excerpt */}
         <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-          {item.excerpt}
+          {stripHTML(item.excerpt) || "-"}
         </p>
 
         {/* Location & Guests */}
@@ -223,32 +300,30 @@ srcSet={`
             Get a Quote
           </button>
 
+          {/* Mobile: Call Us */}
+          <div>
+            <a
+              href="tel:918920597474"
+              onClick={(e) => e.stopPropagation()}
+              className="flex sm:hidden items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px]"
+              aria-label="Call now"
+            >
+              <FaPhoneAlt className="text-xs" />
+              Call Us
+            </a>
 
-{/* Mobile: Call Us */}
-<div>
-  <a
-    href="tel:918920597474"
-    onClick={(e) => e.stopPropagation()}
-    className="flex sm:hidden items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px]"
-    aria-label="Call now"
-  >
-    <FaPhoneAlt className="text-xs" />
-    Call Us
-  </a>
-
-  {/* Desktop: View Contact */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation()
-      setPopupOpen(true) 
-    }}
-    className="hidden sm:flex items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px] cursor-pointer"
-  >
-    <FaPhoneAlt className="text-xs" />
-    View Contact
-  </button>
-</div>
-
+            {/* Desktop: View Contact */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setPopupOpen(true)
+              }}
+              className="hidden sm:flex items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px] cursor-pointer"
+            >
+              <FaPhoneAlt className="text-xs" />
+              View Contact
+            </button>
+          </div>
         </div>
       </div>
     </article>

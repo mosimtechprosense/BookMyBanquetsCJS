@@ -91,6 +91,7 @@
 .prose p {
   margin: 0 0 12px 0 !important;
   line-height: 1.7;
+  text-align: justify;
 }
 
 .prose ul {

@@ -31,10 +31,11 @@ app.use(
   cors({
 origin: [
   "http://localhost:5173",
+  "http://localhost:4173",
   "https://www.bookmybanquets.in",
   "https://bookmybanquets.in",
 ],
-    methods: "GET,POST,PUT,DELETE",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })

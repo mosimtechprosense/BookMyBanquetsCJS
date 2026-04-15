@@ -8,7 +8,7 @@ export default function useInfiniteListings(filters) {
   const [hasMore, setHasMore] = useState(true)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
   const hasMoreRef = useRef(hasMore)
-const isInitialLoadingRef = useRef(isInitialLoading)
+  const isInitialLoadingRef = useRef(isInitialLoading)
 
   const batchSize = 10
 
@@ -16,7 +16,7 @@ const isInitialLoadingRef = useRef(isInitialLoading)
   const observerRef = useRef(null)
   const abortRef = useRef(null)
   const isFetchingRef = useRef(false)
-const isFetchingMore = loading && !isInitialLoading
+  const isFetchingMore = loading && !isInitialLoading
 
 useEffect(() => { hasMoreRef.current = hasMore }, [hasMore])
 useEffect(() => { isInitialLoadingRef.current = isInitialLoading }, [isInitialLoading])
@@ -66,7 +66,11 @@ const fetchBatch = useCallback(async () => {
     const total = res?.total || 0
 
     setTotalCount(total)
-    setListings(prev => [...prev, ...data])
+    setListings(prev => {
+  const existingIds = new Set(prev.map(item => item.id.toString()))
+  const filtered = data.filter(item => !existingIds.has(item.id.toString()))
+  return [...prev, ...filtered]
+})
 
     skipRef.current += batchSize
     if (skipRef.current >= total) setHasMore(false)

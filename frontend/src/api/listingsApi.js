@@ -28,8 +28,61 @@ export const fetchListings = async (filters = {}, options = {}) => {
   })
 
   if (!res.ok) throw new Error("Failed to fetch listings")
-  return res.json()
+  const data = await res.json()
+
+
+  if (data?.data) {
+  let pinned = null
+
+  const pinnedIndex = data.data.findIndex(
+    (item) => Number(item.id) === 752
+  )
+
+  //  If already in results → move to top
+  if (pinnedIndex !== -1) {
+    pinned = data.data.splice(pinnedIndex, 1)[0]
+  }
+
+  //  If NOT present → fetch separately
+  if (!pinned) {
+    try {
+      const resPinned = await fetch(`${API_BASE}/api/listings/752`)
+      if (resPinned.ok) {
+        const pinnedData = await resPinned.json()
+        const pinnedItem = pinnedData.data || pinnedData
+
+        //  IMPORTANT: CHECK CATEGORY MATCH
+        const categoryFilter = filters.category
+
+        const matchesCategory = categoryFilter
+          ? pinnedItem.listing_categories?.some(
+              (c) => Number(c.listing_category_id) === Number(categoryFilter)
+            )
+          : true
+
+        //  OPTIONAL: locality/city match (if needed)
+        const matchesCity = filters.city
+          ? pinnedItem.city?.toLowerCase().includes(filters.city.toLowerCase())
+          : true
+
+        if (matchesCategory && matchesCity) {
+          pinned = pinnedItem
+        }
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  //  Add to top only if valid
+  if (pinned) {
+    data.data.unshift(pinned)
+  }
 }
+
+return data
+}
+
 
 
 

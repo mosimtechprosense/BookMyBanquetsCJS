@@ -3,11 +3,6 @@ import { useEffect, useRef, useState } from "react"
 export default function VenueTypeFilter({ setFilters, value }) {
   const venueTypeOptions = [
     { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
-    {
-      label: "Banquet with Hotel Room",
-      path: "/banquet-with-room",
-      categoryId: 9
-    },
     { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
     {
       label: "Wedding Farmhouse",
@@ -26,38 +21,14 @@ export default function VenueTypeFilter({ setFilters, value }) {
       categoryId: 12
     },
     {
-      label: "Small Function Halls",
-      path: "/small-function-halls",
-      categoryId: 14
+      label: "BMB Assured",
+      path: "/bmb-assured",
+      categoryId: 26
     },
     {
-      label: "Engagement Venue",
-      path: "/engagement-venue",
-      categoryId: 16
-    },
-    { label: "Baby Shower", path: "/baby-shower", categoryId: 18 },
-    { label: "Sikh Wedding", path: "/sikh-wedding", categoryId: 20 },
-    {
-      label: "Cocktail Venues",
-      path: "/cocktail-venues",
-      categoryId: 5
-    },
-    { label: "Party Lawn", path: "/party-lawn", categoryId: 10 },
-    {
-      label: "Corporate Events",
-      path: "/corporate-events",
-      categoryId: 15
-    },
-    { label: "Ring Ceremony", path: "/ring-ceremony", categoryId: 17 },
-    {
-      label: "Mehendi Ceremony",
-      path: "/mehendi-ceremony",
-      categoryId: 21
-    },
-    {
-      label: "Retirement Party",
-      path: "/retirement-party",
-      categoryId: 19
+      label: "BMB Verified",
+      path: "/bmb-verified",
+      categoryId: 27
     }
   ]
 

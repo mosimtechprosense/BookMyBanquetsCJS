@@ -20,7 +20,7 @@ export default function SimilarListingsSection({ listings }) {
 
   // AUTO SCROLL
   useEffect(() => {
-     if (!Array.isArray(listings) || listings.length === 0) return null
+     if (!Array.isArray(listings) || listings.length === 0) return
      
     const container = scrollRef.current
     if (!container) return
@@ -37,7 +37,11 @@ export default function SimilarListingsSection({ listings }) {
     }
 
     animationRef.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(animationRef.current)
+    return () => {
+  if (animationRef.current) {
+    cancelAnimationFrame(animationRef.current)
+  }
+}
   }, [listings])
 
   // MOUSE DRAG
@@ -113,7 +117,7 @@ export default function SimilarListingsSection({ listings }) {
           <div
             onClick={(e) => {
               e.stopPropagation()
-              navigate(`/banquet-hall-in/${item.locality}/${item.id}`)
+              navigate(`/banquet-hall-in/${item.locality.toLowerCase().replace(/\s+/g, "-")}/${item.id}`)
             }}
             key={`${item.id}-${index}`}
             className="min-w-[105%] sm:min-w-[330px] max-w-full sm:max-w-[330px] p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden cursor-pointer"
@@ -150,7 +154,7 @@ export default function SimilarListingsSection({ listings }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  navigate(`/banquet-hall-in/${item.locality}/${item.id}`)
+                  navigate(`/banquet-hall-in/${item.locality.toLowerCase().replace(/\s+/g, "-")}/${item.id}`)
                 }}
                 className="mt-2 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
               >

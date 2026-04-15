@@ -13,7 +13,7 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
           overflow-hidden
           bg-white
           shadow-2xl
-          pb-[300px] lg:pb-[390px]
+          pb-75 lg:pb-97.5
         "
       >
         {/* ===== FLOATING CONTENT ===== */}
@@ -47,7 +47,7 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
             </h3>
 
             <p className="text-xs lg:text-sm text-gray-700">
-              Phone: <span className="font-medium">{listing.phone}</span>
+              Phone: <span className="font-medium">+91-8920597474</span>
             </p>
             </div>
 <div>
@@ -75,10 +75,10 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
         </div>
 
         {/* ===== IMAGE AT BOTTOM ===== */}
-        <div className="absolute bottom-0 left-0 w-full h-[300px] lg:h-[400px]">
+        <div className="absolute bottom-0 left-0 w-full h-85 sm:h-90 md:h-95 lg:h-100">
           <img
             src={sidebarImg}
-            alt="Venue"
+            alt="bookmybanquets"
             className="w-full h-full object-cover"
           />
         </div>

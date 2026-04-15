@@ -1,7 +1,9 @@
+import React from "react"
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import BlogSEO from "../components/SEO/BlogSEO"
 import BlogListSEO from "../components/SEO/BlogListSEO"
+import { FaSearch } from "react-icons/fa"
 import "../style/Blog.css"
 
 const BASE_URL = "https://blog.bookmybanquets.in/wp-json/wp/v2"
@@ -9,14 +11,26 @@ const PINNED_ID = 1269
 const PER_PAGE = 10
 const PAGINATION_LIMIT = 10
 
+// convert img Url
+const transformImageUrl = (url) => {
+  if (!url) return null
+
+  return url.replace(
+    "https://blog.bookmybanquets.in",
+    "https://www.bookmybanquets.in/blog"
+  )
+}
 
 const cleanBlogHTML = (html) => {
   return html
     .replace(/font-family:[^;"]+;?/gi, "")
     .replace(/data-start="[^"]*"/g, "")
     .replace(/data-end="[^"]*"/g, "")
+    .replace(
+      /<a(?![^>]*target=)/g,
+      '<a target="_blank" rel="noopener noreferrer"'
+    )
 }
-
 
 const Blog = () => {
   const { slug, categorySlug } = useParams()
@@ -35,6 +49,8 @@ const Blog = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalPosts, setTotalPosts] = useState(0)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [allPosts, setAllPosts] = useState([])
 
   // BLOG DETAILS LOADING SKELETON
   const BlogSkeleton = () => {
@@ -126,36 +142,36 @@ const Blog = () => {
       })
   }, [categorySlug])
 
-// Fetch Blog List
-useEffect(() => {
-  if (slug) return
+  // Fetch Blog List
+  useEffect(() => {
+    if (slug) return
 
-  setLoadingList(true)
+    setLoadingList(true)
 
-  let url = `${BASE_URL}/posts?_embed&per_page=${PER_PAGE}&page=${page}`
-  if (categoryId) url += `&categories=${categoryId}`
+    let url = `${BASE_URL}/posts?_embed&per_page=${PER_PAGE}&page=${page}`
+    if (categoryId) url += `&categories=${categoryId}`
 
-  fetch(url)
-    .then((res) => {
-      setTotalPages(Number(res.headers.get("X-WP-TotalPages")) || 1)
-      setTotalPosts(Number(res.headers.get("X-WP-Total")) || 0)
-      return res.json()
-    })
-    .then((data) => {
-      const sorted = [...data].sort((a, b) => {
-        if (a.id === PINNED_ID) return -1
-        if (b.id === PINNED_ID) return 1
-        return 0
+    fetch(url)
+      .then((res) => {
+        setTotalPages(Number(res.headers.get("X-WP-TotalPages")) || 1)
+        setTotalPosts(Number(res.headers.get("X-WP-Total")) || 0)
+        return res.json()
       })
+      .then((data) => {
+        const sorted = [...data].sort((a, b) => {
+          if (a.id === PINNED_ID) return -1
+          if (b.id === PINNED_ID) return 1
+          return 0
+        })
 
-      setPosts(sorted)
-      setLoadingList(false)
-    })
-    .catch(() => {
-      setPosts([])
-      setLoadingList(false)
-    })
-}, [slug, categoryId, page])
+        setPosts(sorted)
+        setLoadingList(false)
+      })
+      .catch(() => {
+        setPosts([])
+        setLoadingList(false)
+      })
+  }, [slug, categoryId, page])
 
   // Pagination Helpers
   const half = Math.floor(PAGINATION_LIMIT / 2)
@@ -173,6 +189,51 @@ useEffect(() => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [slug, categoryId, page])
+
+  // BLOG SEARCH LOGIC
+const search = searchTerm.toLowerCase().trim()
+
+// Use ALL posts when searching, otherwise paginated posts
+const basePosts = search ? allPosts : posts
+
+const filteredPosts = basePosts.filter((p) => {
+  const title = decodeHTML(p.title.rendered).toLowerCase()
+
+  // TITLE ONLY SEARCH
+  return !search || title.includes(search)
+})
+
+useEffect(() => {
+  if (slug) return
+
+  const fetchAllPosts = async () => {
+    try {
+      let all = []
+      let page = 1
+
+      while (true) {
+        const res = await fetch(
+          `${BASE_URL}/posts?_embed&per_page=100&page=${page}`
+        )
+
+        const data = await res.json()
+        if (!Array.isArray(data) || data.length === 0) break
+
+        all = [...all, ...data]
+
+        if (data.length < 100) break
+        page++
+      }
+
+      setAllPosts(all)
+    } catch (err) {
+      console.log(err)
+      setAllPosts(posts) // fallback
+    }
+  }
+
+  fetchAllPosts()
+}, [slug, posts])
 
   return (
     <section className="bg-gray-50">
@@ -217,10 +278,46 @@ useEffect(() => {
             </>
           )}
         </nav>
+
         {!slug && (
-          <h1 className="text-3xl md:text-4xl font-extrabold mb-10">
-            {categoryName || "Blog List"}
-          </h1>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
+            {/* LEFT TITLE */}
+            <h1 className="text-3xl md:text-4xl font-extrabold">
+              {categoryName || "Blog List"}
+            </h1>
+
+
+
+{/* RIGHT SIDE (COUNT + SEARCH) */}
+<div className="flex flex-col md:items-end gap-2 w-full md:w-96">
+
+  {/* TOTAL COUNT */}
+  {!slug && (
+    <p className="text-sm text-gray-500 font-medium">
+      {searchTerm.trim()
+        ? `${filteredPosts.length} results found`
+        : `${totalPosts} total blogs`}
+    </p>
+  )}
+
+  {/* SEARCH BOX */}
+  <div className="relative w-full">
+    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      placeholder="Search blogs..."
+      className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 
+      bg-white shadow-sm hover:shadow-md
+      focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500
+      transition-all duration-200"
+    />
+  </div>
+
+</div>
+          </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -232,7 +329,7 @@ useEffect(() => {
             {/* BLOG DETAILS */}
             {slug && post && (
               <>
-               <BlogSEO post={post} />
+                <BlogSEO post={post} />
 
                 {/* BLOG HEADER — ABOVE IMAGE */}
                 <div className="my-6">
@@ -267,20 +364,25 @@ useEffect(() => {
                 {/* FEATURE IMAGE SEPARATE — NOT INSIDE CARD */}
                 <div className="w-full mb-8">
                   <img
-                    src={post._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                    className="w-full h-[280px] md:h-[420px] object-cover rounded-3xl"
+                    src={transformImageUrl(
+                      post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
+                    )}
+                    className="w-full h-70 md:h-120 object-cover rounded-3xl"
                     alt={post.title.rendered}
                   />
                 </div>
 
                 {/* CONTENT CARD BELOW IMAGE */}
                 <article className="bg-white rounded-3xl shadow-sm p-6 md:p-8">
-<div
- className="prose prose-lg max-w-none blog-content"
- dangerouslySetInnerHTML={{
-  __html: cleanBlogHTML(post.content.rendered)
-}}
-/>
+                  <div
+                    className="prose prose-lg max-w-none blog-content 
+               prose-a:text-blue-600 
+               prose-a:underline 
+               hover:prose-a:text-blue-800"
+                    dangerouslySetInnerHTML={{
+                      __html: cleanBlogHTML(post.content.rendered)
+                    }}
+                  />
                 </article>
               </>
             )}
@@ -294,17 +396,28 @@ useEffect(() => {
               </div>
             )}
 
+            {/* search not found */}
+            {!slug && !loadingList && filteredPosts.length === 0 && (
+              <p className="text-center text-gray-500">
+                {searchTerm?.trim()
+                  ? `No blogs found for "${searchTerm}"`
+                  : "No blogs found"}
+              </p>
+            )}
+
             {/* BLOG LIST */}
             {!slug &&
               !loadingList &&
-              posts.map((p) => (
+              filteredPosts.map((p) => (
                 <article
                   key={p.id}
                   className="bg-white rounded-3xl shadow-sm hover:shadow-md transition overflow-hidden"
                 >
                   <div className="grid md:grid-cols-2">
                     <img
-                      src={p._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+                      src={transformImageUrl(
+                        p._embedded?.["wp:featuredmedia"]?.[0]?.source_url
+                      )}
                       className="h-56 md:h-full w-full object-cover"
                       alt={p.title.rendered}
                     />
@@ -337,7 +450,7 @@ useEffect(() => {
               ))}
 
             {/* PAGINATION */}
-            {!slug && totalPages > 1 && (
+            {!slug && searchTerm.trim() === "" && totalPages > 1 && (
               <div className="space-y-4">
                 <p className="text-sm text-gray-500 text-center">
                   Showing {showingFrom} to {showingTo} of {totalPosts} results
@@ -406,13 +519,13 @@ useEffect(() => {
               <h3 className="font-bold text-xl mb-1">Recent Posts</h3>
               <ul className="space-y-1.5">
                 {recentPosts.map((rp) => (
-                    <li key={rp.id}>
-                      <Link
-                        to={`/blogs/${rp.slug}`}
-                        className="hover:text-red-600"
-                      >
-                        {decodeHTML(rp.title.rendered)}
-                      </Link>
+                  <li key={rp.id}>
+                    <Link
+                      to={`/blogs/${rp.slug}`}
+                      className="hover:text-red-600"
+                    >
+                      {decodeHTML(rp.title.rendered)}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -421,7 +534,7 @@ useEffect(() => {
             <div className="bg-white rounded-3xl shadow-sm p-6">
               <h3 className="font-bold text-xl mb-1">Categories</h3>
               <ul className="space-y-1">
-                {categories.map((cat) => ( 
+                {categories.map((cat) => (
                   <li key={cat.id}>
                     <button
                       onClick={() => navigate(`/blogs/category/${cat.slug}`)}

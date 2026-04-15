@@ -1,29 +1,30 @@
+import React from "react";
 import { about1img, about2img, about3img } from "../assets/index";
 import { useNavigate } from "react-router-dom";
 
 const About = () => {
   const navigate = useNavigate();
 
-  const founders = [
-    {
-      name: "Sanjay Pathak",
-      img: "/temp.png",
-      exp: "8 years+ experience in wedding management",
-      title: "Founder",
-    },
-    {
-      name: "Raj Rajput",
-      img: "/temp.png",
-      exp: "5 years+ experience in wedding management",
-      title: "Co-Founder",
-    },
-    {
-      name: "Gaurav Chauhan",
-      img: "/temp.png",
-      exp: "3 years+ experience in wedding management",
-      title: "Co-Founder",
-    },
-  ];
+  // const founders = [
+  //   {
+  //     name: "Sanjay Pathak",
+  //     img: "/temp.png",
+  //     exp: "8 years+ experience in wedding management",
+  //     title: "Founder",
+  //   },
+  //   {
+  //     name: "Raj Rajput",
+  //     img: "/temp.png",
+  //     exp: "5 years+ experience in wedding management",
+  //     title: "Co-Founder",
+  //   },
+  //   {
+  //     name: "Gaurav Chauhan",
+  //     img: "/temp.png",
+  //     exp: "3 years+ experience in wedding management",
+  //     title: "Co-Founder",
+  //   },
+  // ];
 
   return (
     <div className="w-full bg-[#ffffff] py-8 px-6 md:px-16 lg:px-24">
@@ -119,13 +120,17 @@ const About = () => {
         </div>
       </div>
 
+
+
       {/* Founder & Co-Founders Section */}
-      <div className="mt-16 text-center">
+
+      {/*temporery hide bacause of image */}
+
+      {/* <div className="mt-16 text-center">
         <h3 className="text-3xl md:text-4xl font-bold text-[#09122C] mb-10">
           BookMyBanquet’s Founder & Co-Founders
         </h3>
 
-        {/* Flex Cards */}
         <div className="flex flex-wrap justify-center gap-10">
           {founders.map((data) => (
             <div
@@ -147,7 +152,10 @@ const About = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
+
+
+
     </div>
   );
 };

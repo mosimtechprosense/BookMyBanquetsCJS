@@ -12,7 +12,9 @@ import BusinessRegister from "./pages/BusinessRegister"
 import BusinessLogin from "./pages/BusinessLogin"
 import BusinessDashboard from "./pages/BusinessDashboard"
 import ServiceRouteGuard from "./routes/ServiceRouteGuard"
+import RouteValidator from "./routes/RouteValidator"
 import ListingDetailsDynamic from "./pages/ListingDetailsDynamic"
+import FAQPage from "./pages/FAQPage"
 const DiscountPopup = lazy(() => import("./components/DiscountPopup"))
 const RecentSearches = lazy(() => import("./components/RecentSearches"))
 const FloatingWhatsApp = lazy(() => import("./components/FloatingWhatsApp"))
@@ -79,6 +81,7 @@ function App() {
           <ScrollToTop />
 
           <ConditionalAdminUI>
+              <RouteValidator>
             <Suspense  fallback={<div className="py-20 text-center text-gray-500">Loading...</div>}>
           <Routes>
             <Route path="/admin/*" element={<AdminRoutes />} />
@@ -87,6 +90,8 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/why-us" element={<WhyUs />} />
+            <Route path="/faq" element={<FAQPage />} />
+
 
             <Route path="/blog" element={<BlogRootRedirect />} />
             <Route path="/blog/:slug" element={<BlogRedirect />} />
@@ -99,17 +104,22 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />           
 
 <Route path="/:serviceSlug-in/:localitySlug/:id" element={<ListingDetailsDynamic />} />
-<Route path="/:serviceCity/:localitySlug?" element={<ServiceRouteGuard />} />
+
+<Route path="/:serviceCity/:localitySlug/*" element={<NotFound />} />
+<Route path="/:serviceCity/:localitySlug" element={<ServiceRouteGuard />} />
+<Route path="/:serviceCity" element={<ServiceRouteGuard />} />
 
 
 <Route path="/business/register" element={<BusinessRegister />} />
 <Route path="/business/login" element={<BusinessLogin />} />
 <Route path="/business/dashboard" element={<BusinessDashboard />} />
 
+<Route path="*" element={<NotFound />} />
 <Route path="/404/*" element={<NotFound />} />
           </Routes>
           
           </Suspense>
+          </RouteValidator>
           </ConditionalAdminUI>
         </UIProvider>
         </AdminAuthProvider>

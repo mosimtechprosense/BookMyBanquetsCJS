@@ -59,6 +59,7 @@ export default function ListingsPage() {
           <ListingsHeader
             filters={filters}
             totalCount={totalCount}
+             serviceFromRoute={serviceFromRoute}
           />
 
           <ListingsGrid

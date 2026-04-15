@@ -98,7 +98,27 @@ if (obj.locality && !obj.lat && !obj.lng) {
 
 
 const finalCity = merged.city || cityFromRoute
-const safeCity = finalCity && finalCity.trim() !== "" ? finalCity : null
+const safeCity =
+  finalCity && finalCity !== "undefined" && finalCity.trim() !== ""
+    ? finalCity
+    : null
+
+// preserve category from route if missing
+const slugToCategory = {
+  "banquet-hall": 6,
+  "party-hall": 7,
+  "marriage-hall": 8,
+  "5-star-wedding-hotel": 11,
+  "destination-wedding": 12,
+  "wedding-farmhouse": 13,
+  "bmb-assured": 26,
+  "bmb-verified": 27
+}
+
+//  ALWAYS enforce correct category from route
+if (!merged.category && serviceFromRoute && slugToCategory[serviceFromRoute]) {
+  merged.category = slugToCategory[serviceFromRoute]
+}
 
 delete merged.city
 
@@ -110,17 +130,23 @@ delete merged.city
     })
 
 
-let path = `/${serviceFromRoute}`
+let path = ""
 
-// ✅ Only add "-in-city" if city exists
-if (safeCity) {
-  path += `-in-${safeCity.replace(/\s+/g, "-")}`
+if (serviceFromRoute && safeCity) {
+  path = `/${serviceFromRoute}-in-${safeCity.replace(/\s+/g, "-")}`
+} else if (serviceFromRoute) {
+  path = `/${serviceFromRoute}`
 }
 
     if (merged.locality)
       path += `/${merged.locality.replace(/\s+/g, "-")}`
 
-    navigate(`${path}?${qs.toString()}`, { replace: false })
+    const queryString = qs.toString()
+
+navigate(
+  queryString ? `${path}?${queryString}` : path,
+  { replace: false }
+)
   }
 
   return {

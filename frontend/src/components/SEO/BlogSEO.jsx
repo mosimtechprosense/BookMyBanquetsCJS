@@ -1,5 +1,23 @@
 import { Helmet } from "react-helmet-async"
 
+const frontendUrl = "https://www.bookmybanquets.in";
+
+// convert img Url
+const transformImageUrl = (url) => {
+  if (!url) return null
+
+  return url.replace(
+    "https://blog.bookmybanquets.in",
+    "https://www.bookmybanquets.in/blog"
+
+
+
+
+
+    
+  )
+}
+
 const BlogSEO = ({ post }) => {
   if (!post || !post.yoast_head_json) return null
 
@@ -7,14 +25,19 @@ const BlogSEO = ({ post }) => {
 
   const title = seo.title
   const description = seo.description
-  const canonical = seo.canonical
+const canonical = post?.slug
+  ? `${frontendUrl}/blogs/${post.slug}`
+  : seo.canonical
 
   const ogTitle = seo.og_title || title
   const ogDescription = seo.og_description || description
-  const ogUrl = seo.og_url || canonical
+const ogUrl = post?.slug
+  ? `${frontendUrl}/blogs/${post.slug}`
+  : seo.og_url
 
-  const ogImage =
-    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null
+const ogImage = transformImageUrl(
+  post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
+)
 
   return (
     <Helmet>

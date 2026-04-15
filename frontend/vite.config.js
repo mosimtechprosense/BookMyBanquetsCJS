@@ -7,35 +7,41 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    visualizer({ open: true }) // optional, shows bundle sizes
+    visualizer({ open: true }) // optional
   ],
+
+  // <-- add optimizeDeps here
+  optimizeDeps: {
+    include: ["react", "react-dom", "react-helmet-async", "@tiptap/react", "@tiptap/starter-kit"],
+  },
 
   build: {
     chunkSizeWarningLimit: 1000,
-     assetsInlineLimit: 0,
+    assetsInlineLimit: 0,
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            // Split React core
-            if (id.includes("react") || id.includes("react-dom")) {
-              return "vendor.react";
-            }
+manualChunks(id) {
+  if (id.includes("node_modules")) {
 
-            // Split React Icons
-            if (id.includes("react-icons")) {
-              return "vendor.icons";
-            }
+    if (id.includes("react") || id.includes("react-dom")) {
+      return;
+    }
 
-            // Split Redux
-            if (id.includes("redux")) {
-              return "vendor.redux";
-            }
+    if (id.includes("react-icons")) {
+      return "vendor.icons";
+    }
 
-            // Everything else
-            return "vendor.misc";
-          }
-        },
+    if (id.includes("redux")) {
+      return "vendor.redux";
+    }
+
+    if (id.includes("@tiptap")) {
+      return "vendor.tiptap";
+    }
+
+    return "vendor.misc";
+  }
+},
       },
     },
   },

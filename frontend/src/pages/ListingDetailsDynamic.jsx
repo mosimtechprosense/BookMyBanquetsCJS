@@ -2,6 +2,7 @@ import { useNavigate, useParams, useLocation, Navigate } from "react-router-dom"
 import { useEffect, useState, useContext } from "react"
 import { fetchListingById, fetchSimilarListings } from "../api/listingsApi"
 import { LuArrowLeft, LuArrowRight, LuX } from "react-icons/lu"
+import { MdVerified, MdVerifiedUser } from "react-icons/md"
 import { UIContext } from "../store/UIContext"
 import SimilarListingsSection from "../components/ListingCards/SimilarListing"
 import HallCapacities from "../components/listingsDetails/HallCapacities"
@@ -15,6 +16,11 @@ import ListingDetailsSidebar from "../components/listingsDetails/ListingDetailsS
 import { categoryToSlug, categoryToVenuePath } from "../utils/slugMaps"
 import { DetailsPageSkeleton } from "../components/common/SkeletonLoader"
 import ListingBottomActions from "../components/listingsDetails/ListingBottomActions"
+import ListingDetailsSEO from "../components/SEO/ListingDetailsSEO"
+import ListingReviewsSection from "../components/reviews/ListingReview/ListingReviewsSection"
+import ListingReviewForm from "../components/reviews/ListingReview/ListingReviewForm"
+
+
 
 export default function ListingDetailsDynamic() {
   const { id, serviceSlug } = useParams()
@@ -31,6 +37,53 @@ export default function ListingDetailsDynamic() {
   const [activeImageIndex, setActiveImageIndex] = useState(null)
   const [fullImage, setFullImage] = useState(null)
   const images = listing?.venue_images ?? []
+  const [validLocalities, setValidLocalities] = useState(new Set())
+  const [liveViewCount, setLiveViewCount] = useState(0)
+
+  // metch locations for brudcrumbs
+  useEffect(() => {
+    fetch("https://api.bookmybanquets.in/api/locations")
+      .then((res) => res.json())
+      .then((res) => {
+        const data = res.data || []
+
+        const set = new Set(
+          data.map((loc) => loc.name?.toLowerCase().replace(/\s+/g, "-"))
+        )
+
+        setValidLocalities(set)
+      })
+  }, [])
+
+
+  // shows the live count
+useEffect(() => {
+  // initial base (10–20 feels more believable than jumping to 25 instantly)
+  const base = Math.floor(Math.random() * 11) + 10
+  setLiveViewCount(base)
+
+  const interval = setInterval(() => {
+setLiveViewCount((prev) => {
+  const change = Math.floor(Math.random() * 4) + 2
+
+  let increaseChance = 0.7
+
+  // reduce growth chance near max
+  if (prev > 25) increaseChance = 0.3
+
+  const increase = Math.random() < increaseChance
+
+  let next = increase ? prev + change : prev - change
+
+  if (next < 2) next = 2
+  if (next > 30) next = 30
+
+  return next
+})
+  }, 8000)
+
+  return () => clearInterval(interval)
+}, [id])
 
   useEffect(() => {
     //  STOP invalid cases BEFORE API calls
@@ -65,18 +118,21 @@ export default function ListingDetailsDynamic() {
   }, [id, location.pathname])
 
   // load image only when click on view gallery
-useEffect(() => {
-  if (activeImageIndex !== null && listing?.venue_images?.[activeImageIndex]) {
-    setFullImage(null)
+  useEffect(() => {
+    if (
+      activeImageIndex !== null &&
+      listing?.venue_images?.[activeImageIndex]
+    ) {
+      setFullImage(null)
 
-    const img = new Image()
-    img.src = listing.venue_images[activeImageIndex].image_url
+      const img = new Image()
+      img.src = listing.venue_images[activeImageIndex].image_url
 
-    img.onload = () => {
-      setFullImage(img.src)
+      img.onload = () => {
+        setFullImage(img.src)
+      }
     }
-  }
-}, [activeImageIndex, listing])
+  }, [activeImageIndex, listing])
 
   if (loading) return <DetailsPageSkeleton />
 
@@ -84,8 +140,20 @@ useEffect(() => {
     return null
   }
 
+  // flag logic
+  const categories = Array.isArray(listing.listing_categories)
+    ? listing.listing_categories.map((cat) => Number(cat.listing_category_id))
+    : []
+
+const isAssured = categories.includes(26)
+const isVerified = categories.includes(27) && !isAssured
+
   if (!listing) {
-    return <div className="py-20 text-center"><Navigate to="/404" replace /></div>
+    return (
+      <div className="py-20 text-center">
+        <Navigate to="/404" replace />
+      </div>
+    )
   }
 
   const keywordsArray = listing.keywords?.split(",") ?? []
@@ -113,12 +181,29 @@ useEffect(() => {
     }
   ]
 
-  if (listing.locality) {
-    const localitySlug = listing.locality.replace(/\s+/g, "-").toLowerCase()
+  if (listing.city) {
+    const localitySlug = listing.locality?.replace(/\s+/g, "-").toLowerCase()
+
+    let cityName = listing.city?.toLowerCase()
+
+    // normalize Delhi zones → Delhi
+    if (cityName?.includes("delhi")) {
+      cityName = "delhi"
+    }
+
+    const citySlug = cityName.replace(/\s+/g, "-")
+
+    //  check if locality exists in API
+    const isValidLocality = localitySlug && validLocalities.has(localitySlug)
+
     breadcrumbItems.push({
-      label: `${venueMeta?.label || "Banquet Halls"} in ${listing.locality}`,
+      label: isValidLocality
+        ? `${venueMeta?.label || "Banquet Halls"} in ${listing.locality}`
+        : `${venueMeta?.label || "Banquet Halls"} in ${cityName}`,
       type: "locality",
-      path: `/${serviceSlugResolved}-in/${localitySlug}?category=${categoryId}&locality=${localitySlug}`
+      path: isValidLocality
+        ? `/${serviceSlugResolved}-in-${citySlug}/${localitySlug}`
+        : `/${serviceSlugResolved}-in-${citySlug}`
     })
   }
 
@@ -127,82 +212,60 @@ useEffect(() => {
     type: "current"
   })
 
-  const pushUrl = ({ category, citySlug, lat, lng }) => {
-    const qs = new URLSearchParams()
-    if (category) qs.set("category", category)
-    if (citySlug) qs.set("locality", citySlug)
 
-    //  Add coordinates to URL for full search results
-    if (lat && lng) {
-      qs.set("lat", lat)
-      qs.set("lng", lng)
-    }
-
-    const slug = citySlug ? citySlug.replace(/\s+/g, "-").toLowerCase() : ""
-    const serviceSlug = categoryToSlug[Number(category)] || "banquet-hall"
-    const path = slug ? `/${serviceSlug}-in/${slug}` : `/${serviceSlug}-in`
-
-    navigate(`${path}?${qs.toString()}`)
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 pb-28">
+      {/* ListingPage SEO */}
+      <ListingDetailsSEO listing={listing} />
+
       {/* Breadcrumb */}
-      <nav
-        aria-label="Breadcrumb"
-        className="py-3 px-4 mb-3 text-sm text-red-600"
-      >
-        <ol className="flex flex-wrap items-center gap-1">
-          {breadcrumbItems.map((item, idx) => {
-            const isLast = item.type === "current"
-            return (
-              <li key={idx} className="flex items-center gap-1 truncate">
-                {!isLast ? (
-                  <>
-                    <span
-                      className="cursor-pointer font-medium hover:text-gray-800 whitespace-nowrap"
-                      onClick={() => {
-                        if (!item.path) return
+<nav
+  aria-label="Breadcrumb"
+  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3 px-4 mb-3 text-sm text-red-600"
+>
+  {/* LEFT: Breadcrumb */}
+  <ol className="flex flex-wrap items-center gap-1 w-full sm:w-auto">
+    {breadcrumbItems.map((item, idx) => {
+      const isLast = item.type === "current"
+      return (
+        <li key={idx} className="flex items-center gap-1 truncate max-w-full">
+          {!isLast ? (
+            <>
+              <span
+                className="cursor-pointer font-medium hover:text-gray-800 whitespace-nowrap"
+                onClick={() => {
+                  if (!item.path) return
+                  navigate(item.path)
+                }}
+              >
+                {item.label}
+              </span>
 
-                        //  HOME breadcrumb
-                        if (item.type === "home") {
-                          navigate("/")
-                          return
-                        }
+              <span className="mx-1">/</span>
+            </>
+          ) : (
+            <span className="text-gray-600 truncate max-w-45 sm:max-w-none">
+              {item.label}
+            </span>
+          )}
+        </li>
+      )
+    })}
+  </ol>
 
-                        //  SERVICE breadcrumb (/venues/banquet-halls)
-                        if (item.type === "service") {
-                          navigate(item.path)
-                          return
-                        }
+  {/* RIGHT: Live viewers */}
+  <div className="text-green-600 font-medium flex items-center gap-2 self-start sm:self-auto">
+    <span className="relative flex h-3 w-3">
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600 border border-white"></span>
+    </span>
 
-                        //  LOCALITY breadcrumb
-                        const url = new URL(item.path, window.location.origin)
-                        const params = Object.fromEntries(
-                          url.searchParams.entries()
-                        )
-
-                        pushUrl({
-                          category: params.category,
-                          citySlug: params.locality,
-                          lat: listing.lat,
-                          lng: listing.lng
-                        })
-                      }}
-                    >
-                      {item.label}
-                    </span>
-
-                    <span className="mx-1">/</span>
-                  </>
-                ) : (
-                  <span className="text-gray-600 truncate">{item.label}</span>
-                )}
-              </li>
-            )
-          })}
-        </ol>
-      </nav>
+    <span className="transition-all duration-500 text-sm">
+      {liveViewCount} Viewing Now
+    </span>
+  </div>
+</nav>
 
       {/* ================= IMAGE GALLERY (RECOMMENDED STYLE) ================= */}
       <div key={id} className="relative mb-12">
@@ -227,8 +290,25 @@ useEffect(() => {
             <div
               key={img.id}
               onClick={() => setActiveImageIndex(i)}
-              className="relative min-w-[600px] h-[300px] rounded-md overflow-hidden shadow cursor-pointer group"
+              className="relative min-w-150 h-75 rounded-md overflow-hidden shadow cursor-pointer group"
             >
+              {/* BADGES ON IMAGE */}
+              <div className="absolute bottom-2 left-3 z-20 flex flex-col gap-2">
+                {isAssured && (
+                  <div className="flex items-center gap-1 bg-linear-to-r from-blue-600 to-cyan-500 text-white text-xs px-2 py-1 rounded-lg shadow-md backdrop-blur-sm">
+                    <MdVerified className="text-sm" />
+                    <span className="font-medium">BMB Assured</span>
+                  </div>
+                )}
+
+                {isVerified && (
+                  <div className="flex items-center gap-1 bg-linear-to-r from-green-600 to-emerald-500 text-white text-xs px-2 py-1 rounded-lg shadow-md backdrop-blur-sm">
+                    <MdVerifiedUser className="text-sm" />
+                    <span className="font-medium">BMB Verified</span>
+                  </div>
+                )}
+              </div>
+
               <img
                 src={img.image_url.replace(".avif", "_600.avif")}
                 alt={listing.title}
@@ -374,6 +454,12 @@ useEffect(() => {
               src={`https://www.google.com/maps?q=${listing.lat},${listing.long}&output=embed`}
             />
           </section>
+
+          {/* REVIEWS */}
+        <ListingReviewsSection listingId={id} />
+
+        {/* WRITE REVIEW */}
+        <ListingReviewForm listingId={id} />
 
           {/* FAQ */}
           <FaqSection faqs={faqs} />

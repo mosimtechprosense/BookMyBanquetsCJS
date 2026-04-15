@@ -1,5 +1,12 @@
+import DOMPurify from "dompurify"
+import "../../style/ContentHTML.css"
+
 export default function FeaturesSection({ features }) {
   if (!features) return null;
+
+  const cleanHTML = DOMPurify.sanitize(features, {
+    FORBID_ATTR: ["style"],
+  });
 
   return (
     <section className="bg-white p-4 sm:p-6 rounded-2xl shadow-md mb-6">
@@ -8,14 +15,8 @@ export default function FeaturesSection({ features }) {
       </h2>
 
       <div
-        className="
-          prose prose-sm sm:prose-base
-          max-w-none
-          text-gray-700
-          prose-ul:pl-5
-          prose-li:marker:text-red-600
-        "
-        dangerouslySetInnerHTML={{ __html: features }}
+        className="content-html max-w-none text-gray-700"
+        dangerouslySetInnerHTML={{ __html: cleanHTML }}
       />
     </section>
   );

@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { MdCelebration, MdHandshake, MdStarRate, MdEventAvailable } from "react-icons/md";
 
@@ -44,7 +45,7 @@ const trustedLogos = [
 
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#ffffff] to-[#f9f9f9] py-8 px-6 md:px-16 lg:px-24">
+    <div className="w-full bg-gradient-to-from-[#ffffff] to-[#f9f9f9] py-8 px-6 md:px-16 lg:px-24">
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-x-2 mb-10 text-sm md:text-base">
@@ -113,7 +114,7 @@ const trustedLogos = [
         </h3>
         <button
             onClick={() => {
-           navigate("/");
+           navigate("/banquet-hall");
            window.scrollTo({ top: 0, behavior: "smooth" });
            }}
           className="bg-[#dc2626] text-white px-8 py-3 rounded-lg font-medium cursor-pointer hover:bg-[#b91c1c] transition-all duration-300"

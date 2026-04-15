@@ -26,7 +26,20 @@ const menu = [
       { name: "All Tasks", path: "/admin/tasks" }
     ]
   },
-  { name: "Listings", path: "/admin/listings", icon: <FaList /> }
+  {
+  name: "Listings Management",
+  icon: <FaList />,
+  children: [
+    { name: "All Listings", path: "/admin/listings" },
+  ]
+},
+{
+  name: "Reviews Management",
+  icon: <FaList />,
+  children: [
+    { name: "All Reviews", path: "/admin/reviews" }
+  ]
+}
 ];
 
 export default function Sidebar({ collapsed }) {

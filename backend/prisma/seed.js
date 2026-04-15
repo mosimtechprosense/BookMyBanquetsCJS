@@ -1,5 +1,6 @@
-const { PrismaClient } = require("@prisma/client")
+require("dotenv").config()
 
+const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
 const locations = [
@@ -44,7 +45,13 @@ const locations = [
   { location: "Sector 24", city: "Gurgaon", lat: 28.5037, lng: 77.0960 },
   { location: "Manesar", city: "Gurgaon", lat: 28.3500, lng: 76.9420 },
   { location: "Najafgarh Road Industrial Area", city: "Delhi", lat: 28.6510, lng: 77.1150 },
+  { location: "East Delhi", city: "Delhi", lat: 28.6279, lng: 77.2770 },
   { location: "West Delhi", city: "Delhi", lat: 28.6667, lng: 77.1000 },
+  { location: "North Delhi", city: "Delhi", lat: 28.7440, lng: 77.2030 },
+  { location: "South Delhi", city: "Delhi", lat: 28.5024, lng: 77.2310 },
+  { location: "West Delhi", city: "Delhi", lat: 28.6562, lng: 77.1000 },
+  { location: "Delhi", city: "Delhi", lat: 28.6139, lng: 77.2090 },  
+  { location: "Gurgaon", city: "Gurgaon", lat: 28.4595, lng: 77.0266 }
 ];
 
 
