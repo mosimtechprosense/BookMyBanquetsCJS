@@ -483,27 +483,89 @@ const getListingByIdDB = async (id) => {
 }
 
 // READ — Get similar listing
-const getSimilarListingsDB = async (id, skip = 0, take = 8) => {
-  let listingId
+const getSimilarListingsDB = async (id, skip = 0, take = 15) => {
+  let listingId;
+
   try {
-    listingId = BigInt(id)
+    listingId = BigInt(id);
   } catch {
-    console.error("Invalid listing ID:", id)
-    return []
+    console.error("Invalid listing ID:", id);
+    return [];
   }
 
-  const currentListing = await getListingByIdDB(id)
-  if (!currentListing) return []
+  const currentListing = await getListingByIdDB(id);
+  if (!currentListing || !currentListing.lat || !currentListing.long) {
+    return [];
+  }
 
-  // pass skip/take inside filters
-  const { data: listings } = await getAllListingDB({
-    city: currentListing.city,
-    skip,
-    take
-  })
+  const lat = Number(currentListing.lat);
+  const lng = Number(currentListing.long);
 
-  return listings.filter((listing) => listing.id !== listingId)
-}
+  const radius = 5; // ✅ 5 KM radius
+
+  // 🎯 Fetch nearby listings using Haversine formula
+  const nearbyListings = await prisma.$queryRaw`
+    SELECT *,
+      (6371 * acos(
+        cos(radians(${lat})) *
+        cos(radians(lat)) *
+        cos(radians(\`long\`) - radians(${lng})) +
+        sin(radians(${lat})) *
+        sin(radians(lat))
+      )) AS distance
+    FROM listings
+    WHERE status = true
+    HAVING distance <= ${radius}
+    ORDER BY distance ASC
+    LIMIT ${take + 1}
+  `;
+
+  // ❌ Remove current listing
+  const filtered = nearbyListings.filter(
+    (l) => BigInt(l.id) !== listingId
+  );
+
+  const finalIds = filtered.slice(0, take).map(l => BigInt(l.id));
+
+  if (!finalIds.length) return [];
+
+  // 📦 Fetch full data
+  let listings = await prisma.listings.findMany({
+    where: {
+      id: { in: finalIds },
+    },
+    include: {
+      venue_images: true,
+      listing_food_categories: true,
+      listing_categories: true
+    }
+  });
+
+  // 🧠 Map distance back
+  const distanceMap = new Map();
+  nearbyListings.forEach(l => {
+    distanceMap.set(BigInt(l.id), Number(l.distance));
+  });
+
+  listings = listings.map(l => {
+    const { vegPrice, nonVegPrice } = mapFoodPrices(
+      l.listing_food_categories
+    );
+
+    return {
+      ...l,
+      distance: distanceMap.get(l.id),
+      vegPrice,
+      nonVegPrice,
+      venue_images: formatImages(l.venue_images)
+    };
+  });
+
+  // 🔢 Ensure sorted by distance
+  listings.sort((a, b) => (a.distance ?? 9999) - (b.distance ?? 9999));
+
+  return listings.slice(skip, skip + take);
+};
 
 // UPDATE — Modify listing
 const updateListingDB = async (id, data) => {

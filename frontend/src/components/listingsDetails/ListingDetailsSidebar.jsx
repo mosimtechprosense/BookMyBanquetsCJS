@@ -75,7 +75,13 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
         </div>
 
         {/* ===== IMAGE AT BOTTOM ===== */}
-        <div className="absolute bottom-0 left-0 w-full h-85 sm:h-90 md:h-95 lg:h-100">
+<div
+  onClick={(e) => {
+    e.stopPropagation()
+    setPopupOpen(true)
+  }}
+  className="absolute bottom-0 left-0 w-full h-85 sm:h-90 md:h-95 lg:h-100 z-20 cursor-pointer"
+>
           <img
             src={sidebarImg}
             alt="bookmybanquets"

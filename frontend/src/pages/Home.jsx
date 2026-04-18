@@ -18,7 +18,6 @@ const HighlyDemandedListings = lazy(
 const HomeBlogSection = lazy(() => import("../components/Home/HomeBlogSection"))
 const HomeContent = lazy(() => import("../components/Home/HomeContent"))
 
-
 const LazySection = ({ children }) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -33,12 +32,24 @@ const Home = () => {
     () => [
       { label: "Banquet Halls", path: "/banquet-hall", categoryId: 6 },
       { label: "Marriage Halls", path: "/marriage-halls", categoryId: 8 },
-      { label: "Wedding Farmhouse", path: "/wedding-farmhouse", categoryId: 13},
+      {
+        label: "Wedding Farmhouse",
+        path: "/wedding-farmhouse",
+        categoryId: 13
+      },
       { label: "Party Halls", path: "/party-halls", categoryId: 7 },
-      { label: "5 Star Wedding Hotels", path: "/5-star-wedding-hotels", categoryId: 11 },
-      { label: "Destination Weddings", path: "/destination-weddings", categoryId: 12},
-      { label: "BMB Assured", path: "/bmb-assured", categoryId: 26},
-      { label: "BMB Verified", path: "/bmb-verified", categoryId: 27},
+      {
+        label: "5 Star Wedding Hotels",
+        path: "/5-star-wedding-hotels",
+        categoryId: 11
+      },
+      {
+        label: "Destination Weddings",
+        path: "/destination-weddings",
+        categoryId: 12
+      },
+      { label: "BMB Assured", path: "/bmb-assured", categoryId: 26 },
+      { label: "BMB Verified", path: "/bmb-verified", categoryId: 27 }
     ],
     []
   )
@@ -70,6 +81,8 @@ const Home = () => {
   const [filteredLocations, setFilteredLocations] = useState([])
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false)
+  const [serviceError, setServiceError] = useState(false)
+  const [locationError, setLocationError] = useState(false)
 
   // Fetch locations once on mount
   useEffect(() => {
@@ -90,6 +103,7 @@ const Home = () => {
   const handleSearchChange = (e) => {
     const value = e.target.value
     setSearchQuery(value)
+    setServiceError(false)
 
     const filtered = services.filter((service) =>
       service.label.toLowerCase().startsWith(value.toLowerCase())
@@ -105,17 +119,46 @@ const Home = () => {
 
   // location handlers
   const handleLocationChange = (e) => {
-    const value = e.target.value
-    setLocationQuery(value)
+    const value = e.target.value.toLowerCase().trim()
 
-    // filter by label or city name (case-insensitive)
-    const filtered = locations.filter((loc) => {
-      const nameMatch = loc.name?.toLowerCase().includes(value.toLowerCase())
-      const cityMatch = loc.city?.name
-        ?.toLowerCase()
-        .includes(value.toLowerCase())
-      return nameMatch || cityMatch
-    })
+    setLocationQuery(value)
+    setLocationError(false)
+
+    const filtered = locations
+      .map((loc) => {
+        const name = loc.name?.toLowerCase() || ""
+        const city = loc.city?.name?.toLowerCase() || ""
+
+        let score = 0
+
+        // 1. exact match = highest priority
+        if (name === value || city === value) {
+          score = 100
+        }
+
+        // 2. starts with match (VERY IMPORTANT for UX)
+        else if (name.startsWith(value) || city.startsWith(value)) {
+          score = 80
+        }
+
+        // 3. word starts match (West Delhi, East Delhi case)
+        else if (
+          name.split(" ").some((w) => w.startsWith(value)) ||
+          city.split(" ").some((w) => w.startsWith(value))
+        ) {
+          score = 60
+        }
+
+        // 4. includes match (fallback)
+        else if (name.includes(value) || city.includes(value)) {
+          score = 30
+        }
+
+        return { ...loc, score }
+      })
+      .filter((loc) => loc.score > 0)
+      .sort((a, b) => b.score - a.score)
+
     setFilteredLocations(filtered)
   }
 
@@ -137,7 +180,31 @@ const Home = () => {
 
   // handleSearchClick
   const handleSearchClick = () => {
-    if (!selectedService || !selectedLocation) return
+    let hasError = false
+
+    const isServiceInvalid =
+      !selectedService || searchQuery !== selectedService.label
+
+    const isLocationInvalid =
+      !selectedLocation || locationQuery !== selectedLocation.name
+
+    // validate service only if needed
+    if (isServiceInvalid) {
+      setServiceError(true)
+      hasError = true
+    } else {
+      setServiceError(false)
+    }
+
+    // validate location only if needed
+    if (isLocationInvalid) {
+      setLocationError(true)
+      hasError = true
+    } else {
+      setLocationError(false)
+    }
+
+    if (hasError) return
 
     const localitySlug = selectedLocation.name
       .toLowerCase()
@@ -161,31 +228,31 @@ const Home = () => {
       params.set("lng", selectedLocation.lng)
     }
 
-const cleanCities = ["delhi", "gurgaon", "gurugram"]
+    const cleanCities = ["delhi", "gurgaon", "gurugram"]
 
-const isMainCity = cleanCities.includes(citySlug)
+    const isMainCity = cleanCities.includes(citySlug)
 
-// detect if user selected EXACT city (not locality)
-const isExactCitySelection =
-  localitySlug === citySlug ||
-  selectedLocation.name.toLowerCase() === selectedLocation.city?.name?.toLowerCase()
+    // detect if user selected EXACT city (not locality)
+    const isExactCitySelection =
+      localitySlug === citySlug ||
+      selectedLocation.name.toLowerCase() ===
+        selectedLocation.city?.name?.toLowerCase()
 
-if (isMainCity && isExactCitySelection) {
-  //  Only when user selects "Delhi" itself
-  navigate(`/${serviceSlug}-in-${citySlug}`)
-} else {
-  //  All localities (including North Delhi, Moti Nagar, etc.)
-  navigate(
-    `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
-  )
-}
+    if (isMainCity && isExactCitySelection) {
+      //  Only when user selects "Delhi" itself
+      navigate(`/${serviceSlug}-in-${citySlug}`)
+    } else {
+      //  All localities (including North Delhi, Moti Nagar, etc.)
+      navigate(
+        `/${serviceSlug}-in-${citySlug}/${localitySlug}?${params.toString()}`
+      )
+    }
   }
 
   return (
     <div className="w-full select-none">
-
-       {/* SEO section */}
-       <HomeSEO />
+      {/* SEO section */}
+      <HomeSEO />
 
       {/*  Hero Section */}
       <div className="relative h-[70vh] sm:h-[80vh] lg:h-[90vh] flex flex-col items-center justify-center overflow-hidden">
@@ -197,22 +264,27 @@ if (isMainCity && isExactCitySelection) {
           className="absolute inset-0 w-full h-full object-cover"
         />
         {/*  Hero Text */}
-        <div className="text-center px-4 sm:px-6 mb-6">
+        <div className="relative top-16 sm:top-7 z-10 text-center px-4 sm:px-6 mb-6">
           <h1
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white max-w-4xl mx-auto leading-snug select-none"
+            className="text-xl sm:text-4xl md:text-5xl font-bold text-white max-w-4xl mx-auto leading-snug select-none"
             style={{
               textShadow: "2px 2px 10px rgba(0,0,0,0.8)"
             }}
           >
-            Your Dream Wedding Starts Here — Explore Venues, Decor & More!
+            Elegant Spaces Seamless Booking a Better Way to Plan Weddings
           </h1>
         </div>
 
         {/*  Search Bar */}
         <div className="flex items-center justify-center w-full px-6">
-          <div className="relative flex flex-col sm:flex-row  bg-white border border-[#b4b4be] rounded-md shadow-md w-[98%] sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[70%] max-w-275">
+          <div
+            className={`relative top-15 sm:top-5 flex flex-col sm:flex-row  bg-white ${serviceError || locationError ? "border-2 border-red-500" : "border border-[#b4b4be]"} rounded-md shadow-md w-[98%] sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[70%] max-w-275`}
+          >
             {/*  Venues & Services Input */}
-            <div className="relative flex items-center gap-2 w-full sm:w-[60%] py-4 px-5 text-[15px] border-b sm:border-b-0 sm:border-r border-gray-300">
+            <div
+              className={`relative flex items-center gap-2 w-full sm:w-[60%] py-4 px-5 text-[15px] border-b sm:border-b-0 
+               ${serviceError || locationError ? "sm:border-r-2 border-red-500" : "sm:border-r border-gray-300"}`}
+            >
               <IoIosSearch className="text-gray-700 text-xl cursor-default" />
               <input
                 type="text"
@@ -226,6 +298,12 @@ if (isMainCity && isExactCitySelection) {
                 }}
                 onClick={(e) => e.stopPropagation()}
               />
+
+              {serviceError && (
+                <p className="text-red-500 text-sm mt-1">
+                  Please select a service
+                </p>
+              )}
 
               {showSuggestions && (
                 <div
@@ -255,7 +333,10 @@ if (isMainCity && isExactCitySelection) {
             </div>
 
             {/*  Location Input */}
-            <div className="relative flex items-center gap-1.5 w-full sm:w-[40%] py-4 px-5 text-[14px] bg-white rounded-r-xs">
+            <div
+              className={`relative flex items-center gap-1.5 w-full sm:w-[40%] py-4 px-5 text-[14px] bg-white rounded-r-xs 
+  ${locationError ? "border-red-500" : "border-gray-300"}`}
+            >
               <CiLocationOn className="text-gray-700 text-xl cursor-default" />
               <input
                 type="text"
@@ -269,6 +350,11 @@ if (isMainCity && isExactCitySelection) {
                 }}
                 onClick={(e) => e.stopPropagation()}
               />
+              {locationError && (
+                <p className="text-red-500 text-sm mt-1">
+                  Please select a location
+                </p>
+              )}
 
               {showLocationSuggestions && filteredLocations.length > 0 && (
                 <div
@@ -340,8 +426,7 @@ if (isMainCity && isExactCitySelection) {
         </Suspense>
       </LazySection>
 
-
-     {/* hide temp */}
+      {/* hide temp */}
       {/* Customer Review Section */}
       {/* <LazySection>
         <Suspense fallback={null}>
@@ -363,15 +448,12 @@ if (isMainCity && isExactCitySelection) {
         </Suspense>
       </LazySection>
 
-
       {/*Home Content Section*/}
       <LazySection>
         <Suspense fallback={null}>
           <HomeContent />
         </Suspense>
       </LazySection>
-
-
     </div>
   )
 }

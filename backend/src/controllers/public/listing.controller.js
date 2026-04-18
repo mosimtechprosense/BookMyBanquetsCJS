@@ -203,9 +203,13 @@ const getListingById = async (req, res) => {
 //* GET SIMILAR LISTINGS
 const getSimilarListings = async (req, res) => {
   try {
-    
     const { id } = req.params;
-    const similarListings = await getSimilarListingsDB(id);
+
+    //  Allow dynamic control
+    const take = Number(req.query.take) || 15;
+    const skip = Number(req.query.skip) || 0;
+
+    const similarListings = await getSimilarListingsDB(id, skip, take);
 
     res.status(200).json({
       success: true,

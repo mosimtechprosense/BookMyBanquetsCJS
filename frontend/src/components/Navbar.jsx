@@ -82,13 +82,14 @@ const listBusinessHandler = () => {
 
 {/* Right Section: CTA + City Selector */}
 <div className="flex flex-col md:flex-row items-start md:items-center justify-end gap-2 w-full md:w-auto mt-4 md:mt-0">
-  {/* CityFilter: full width on mobile, inline on desktop */}
-  <div className="w-full flex justify-center md:justify-start mb-2 md:mb-0">
+
+  {/* ✅ CityFilter FIRST in code */}
+  <div className="w-full flex justify-center md:justify-start mb-2 md:mb-0 order-1 md:order-2">
     <CityFilter />
   </div>
 
-  {/* Buttons container */}
-  <div className="flex flex-row gap-2 w-full md:w-auto justify-end">
+  {/* ✅ Buttons SECOND in code */}
+  <div className="flex flex-row gap-2 w-full md:w-auto justify-end order-2 md:order-1">
     <button
       onClick={quoteHandler}
       className="flex-1 sm:flex-none w-full sm:w-auto bg-[#dc2626] text-white text-[0.8rem] font-medium px-5 py-2.5 rounded-xl hover:bg-red-700 cursor-pointer transition duration-200 whitespace-nowrap"
@@ -106,12 +107,13 @@ const listBusinessHandler = () => {
     ) : (
       <button
         onClick={logoutHandler}
-        className="flex-1 sm:flex-none w-full sm:w-auto border border-red-500 text-red-500 rounded-lg hover:bg-red-50 text-[0.8rem] font-medium px-5 py-2.5 cursor-pointer  transition duration-200 whitespace-nowrap"
+        className="flex-1 sm:flex-none w-full sm:w-auto border border-red-500 text-red-500 rounded-lg hover:bg-red-50 text-[0.8rem] font-medium px-5 py-2.5 cursor-pointer transition duration-200 whitespace-nowrap"
       >
         Logout
       </button>
     )}
   </div>
+
 </div>
 
 

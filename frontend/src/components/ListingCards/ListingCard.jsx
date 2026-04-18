@@ -224,7 +224,7 @@ const isVerified = categories.includes(27) && !isAssured
         {/* Location & Guests */}
         <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-600">
           <span className="flex items-center ">
-            <HiLocationMarker className="h-4 w-4 text-red-600 translate-x-[-1px]" />
+            <HiLocationMarker className="h-4 w-4 text-red-600 -translate-x-px" />
             {item.locality}, {item.city}
           </span>
           <span className="flex items-center gap-1">
@@ -276,7 +276,7 @@ const isVerified = categories.includes(27) && !isAssured
                   <ul className="space-y-1">
                     {hiddenTags.map((tag, i) => (
                       <li key={i} className="flex gap-2 leading-snug">
-                        <span className="mt-[2px]">•</span>
+                        <span className="mt-0.5">•</span>
                         <span>{tag.trim()}</span>
                       </li>
                     ))}
@@ -295,7 +295,7 @@ const isVerified = categories.includes(27) && !isAssured
               e.stopPropagation()
               setPopupOpen(true)
             }}
-            className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-sm text-white px-4 py-2 rounded-xl transition cursor-pointer min-w-[120px]"
+            className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-sm text-white px-4 py-2 rounded-xl transition cursor-pointer min-w-30"
           >
             Get a Quote
           </button>
@@ -305,7 +305,7 @@ const isVerified = categories.includes(27) && !isAssured
             <a
               href="tel:918920597474"
               onClick={(e) => e.stopPropagation()}
-              className="flex sm:hidden items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px]"
+              className="flex sm:hidden items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-30"
               aria-label="Call now"
             >
               <FaPhoneAlt className="text-xs" />
@@ -318,7 +318,7 @@ const isVerified = categories.includes(27) && !isAssured
                 e.stopPropagation()
                 setPopupOpen(true)
               }}
-              className="hidden sm:flex items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-[120px] cursor-pointer"
+              className="hidden sm:flex items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-30 cursor-pointer"
             >
               <FaPhoneAlt className="text-xs" />
               View Contact

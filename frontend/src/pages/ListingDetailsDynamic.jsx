@@ -20,8 +20,6 @@ import ListingDetailsSEO from "../components/SEO/ListingDetailsSEO"
 import ListingReviewsSection from "../components/reviews/ListingReview/ListingReviewsSection"
 import ListingReviewForm from "../components/reviews/ListingReview/ListingReviewForm"
 
-
-
 export default function ListingDetailsDynamic() {
   const { id, serviceSlug } = useParams()
   const navigate = useNavigate()
@@ -55,35 +53,34 @@ export default function ListingDetailsDynamic() {
       })
   }, [])
 
-
   // shows the live count
-useEffect(() => {
-  // initial base (10–20 feels more believable than jumping to 25 instantly)
-  const base = Math.floor(Math.random() * 11) + 10
-  setLiveViewCount(base)
+  useEffect(() => {
+    // initial base (10–20 feels more believable than jumping to 25 instantly)
+    const base = Math.floor(Math.random() * 11) + 10
+    setLiveViewCount(base)
 
-  const interval = setInterval(() => {
-setLiveViewCount((prev) => {
-  const change = Math.floor(Math.random() * 4) + 2
+    const interval = setInterval(() => {
+      setLiveViewCount((prev) => {
+        const change = Math.floor(Math.random() * 4) + 2
 
-  let increaseChance = 0.7
+        let increaseChance = 0.7
 
-  // reduce growth chance near max
-  if (prev > 25) increaseChance = 0.3
+        // reduce growth chance near max
+        if (prev > 25) increaseChance = 0.3
 
-  const increase = Math.random() < increaseChance
+        const increase = Math.random() < increaseChance
 
-  let next = increase ? prev + change : prev - change
+        let next = increase ? prev + change : prev - change
 
-  if (next < 2) next = 2
-  if (next > 30) next = 30
+        if (next < 2) next = 2
+        if (next > 30) next = 30
 
-  return next
-})
-  }, 8000)
+        return next
+      })
+    }, 8000)
 
-  return () => clearInterval(interval)
-}, [id])
+    return () => clearInterval(interval)
+  }, [id])
 
   useEffect(() => {
     //  STOP invalid cases BEFORE API calls
@@ -145,8 +142,8 @@ setLiveViewCount((prev) => {
     ? listing.listing_categories.map((cat) => Number(cat.listing_category_id))
     : []
 
-const isAssured = categories.includes(26)
-const isVerified = categories.includes(27) && !isAssured
+  const isAssured = categories.includes(26)
+  const isVerified = categories.includes(27) && !isAssured
 
   if (!listing) {
     return (
@@ -212,70 +209,73 @@ const isVerified = categories.includes(27) && !isAssured
     type: "current"
   })
 
-
-
   return (
     <div className="container mx-auto px-4 py-8 pb-28">
       {/* ListingPage SEO */}
       <ListingDetailsSEO listing={listing} />
 
       {/* Breadcrumb */}
-<nav
-  aria-label="Breadcrumb"
-  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3 px-4 mb-3 text-sm text-red-600"
->
-  {/* LEFT: Breadcrumb */}
-  <ol className="flex flex-wrap items-center gap-1 w-full sm:w-auto">
-    {breadcrumbItems.map((item, idx) => {
-      const isLast = item.type === "current"
-      return (
-        <li key={idx} className="flex items-center gap-1 truncate max-w-full">
-          {!isLast ? (
-            <>
-              <span
-                className="cursor-pointer font-medium hover:text-gray-800 whitespace-nowrap"
-                onClick={() => {
-                  if (!item.path) return
-                  navigate(item.path)
-                }}
+      <nav
+        aria-label="Breadcrumb"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3 px-4 mb-3 text-sm text-red-600"
+      >
+        {/* LEFT: Breadcrumb */}
+        <ol className="flex flex-wrap items-center gap-1 w-full sm:w-auto">
+          {breadcrumbItems.map((item, idx) => {
+            const isLast = item.type === "current"
+            return (
+              <li
+                key={idx}
+                className="flex items-center gap-1 truncate max-w-full"
               >
-                {item.label}
-              </span>
+                {!isLast ? (
+                  <>
+                    <span
+                      className="cursor-pointer font-medium hover:text-gray-800 whitespace-nowrap"
+                      onClick={() => {
+                        if (!item.path) return
+                        navigate(item.path)
+                      }}
+                    >
+                      {item.label}
+                    </span>
 
-              <span className="mx-1">/</span>
-            </>
-          ) : (
-            <span className="text-gray-600 truncate max-w-45 sm:max-w-none">
-              {item.label}
-            </span>
-          )}
-        </li>
-      )
-    })}
-  </ol>
+                    <span className="mx-1">/</span>
+                  </>
+                ) : (
+                  <span className="text-gray-600 truncate max-w-45 sm:max-w-none">
+                    {item.label}
+                  </span>
+                )}
+              </li>
+            )
+          })}
+        </ol>
 
-  {/* RIGHT: Live viewers */}
-  <div className="text-green-600 font-medium flex items-center gap-2 self-start sm:self-auto">
-    <span className="relative flex h-3 w-3">
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600 border border-white"></span>
-    </span>
+        {/* RIGHT: Live viewers */}
+        <div className="text-green-600 font-medium flex items-center gap-2 self-start sm:self-auto">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600 border border-white"></span>
+          </span>
 
-    <span className="transition-all duration-500 text-sm">
-      {liveViewCount} Viewing Now
-    </span>
-  </div>
-</nav>
+          <span className="transition-all duration-500 text-sm">
+            {liveViewCount} Viewing Now
+          </span>
+        </div>
+      </nav>
 
       {/* ================= IMAGE GALLERY (RECOMMENDED STYLE) ================= */}
       <div key={id} className="relative mb-12">
         {Array.isArray(images) && images.length > 1 && (
           <button
-            onClick={() =>
-              document
-                .getElementById("imageScroll")
-                ?.scrollBy({ left: -400, behavior: "smooth" })
-            }
+            onClick={() => {
+              const container = document.getElementById("imageScroll")
+              if (!container) return
+
+              const slideWidth = container.offsetWidth
+              container.scrollBy({ left: -slideWidth, behavior: "smooth" })
+            }}
             className="absolute left-3 top-1/2 -translate-y-1/2 bg-white shadow rounded-full p-5 z-20 cursor-pointer transition duration-300 ease-in-out transform hover:scale-125"
           >
             <LuArrowLeft className="h-6 w-6 cursor-pointer text-red-600" />
@@ -284,13 +284,14 @@ const isVerified = categories.includes(27) && !isAssured
 
         <div
           id="imageScroll"
-          className="flex gap-4 overflow-x-hidden scroll-smooth no-scrollbar"
+          className="flex overflow-x-auto scroll-smooth no-scrollbar snap-x snap-mandatory"
         >
           {images.map((img, i) => (
             <div
               key={img.id}
               onClick={() => setActiveImageIndex(i)}
-              className="relative min-w-150 h-75 rounded-md overflow-hidden shadow cursor-pointer group"
+              className={`relative flex-[0_0_50%] h-75 rounded-md overflow-hidden shadow cursor-pointer group snap-start 
+${i % 2 === 0 ? "mr-2" : "ml-2 mr-4"}`}
             >
               {/* BADGES ON IMAGE */}
               <div className="absolute bottom-2 left-3 z-20 flex flex-col gap-2">
@@ -328,11 +329,13 @@ const isVerified = categories.includes(27) && !isAssured
 
         {images.length > 1 && (
           <button
-            onClick={() =>
-              document
-                .getElementById("imageScroll")
-                ?.scrollBy({ left: 400, behavior: "smooth" })
-            }
+            onClick={() => {
+              const container = document.getElementById("imageScroll")
+              if (!container) return
+
+              const slideWidth = container.offsetWidth
+              container.scrollBy({ left: slideWidth, behavior: "smooth" })
+            }}
             className="absolute right-3 top-1/2 -translate-y-1/2 bg-white shadow rounded-full p-5 z-20 cursor-pointer transition duration-300 ease-in-out transform hover:scale-125"
           >
             <LuArrowRight className="h-6 w-6 cursor-pointer text-red-600" />
@@ -456,10 +459,10 @@ const isVerified = categories.includes(27) && !isAssured
           </section>
 
           {/* REVIEWS */}
-        <ListingReviewsSection listingId={id} />
+          <ListingReviewsSection listingId={id} />
 
-        {/* WRITE REVIEW */}
-        <ListingReviewForm listingId={id} />
+          {/* WRITE REVIEW */}
+          <ListingReviewForm listingId={id} />
 
           {/* FAQ */}
           <FaqSection faqs={faqs} />
@@ -475,7 +478,7 @@ const isVerified = categories.includes(27) && !isAssured
       </div>
 
       {/* SIMILAR LISTINGS */}
-      <SimilarListingsSection listings={similarListings} />
+      <SimilarListingsSection listings={similarListings} referenceTitle={listing.title} />
 
       {/* Listing Bottom Actions  */}
       <ListingBottomActions setPopupOpen={setPopupOpen} />

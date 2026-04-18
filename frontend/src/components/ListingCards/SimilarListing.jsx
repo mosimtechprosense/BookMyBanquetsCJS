@@ -3,8 +3,10 @@ import { LuArrowLeft, LuArrowRight } from "react-icons/lu"
 import { HiUserGroup } from "react-icons/hi2"
 import { useNavigate } from "react-router-dom"
 import FoodPrice from "../listingsDetails/FoodPrice"
+import { stripHTML } from "../../utils/stripHTML.js"
+import { HiLocationMarker } from "react-icons/hi"
 
-export default function SimilarListingsSection({ listings }) {
+export default function SimilarListingsSection({ listings, referenceTitle }) {
   const navigate = useNavigate()
   const scrollRef = useRef(null)
   const animationRef = useRef(null)
@@ -14,14 +16,12 @@ export default function SimilarListingsSection({ listings }) {
   const startX = useRef(0)
   const scrollStart = useRef(0)
 
- 
-
   const infiniteListings = [...listings, ...listings, ...listings]
 
   // AUTO SCROLL
   useEffect(() => {
-     if (!Array.isArray(listings) || listings.length === 0) return
-     
+    if (!Array.isArray(listings) || listings.length === 0) return
+
     const container = scrollRef.current
     if (!container) return
 
@@ -38,10 +38,10 @@ export default function SimilarListingsSection({ listings }) {
 
     animationRef.current = requestAnimationFrame(animate)
     return () => {
-  if (animationRef.current) {
-    cancelAnimationFrame(animationRef.current)
-  }
-}
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
   }, [listings])
 
   // MOUSE DRAG
@@ -117,10 +117,12 @@ export default function SimilarListingsSection({ listings }) {
           <div
             onClick={(e) => {
               e.stopPropagation()
-              navigate(`/banquet-hall-in/${item.locality.toLowerCase().replace(/\s+/g, "-")}/${item.id}`)
+              navigate(
+                `/banquet-hall-in/${item.locality.toLowerCase().replace(/\s+/g, "-")}/${item.id}`
+              )
             }}
             key={`${item.id}-${index}`}
-            className="min-w-[105%] sm:min-w-[330px] max-w-full sm:max-w-[330px] p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden cursor-pointer"
+            className="min-w-[105%] sm:min-w-82.5 max-w-full sm:max-w-82.5 p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden cursor-pointer"
           >
             {/* Image */}
             <div className="h-42 w-full rounded-md overflow-hidden">
@@ -137,8 +139,40 @@ export default function SimilarListingsSection({ listings }) {
                 {item.title}
               </h3>
               <p className="text-sm text-gray-600 line-clamp-2">
-                {item.excerpt || "Beautiful banquet venue"}
+                {stripHTML(item.excerpt, 100) || "Beautiful banquet venue"}
               </p>
+
+              {item.distance !== undefined &&
+                (() => {
+                  const adjustedDistance = item.distance * 1.6
+
+                  return (
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <HiLocationMarker className="h-3.5 w-3.5 text-red-500" />
+                      <span>
+                        {adjustedDistance < 1
+                          ? `${(adjustedDistance * 1000).toFixed(0)} m away`
+                          : `${adjustedDistance.toFixed(1)} km away`}
+                        {referenceTitle &&
+                          (() => {
+                            const words = referenceTitle.split(" ")
+                            const shortTitle = words.slice(0, 4).join(" ")
+
+                            return (
+                              <>
+                                {" from "}
+                                <span className="text-red-600 font-medium">
+                                  {shortTitle}
+                                  {words.length > 4 ? "..." : ""}
+                                </span>
+                              </>
+                            )
+                          })()}
+                      </span>
+                    </div>
+                  )
+                })()}
+
               <div className="flex items-center gap-1 text-sm font-medium text-gray-800">
                 <HiUserGroup className="h-4 w-4 text-red-600" />
                 {item.min_guest} – {item.max_guest} guests
@@ -154,7 +188,9 @@ export default function SimilarListingsSection({ listings }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  navigate(`/banquet-hall-in/${item.locality.toLowerCase().replace(/\s+/g, "-")}/${item.id}`)
+                  navigate(
+                    `/banquet-hall-in/${item.locality.toLowerCase().replace(/\s+/g, "-")}/${item.id}`
+                  )
                 }}
                 className="mt-2 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
               >

@@ -1,5 +1,6 @@
 import { FaSearch, FaHeart, FaLock } from "react-icons/fa";
-import howItWorksImage from "../../assets/howitworks.avif";
+import { useEffect, useRef, useState } from "react";
+import howItWorksVideo from "../../assets/videos/howitworks.mp4";
 
 
 
@@ -24,6 +25,26 @@ const steps = [
 
 const HowItWorks = () => {
 
+  const videoRef = useRef(null);
+const [loadVideo, setLoadVideo] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setLoadVideo(true);
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (videoRef.current) {
+    observer.observe(videoRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
 
   return (
     <section className="flex flex-col md:flex-row items-center justify-between gap-12 px-6 md:px-16 lg:px-24 py-16 bg-[#ffffff]">
@@ -55,25 +76,32 @@ const HowItWorks = () => {
         </div>
       </div>
 
-{/* Right side - image frame */}
+{/* Right side - video frame */}
+      {/* Right side video */}
+      <div className="flex-1 flex justify-center">
+        <div className="w-full max-w-3xl">
 
-<div className="hidden md:flex flex-1 justify-center items-center">
-  <div className="relative w-full max-w-xl lg:max-w-2xl">
-    
-    {/* ambient glow only */}
-    <div className="absolute inset-0 bg-red-100/30 blur-3xl rounded-full scale-90"></div>
+          <div ref={videoRef} className="relative w-full aspect-video rounded-xl overflow-hidden border-4 border-black shadow-[0_0_30px_5px_rgba(0,0,0,0.5)]">
 
-    {/* floating image */}
-    <img
-      src={howItWorksImage}
-      alt="How it works"
-      className="relative w-full h-80 md:h-85 lg:h-90 object-contain drop-shadow-2xl rounded-3xl"
-      loading="lazy"
-    />
-    
-  </div>
-</div>
+{loadVideo && (
+  <video
+    className="absolute inset-0 w-full h-full object-cover"
+    autoPlay
+    loop
+    muted
+    playsInline
+    preload="none"
+    poster="../assets/howitworks-preview.avif"
+    disablePictureInPicture
+  >
+    <source src={howItWorksVideo} type="video/mp4" />
+  </video>
+)}
 
+          </div>
+
+        </div>
+      </div>
     </section>
   );
 };

@@ -5,6 +5,7 @@ import { MdVerified, MdVerifiedUser } from "react-icons/md"
 import { HiUserGroup } from "react-icons/hi2"
 import { useNavigate } from "react-router-dom"
 import FoodPrice from "../listingsDetails/FoodPrice"
+import { stripHTML } from "../../utils/stripHTML.js"
 
 const RecommendedListings = () => {
   const navigate = useNavigate()
@@ -152,13 +153,13 @@ const RecommendedListings = () => {
               )
             : []
 
-const isAssured = categories.includes(26)
-const isVerified = categories.includes(27) && !isAssured
+          const isAssured = categories.includes(26)
+          const isVerified = categories.includes(27) && !isAssured
 
           return (
             <div
               key={`${item.id}-${index}`}
-              className="min-w-[105%] sm:min-w-82.5 max-w-full sm:max-w-82.5 p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden group cursor-pointer flex-shrink-0"
+              className="min-w-[105%] sm:min-w-82.5 max-w-full sm:max-w-82.5 p-4 bg-white rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_12px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden group cursor-pointer shrink-0"
               onClick={() =>
                 navigate(
                   `/banquet-hall-in/${slugifyLocality(item.locality)}/${item.id}`
@@ -194,7 +195,7 @@ const isVerified = categories.includes(27) && !isAssured
                   {item.title}
                 </h3>
                 <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                  {item.excerpt}
+                  {stripHTML(item.excerpt, 100) || "Beautiful banquet venue"}
                 </p>
                 <div className="mt-3 flex items-center text-sm font-medium">
                   <HiUserGroup className="h-4 w-4 mr-1" />
