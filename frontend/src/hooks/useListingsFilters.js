@@ -122,12 +122,26 @@ if (!merged.category && serviceFromRoute && slugToCategory[serviceFromRoute]) {
 
 delete merged.city
 
-    const qs = new URLSearchParams()
-    Object.entries(merged).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        qs.set(key, value)
-      }
-    })
+// REMOVE category from city pages
+const isCityRoute = serviceCity?.includes("-in-")
+
+const qs = new URLSearchParams()
+
+Object.entries(merged).forEach(([key, value]) => {
+  // 🚫 skip category ONLY for city pages
+  if (
+    key === "category" &&
+    isCityRoute &&
+    serviceFromRoute &&
+    slugToCategory[serviceFromRoute]
+  ) {
+    return
+  }
+
+  if (value !== undefined && value !== null && value !== "") {
+    qs.set(key, value)
+  }
+})
 
 
 let path = ""

@@ -91,6 +91,7 @@ const listBusinessHandler = () => {
   {/* ✅ Buttons SECOND in code */}
   <div className="flex flex-row gap-2 w-full md:w-auto justify-end order-2 md:order-1">
     <button
+    id="get-a-quote-popup"
       onClick={quoteHandler}
       className="flex-1 sm:flex-none w-full sm:w-auto bg-[#dc2626] text-white text-[0.8rem] font-medium px-5 py-2.5 rounded-xl hover:bg-red-700 cursor-pointer transition duration-200 whitespace-nowrap"
     >
@@ -113,7 +114,6 @@ const listBusinessHandler = () => {
       </button>
     )}
   </div>
-
 </div>
 
 

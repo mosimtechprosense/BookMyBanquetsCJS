@@ -79,6 +79,7 @@ export default function HallCapacities({ hallCapacities = [] }) {
         </p>
 
         <button
+        id="check-avail-btn"
           onClick={() => setPopupOpen(true)}
           className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 ml-1 rounded-xl shadow transition whitespace-nowrap cursor-pointer"
         >

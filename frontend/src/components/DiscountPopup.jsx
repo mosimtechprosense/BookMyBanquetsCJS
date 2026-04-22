@@ -190,7 +190,7 @@ const handleSubmit = async (e) => {
 
 
 
-// ✅ HARD BLOCK (this is what actually stops popup after refresh)
+//  HARD BLOCK (this is what actually stops popup after refresh)
 if (isSubmitted) return null;
 
   if (!popupOpen) return null
@@ -294,6 +294,7 @@ if (isSubmitted) return null;
 
           {/* Submit Button */}
           <button
+            id="discount-popup-submit"
             type="submit"
              className={`w-full bg-[#dc2626] text-white font-semibold py-2 rounded-md transition-all
              ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-[#b91c1c] cursor-pointer"}`}

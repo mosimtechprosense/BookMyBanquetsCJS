@@ -245,6 +245,7 @@ export default function CheckDiscountPrice() {
 
         {/* CTA */}
         <button
+        id="check-price-btn"
           onClick={() => {
             if (!selectedDate || !selectedGuest) {
               setError("Please fill in all details before checking price")

@@ -52,6 +52,7 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
             </div>
 <div>
       <button
+      id="enquiry-now-btn"
   onClick={(e) => {
     e.stopPropagation()
     setPopupOpen(true)
@@ -80,7 +81,7 @@ export default function ListingDetailsSidebar({ listing, setPopupOpen  }) {
     e.stopPropagation()
     setPopupOpen(true)
   }}
-  className="absolute bottom-0 left-0 w-full h-85 sm:h-90 md:h-95 lg:h-100 z-20 cursor-pointer"
+  className="absolute bottom-0 left-0 w-full h-78 sm:h-90 md:h-95 lg:h-100 z-20 cursor-pointer"
 >
           <img
             src={sidebarImg}

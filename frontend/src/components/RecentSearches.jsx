@@ -1,79 +1,74 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React from "react"
+import { useEffect, useState } from "react"
 
 const RecentSearches = () => {
-  const [locations, setLocations] = useState([]); // full list from API
+  const [locations, setLocations] = useState([]) // full list from API
 
-  const API_BASE = import.meta.env.VITE_API_BASE;
-  
-    // fetch locations form API
-    useEffect(() => {
-      fetch(`${API_BASE}/api/locations`)
+  const API_BASE = import.meta.env.VITE_API_BASE
+
+  // fetch locations form API
+  useEffect(() => {
+    fetch(`${API_BASE}/api/locations`)
       .then((res) => res.json())
-      .then((data) =>{
+      .then((data) => {
         setLocations(data.data || [])
       })
       .catch((err) => {
-      console.error("Error fetching locations:", err);
-      setLocations([]);
+        console.error("Error fetching locations:", err)
+        setLocations([])
       })
-    }, [API_BASE])
+  }, [API_BASE])
 
+  const handleClick = (loc) => {
+    if (!loc?.name) return
 
-    const handleClick = (loc) => {
-  if (!loc?.name) return;
+    const localitySlug = loc.name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
 
-  const localitySlug = loc.name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-");
+    const citySlug =
+      loc.city_name?.toLowerCase() || loc.city?.name?.toLowerCase()
 
-  const citySlug =
-    loc.city_name?.toLowerCase() ||
-    loc.city?.name?.toLowerCase();
+    const path = window.location.pathname.split("/")[1] || ""
 
-  const path = window.location.pathname.split("/")[1] || "";
+    const serviceSlug = path.includes("-in-")
+      ? path.split("-in-")[0]
+      : path || "banquet-hall"
 
-  const serviceSlug = path.includes("-in-")
-    ? path.split("-in-")[0]
-    : path || "banquet-hall";
+    const params = new URLSearchParams(window.location.search)
 
-  const params = new URLSearchParams(window.location.search);
+    //  SAME LOGIC YOU PROVIDED
+    const cleanCities = ["delhi", "gurgaon", "gurugram"]
 
-  //  SAME LOGIC YOU PROVIDED
-  const cleanCities = ["delhi", "gurgaon", "gurugram"];
+    const isMainCity = cleanCities.includes(citySlug)
 
-  const isMainCity = cleanCities.includes(citySlug);
+    const isExactCitySelection =
+      localitySlug === citySlug ||
+      loc.name.toLowerCase() === loc.city?.name?.toLowerCase()
 
-  const isExactCitySelection =
-    localitySlug === citySlug ||
-    loc.name.toLowerCase() === loc.city?.name?.toLowerCase();
-
-  //  CITY CLICK
-  if (isMainCity && isExactCitySelection) {
-    const url = `/${serviceSlug}-in-${citySlug}`;
-    window.location.href = url;
-  }
-
-  //  LOCALITY CLICK
-  else {
-    // optional: attach lat/lng like before
-    if (loc.lat && loc.lng) {
-      params.set("lat", loc.lat);
-      params.set("lng", loc.lng);
+    //  CITY CLICK
+    if (isMainCity && isExactCitySelection) {
+      const url = `/${serviceSlug}-in-${citySlug}`
+      window.location.href = url
     }
 
-    const url = `/${serviceSlug}-in-${citySlug}/${localitySlug}${
-      params.toString() ? `?${params.toString()}` : ""
-    }`;
+    //  LOCALITY CLICK
+    else {
+      // optional: attach lat/lng like before
+      if (loc.lat && loc.lng) {
+        params.set("lat", loc.lat)
+        params.set("lng", loc.lng)
+      }
 
-    window.location.href = url;
+      const url = `/${serviceSlug}-in-${citySlug}/${localitySlug}${
+        params.toString() ? `?${params.toString()}` : ""
+      }`
+
+      window.location.href = url
+    }
   }
-};
-
-
-
 
   return (
     <section className="bg-[#dc2626] text-white py-6 px-6 text-center relative overflow-hidden select-none">
@@ -91,6 +86,11 @@ const RecentSearches = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-3 gap-x-6 text-left">
           {locations.map((loc, i) => (
             <button
+              id={`${loc.name
+                ?.toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/\s+/g, "-")}-shortcut-btn`}
               key={i}
               onClick={() => handleClick(loc)}
               className="relative group text-left text-white/90 font-medium hover:text-white transition-all duration-300 cursor-pointer"
@@ -104,7 +104,7 @@ const RecentSearches = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default RecentSearches;
+export default RecentSearches

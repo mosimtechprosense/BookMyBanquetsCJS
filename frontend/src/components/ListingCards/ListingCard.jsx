@@ -291,6 +291,7 @@ const isVerified = categories.includes(27) && !isAssured
         <div className="mt-4 sm:mt-auto md:mt-auto flex flex-row gap-2 justify-end flex-wrap">
           {/* Get a Quote */}
           <button
+          id="get-a-quote-listing"
             onClick={(e) => {
               e.stopPropagation()
               setPopupOpen(true)
@@ -303,6 +304,7 @@ const isVerified = categories.includes(27) && !isAssured
           {/* Mobile: Call Us */}
           <div>
             <a
+            id="call-us-button"
               href="tel:918920597474"
               onClick={(e) => e.stopPropagation()}
               className="flex sm:hidden items-center justify-center gap-1 bg-green-500 hover:bg-green-600 text-sm text-white px-3 py-2 rounded-xl transition min-w-30"
@@ -314,6 +316,7 @@ const isVerified = categories.includes(27) && !isAssured
 
             {/* Desktop: View Contact */}
             <button
+            id="view-contact-popup"
               onClick={(e) => {
                 e.stopPropagation()
                 setPopupOpen(true)
