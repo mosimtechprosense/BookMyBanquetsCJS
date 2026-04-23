@@ -78,8 +78,6 @@ const listBusinessHandler = () => {
           </div>
         </div>
 
-        {/* Right Section: CTA + City Selector */}
-
 {/* Right Section: CTA + City Selector */}
 <div className="flex flex-col md:flex-row items-start md:items-center justify-end gap-2 w-full md:w-auto mt-4 md:mt-0">
 

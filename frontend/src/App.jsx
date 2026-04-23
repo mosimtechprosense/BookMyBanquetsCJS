@@ -1,6 +1,6 @@
 import "./App.css"
 import { lazy, Suspense, useEffect, useState } from "react"
-import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate, useNavigate } from "react-router-dom"
 import { AdminAuthProvider } from "./store/AdminAuthContext"
 import NotFound from "./components/common/NotFound"
 import ScrollToTop from "./ScrollToTop"
@@ -61,6 +61,52 @@ function ConditionalAdminUI({ children }) {
 }
 
 
+function CleanTrackingParams() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+
+      const trackingParams = [
+        "gclid",
+        "gad_source",
+        "gad_campaignid",
+        "gbraid",
+        "wbraid",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content"
+      ];
+
+      let hasTracking = false;
+
+      trackingParams.forEach((param) => {
+        if (params.has(param)) {
+          params.delete(param);
+          hasTracking = true;
+        }
+      });
+
+      if (hasTracking) {
+        const newSearch = params.toString();
+        const cleanUrl = newSearch
+          ? `${location.pathname}?${newSearch}`
+          : location.pathname;
+
+        // ✅ THIS is the key fix
+        navigate(cleanUrl, { replace: true });
+      }
+    }
+  }, [location.search]);
+
+  return null;
+}
+
+
 
 
 function BlogRedirect() {
@@ -76,6 +122,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <CleanTrackingParams />
           <AdminAuthProvider>
         <UIProvider>
           <ScrollToTop />

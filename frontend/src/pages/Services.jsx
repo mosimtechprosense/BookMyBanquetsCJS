@@ -83,7 +83,7 @@ const Services = () => {
         {services.map((service, index) => (
           <div
             key={index}
-            className={`group flex items-center justify-between ${service.bg} rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-[140px]`}
+            className={`group flex items-center justify-between ${service.bg} rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-35`}
           >
             {/* Text */}
             <div className="flex flex-col justify-center px-6 py-4 w-[65%]">

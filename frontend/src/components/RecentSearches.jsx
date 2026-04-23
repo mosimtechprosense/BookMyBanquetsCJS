@@ -19,6 +19,35 @@ const RecentSearches = () => {
       })
   }, [API_BASE])
 
+
+
+  const path = window.location.pathname.split("/")[1] || ""
+
+// pages that should NOT be treated as service slugs
+const invalidSlugs = [
+  "services",
+  "about",
+  "why-us",
+  "blogs",
+  "contact",
+  "faq",
+  "terms",
+  "privacy",
+]
+
+let serviceSlug = "banquet-hall"
+
+if (path && !invalidSlugs.includes(path)) {
+  serviceSlug = path.includes("-in-")
+    ? path.split("-in-")[0]
+    : path
+}
+
+const serviceLabel = serviceSlug
+  .replace(/-/g, " ")
+  .replace(/\b\w/g, (c) => c.toUpperCase())
+
+
   const handleClick = (loc) => {
     if (!loc?.name) return
 
@@ -30,12 +59,6 @@ const RecentSearches = () => {
 
     const citySlug =
       loc.city_name?.toLowerCase() || loc.city?.name?.toLowerCase()
-
-    const path = window.location.pathname.split("/")[1] || ""
-
-    const serviceSlug = path.includes("-in-")
-      ? path.split("-in-")[0]
-      : path || "banquet-hall"
 
     const params = new URLSearchParams(window.location.search)
 
@@ -96,7 +119,7 @@ const RecentSearches = () => {
               className="relative group text-left text-white/90 font-medium hover:text-white transition-all duration-300 cursor-pointer"
             >
               <span className="relative inline-block">
-                Banquet Hall in {loc.name}
+                {serviceLabel} in {loc.name}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
               </span>
             </button>
